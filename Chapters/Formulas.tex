@@ -1,0 +1,150 @@
+%*****************************************
+\chapter{Formulas}
+%*****************************************
+
+
+\begin{equation}
+  \bm{x}_k = \bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1}, \bm{w}_{k-1})
+\end{equation}
+
+\begin{equation}
+  \bm{z}_k = \bm{h}_{k}(\bm{x}_{k}, \bm{v}_{k})
+\end{equation}
+
+\begin{equation}
+  p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})
+\end{equation}
+
+\begin{equation}
+  p(\bm{z}_k\,|\,\bm{x}_{k})
+\end{equation}
+
+\begin{equation}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})
+\end{equation}
+
+\begin{equation}
+  \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})}_{\substack{\text{Predictive} \\ \text{distribution}}} = \int \underbrace{p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})}_\text{Prior} \underbrace{p(\bm{x}_{k-1}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-2})}_\text{Old posterior} d\bm{x}_{k-1}
+\end{equation}
+
+\begin{equation}
+  \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}_{\substack{\text{Updated} \\ \text{posterior}}} = \underbrace{p(\bm{z}_k\,|\,\bm{x}_{k})}_{\substack{\text{Likelihood} \\ \text{function}}} \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})}_{\substack{\text{Predictive} \\ \text{distribution}}} \underbrace{p(\bm{z}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})^{-1}}_{\substack{\text{Normaliser}}}
+\end{equation}
+
+\begin{equation}
+  \hat{\bm{x}}^{(i)}_k \sim p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}), \quad i \in \{1, \dots, N\} 
+\end{equation}
+
+\begin{equation}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \approx \frac{1}{N} \sum^N_{i = 1} \delta\Big(\bm{x}_{k} - \bm{x}^{(i)}_k \Big)
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] = \int f(\bm{x}_k) p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k \approx \frac{1}{N} \sum^N_{i = 1} f\Big(\bm{x}^{(i)}_k\Big)
+\end{equation}
+
+\begin{equation}
+  \hat{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] \xrightarrow{\mathrm{a.s.}} \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big]
+\end{equation}
+
+\begin{equation}
+  \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})
+\end{equation}
+
+
+\begin{equation}
+\begin{split}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] &= \int f(\bm{x}_k) \frac{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})} \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k \\
+  &= \int f(\bm{x}_k) \frac{p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1})}{p(\bm{Z}_{k}\,|\,\bm{U}_{k-1}) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})} \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k \\
+  &= \frac{\int f(\bm{x}_k) w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k}{p(\bm{Z}_k\,|\,\bm{U}_{k-1})}
+\end{split}
+\end{equation}
+
+\begin{equation}
+  w_k(\bm{x}_k) = \frac{p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}
+\end{equation}
+
+
+\begin{equation}
+\begin{split}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] &= \frac{\int f(\bm{x}_k) w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k}{\int p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1}) \frac{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}d\bm{x}_{k}} \\
+  &= \frac{\int f(\bm{x}_k) w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k}{\int w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})d\bm{x}_{k}} \\
+  &= \frac{\mathbb{E}_{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[w_k(\bm{x}_k)f(\bm{x}_k)\big]}{\mathbb{E}_{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[w_k(\bm{x}_k)\big]} \\
+  &\approx \frac{\frac{1}{N} \sum^N_{i = 1} w_k\Big(\bm{x}^{(i)}_k\Big)f\Big(\bm{x}^{(i)}_k\Big)}{\frac{1}{N} \sum^N_{i = 1} w_k\Big(\bm{x}^{(i)}_k\Big)} \\
+  &= \frac{1}{N} \sum^N_{i = 1} \tilde{w}_k\Big(\bm{x}^{(i)}_k\Big)f\Big(\bm{x}^{(i)}_k\Big)
+\end{split}
+\end{equation}
+
+\begin{equation}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \approx \sum^N_{i = 1} \tilde{w}_k\Big(\bm{x}^{(i)}_k\Big) \delta\Big(\bm{x}_{k} - \bm{x}^{(i)}_k \Big)
+\end{equation}
+
+\begin{equation}\label{eq:weights_generic_particle}
+   w^{(i)}_k = w^{(i)}_{k-1} \frac{p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big) p\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{\pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)}, \quad i \in \{1, \dots, N\}
+\end{equation}
+
+
+\begin{equation}
+  \pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big) = p\big(\bm{x}^{(i)}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)
+\end{equation}
+
+
+
+\begin{equation}
+  w^{(i)}_k = w^{(i)}_{k-1} p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big)
+\end{equation}
+
+
+\begin{equation}
+  \bm{Z}_k = \{\bm{z}_i\}^k_{i = 1}, \quad \bm{U}_{k} = \{\bm{u}_i\}^k_{i = 0}
+\end{equation}
+
+
+\begin{equation}
+  \mu=z_1\frac{\sigma^2_{z_2}}{\sigma^2_{z_1}+\sigma^2_{z_2}}+z_2\frac{\sigma^2_{z_1}}{\sigma^2_{z_1}+\sigma^2_{z_2}}
+\end{equation}
+
+\begin{equation}
+  \frac{1}{\sigma^2}=\frac{1}{\sigma^2_{z_1}}+\frac{1}{\sigma^2_{z_2}}
+\end{equation}
+
+
+\begin{equation}
+\begin{split}
+  \hat{x}_{t_2} & =z_1\frac{\sigma^2_{z_2}}{\sigma^2_{z_1}+\sigma^2_{z_2}}+z_2\frac{\sigma^2_{z_1}}{\sigma^2_{z_1}+\sigma^2_{z_2}} \\
+  & =z_1+\frac{\sigma^2_{z_1}}{\sigma^2_{z_1}+\sigma^2_{z_2}}[z_2-z_1] \\
+  &= \hat{x}(t_1) + K_{t_2}[z_2-\hat{x}(t_1)]
+\end{split}
+\end{equation}
+
+\begin{equation}
+  \hat{x}^-_{t_3}=\hat{x}_{t_2}+u[t_3-t_2]\,,
+\end{equation}
+
+\begin{equation}\label{eq:variance_predicted}
+  \sigma^{2-}_{x_{t_3}}=\sigma^2_{x_{t_2}}+\sigma^2_w[t_3-t_2]
+\end{equation}
+
+\begin{equation}
+  \hat{x}_{t_3} = \hat{x}^-_{t_3} + K_{t_3}[z_3-\hat{x}^-_{t_3}]
+\end{equation}
+
+\begin{equation}\label{eq:variance_kalman}
+  \sigma^2_{x_{t_3}} = \sigma^{2-}_{x_{t_3}}-K_{t_3}\sigma^{2-}_{x_{t_3}}
+\end{equation}
+
+\begin{equation}\label{eq:time_dynamical_system_plant}
+  \bm{x}_k = \bm{\Phi}_{k-1}\bm{x}_{k-1}+\bm{B}_{k-1}\bm{u}_{k-1}+\bm{w}_{k-1}
+\end{equation}
+
+\begin{equation}\label{eq:time_dynamical_system_measurement}
+  \bm{z}_k = \bm{H}_{k}\bm{x}_{k}+\bm{v}_{k}\,,
+\end{equation}
+
+\begin{equation}\label{eq:process_noise}
+  \bm{w}_{k} \sim \mathcal{N}(0,\bm{Q}_k)\,,
+\end{equation}
+
+\begin{equation}\label{eq:measurement_noise}
+  \bm{v}_{k} \sim \mathcal{N}(0,\bm{R}_k)\,,
+\end{equation}

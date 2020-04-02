@@ -1,0 +1,5913 @@
+% This file was created by matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{1.00000,1.00000,0.00000}%
+\definecolor{mycolor2}{rgb}{0.00000,0.44700,0.74100}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\figurewidth,
+height=\figureheight,
+at={(0\figurewidth,0\figureheight)},
+scale only axis,
+xmin=-4.296875,
+xmax=4.296875,
+xlabel style={font=\color{white!15!black}},
+xlabel={$x_1$},
+ymin=-0.1953125,
+ymax=4.1015625,
+ylabel style={font=\color{white!15!black}},
+ylabel={$x_2$},
+axis background/.style={fill=white}
+]
+\addplot [color=white]
+  table[row sep=crcr]{%
+0	0\\
+};
+
+
+\addplot[area legend, draw=black, fill=white]
+table[row sep=crcr] {%
+x	y\\
+3.75	2.5\\
+5	2.5\\
+5	5\\
+3.75	5\\
+}--cycle;
+
+
+\addplot[area legend, draw=black, fill=white]
+table[row sep=crcr] {%
+x	y\\
+2.5	3.75\\
+3.75	3.75\\
+3.75	5\\
+2.5	5\\
+}--cycle;
+
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	2.5\\
+3.75	2.5\\
+3.75	3.75\\
+3.125	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	3.125\\
+3.125	3.125\\
+3.125	3.75\\
+2.5	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	2.8125\\
+3.125	2.8125\\
+3.125	3.125\\
+2.96875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	2.96875\\
+2.96875	2.96875\\
+2.96875	3.125\\
+2.8125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.375	1.25\\
+5	1.25\\
+5	2.5\\
+4.375	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	1.875\\
+4.375	1.875\\
+4.375	2.5\\
+3.75	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.0625	1.25\\
+4.375	1.25\\
+4.375	1.875\\
+4.0625	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	1.5625\\
+4.0625	1.5625\\
+4.0625	1.875\\
+3.75	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	1.25\\
+4.0625	1.25\\
+4.0625	1.5625\\
+3.90625	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	1.40625\\
+3.90625	1.40625\\
+3.90625	1.5625\\
+3.75	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.375	0\\
+5	0\\
+5	1.25\\
+4.375	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.0625	0.625\\
+4.375	0.625\\
+4.375	1.25\\
+4.0625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.9375\\
+4.0625	0.9375\\
+4.0625	1.25\\
+3.90625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.0625	0\\
+4.375	0\\
+4.375	0.625\\
+4.0625	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	2.1875\\
+3.75	2.1875\\
+3.75	2.5\\
+3.4375	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	1.875\\
+3.75	1.875\\
+3.75	2.1875\\
+3.59375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	2.34375\\
+3.4375	2.34375\\
+3.4375	2.5\\
+3.28125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	0.9375\\
+2.65625	0.9375\\
+2.65625	1.25\\
+2.5	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	0.625\\
+2.8125	0.625\\
+2.8125	0.9375\\
+2.5	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0\\
+2.96875	0\\
+2.96875	0.3125\\
+2.8125	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	0\\
+2.8125	0\\
+2.8125	0.625\\
+2.5	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	3.75\\
+2.5	3.75\\
+2.5	5\\
+1.875	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	4.375\\
+1.875	4.375\\
+1.875	5\\
+1.25	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	3.75\\
+1.875	3.75\\
+1.875	4.375\\
+1.5625	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	4.0625\\
+1.5625	4.0625\\
+1.5625	4.375\\
+1.25	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.40625	3.75\\
+1.5625	3.75\\
+1.5625	4.0625\\
+1.40625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	3.90625\\
+1.40625	3.90625\\
+1.40625	4.0625\\
+1.25	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	3.4375\\
+2.5	3.4375\\
+2.5	3.75\\
+2.1875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	3.28125\\
+2.5	3.28125\\
+2.5	3.4375\\
+2.34375	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	3.59375\\
+2.1875	3.59375\\
+2.1875	3.75\\
+2.03125	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	3.59375\\
+2.03125	3.59375\\
+2.03125	3.75\\
+1.875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	4.375\\
+1.25	4.375\\
+1.25	5\\
+0.625	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	4.0625\\
+1.25	4.0625\\
+1.25	4.375\\
+0.9375	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.09375	3.90625\\
+1.25	3.90625\\
+1.25	4.0625\\
+1.09375	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	3.90625\\
+1.09375	3.90625\\
+1.09375	4.0625\\
+0.9375	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	4.0625\\
+0.9375	4.0625\\
+0.9375	4.375\\
+0.625	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	4.375\\
+0.625	4.375\\
+0.625	5\\
+0	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	4.0625\\
+0.625	4.0625\\
+0.625	4.375\\
+0.3125	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	4.0625\\
+0.3125	4.0625\\
+0.3125	4.375\\
+0	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.09375	2.5\\
+1.25	2.5\\
+1.25	2.65625\\
+1.09375	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	2.5\\
+1.09375	2.5\\
+1.09375	2.65625\\
+0.9375	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	2.5\\
+0.9375	2.5\\
+0.9375	2.8125\\
+0.625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	2.5\\
+0.625	2.5\\
+0.625	2.8125\\
+0.3125	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.15625	2.8125\\
+0.3125	2.8125\\
+0.3125	2.96875\\
+0.15625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	2.8125\\
+0.15625	2.8125\\
+0.15625	2.96875\\
+0	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	2.5\\
+0.3125	2.5\\
+0.3125	2.8125\\
+0	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	1.875\\
+2.1875	1.875\\
+2.1875	2.03125\\
+2.03125	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	1.875\\
+2.03125	1.875\\
+2.03125	2.1875\\
+1.875	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	1.5625\\
+2.34375	1.5625\\
+2.34375	1.71875\\
+2.1875	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	1.25\\
+2.5	1.25\\
+2.5	1.5625\\
+2.1875	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	1.25\\
+2.1875	1.25\\
+2.1875	1.875\\
+1.875	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	2.1875\\
+1.71875	2.1875\\
+1.71875	2.34375\\
+1.5625	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	1.875\\
+1.875	1.875\\
+1.875	2.1875\\
+1.5625	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	1.875\\
+1.5625	1.875\\
+1.5625	2.5\\
+1.25	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	1.25\\
+1.875	1.25\\
+1.875	1.875\\
+1.25	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	0\\
+2.5	0\\
+2.5	1.25\\
+1.25	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	0\\
+1.25	0\\
+1.25	2.5\\
+0	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.375	-1.25\\
+5	-1.25\\
+5	0\\
+4.375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+4.0625	-0.625\\
+4.375	-0.625\\
+4.375	0\\
+4.0625	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	-0.3125\\
+4.0625	-0.3125\\
+4.0625	-0.15625\\
+3.90625	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	-0.3125\\
+3.90625	-0.3125\\
+3.90625	-0.15625\\
+3.75	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	-0.625\\
+4.0625	-0.625\\
+4.0625	-0.3125\\
+3.75	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	-1.25\\
+4.375	-1.25\\
+4.375	-0.625\\
+3.75	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	-2.5\\
+5	-2.5\\
+5	-1.25\\
+3.75	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	-0.3125\\
+3.75	-0.3125\\
+3.75	-0.15625\\
+3.59375	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	-0.3125\\
+3.59375	-0.3125\\
+3.59375	-0.15625\\
+3.4375	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	-0.625\\
+3.75	-0.625\\
+3.75	-0.3125\\
+3.4375	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	-0.3125\\
+3.4375	-0.3125\\
+3.4375	-0.15625\\
+3.28125	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	-0.3125\\
+3.28125	-0.3125\\
+3.28125	-0.15625\\
+3.125	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	-0.625\\
+3.4375	-0.625\\
+3.4375	-0.3125\\
+3.125	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	-1.25\\
+3.75	-1.25\\
+3.75	-0.625\\
+3.125	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	-0.3125\\
+3.125	-0.3125\\
+3.125	-0.15625\\
+2.96875	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	-0.3125\\
+2.96875	-0.3125\\
+2.96875	0\\
+2.8125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	-0.625\\
+3.125	-0.625\\
+3.125	-0.3125\\
+2.8125	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	-0.625\\
+2.8125	-0.625\\
+2.8125	0\\
+2.5	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	-1.25\\
+3.125	-1.25\\
+3.125	-0.625\\
+2.5	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	-2.5\\
+3.75	-2.5\\
+3.75	-1.25\\
+2.5	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	-5\\
+5	-5\\
+5	-2.5\\
+2.5	-2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	-1.25\\
+2.5	-1.25\\
+2.5	0\\
+1.25	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	-2.5\\
+2.5	-2.5\\
+2.5	-1.25\\
+1.25	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	-2.5\\
+1.25	-2.5\\
+1.25	0\\
+0	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	-5\\
+2.5	-5\\
+2.5	-2.5\\
+0	-2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	4.375\\
+0	4.375\\
+0	5\\
+-0.625	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	4.0625\\
+0	4.0625\\
+0	4.375\\
+-0.3125	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	4.0625\\
+-0.3125	4.0625\\
+-0.3125	4.375\\
+-0.625	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	4.375\\
+-0.625	4.375\\
+-0.625	5\\
+-1.25	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	4.0625\\
+-0.625	4.0625\\
+-0.625	4.375\\
+-0.9375	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	4.0625\\
+-0.9375	4.0625\\
+-0.9375	4.375\\
+-1.25	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	3.90625\\
+-0.9375	3.90625\\
+-0.9375	4.0625\\
+-1.09375	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	3.90625\\
+-1.09375	3.90625\\
+-1.09375	4.0625\\
+-1.25	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.15625	2.8125\\
+0	2.8125\\
+0	2.96875\\
+-0.15625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	2.8125\\
+-0.15625	2.8125\\
+-0.15625	2.96875\\
+-0.3125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	2.5\\
+0	2.5\\
+0	2.8125\\
+-0.3125	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	2.5\\
+-0.3125	2.5\\
+-0.3125	2.8125\\
+-0.625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	2.5\\
+-0.625	2.5\\
+-0.625	2.8125\\
+-0.9375	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	2.5\\
+-0.9375	2.5\\
+-0.9375	2.65625\\
+-1.09375	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	2.5\\
+-1.09375	2.5\\
+-1.09375	2.65625\\
+-1.25	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	4.375\\
+-1.25	4.375\\
+-1.25	5\\
+-1.875	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	4.0625\\
+-1.25	4.0625\\
+-1.25	4.375\\
+-1.5625	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	3.90625\\
+-1.25	3.90625\\
+-1.25	4.0625\\
+-1.40625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	3.75\\
+-1.40625	3.75\\
+-1.40625	4.0625\\
+-1.5625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	3.75\\
+-1.5625	3.75\\
+-1.5625	4.375\\
+-1.875	4.375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	3.75\\
+-1.875	3.75\\
+-1.875	5\\
+-2.5	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	3.59375\\
+-1.875	3.59375\\
+-1.875	3.75\\
+-2.03125	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	3.59375\\
+-2.03125	3.59375\\
+-2.03125	3.75\\
+-2.1875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	3.4375\\
+-2.1875	3.4375\\
+-2.1875	3.75\\
+-2.5	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	3.28125\\
+-2.34375	3.28125\\
+-2.34375	3.4375\\
+-2.5	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	0\\
+0	0\\
+0	2.5\\
+-1.25	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	1.875\\
+-1.25	1.875\\
+-1.25	2.5\\
+-1.5625	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	2.1875\\
+-1.5625	2.1875\\
+-1.5625	2.34375\\
+-1.71875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	1.875\\
+-1.5625	1.875\\
+-1.5625	2.1875\\
+-1.875	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	1.25\\
+-1.25	1.25\\
+-1.25	1.875\\
+-1.875	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	1.875\\
+-1.875	1.875\\
+-1.875	2.1875\\
+-2.03125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	1.875\\
+-2.03125	1.875\\
+-2.03125	2.03125\\
+-2.1875	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	1.25\\
+-1.875	1.25\\
+-1.875	1.875\\
+-2.1875	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	1.5625\\
+-2.1875	1.5625\\
+-2.1875	1.71875\\
+-2.34375	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	1.25\\
+-2.1875	1.25\\
+-2.1875	1.5625\\
+-2.5	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	0\\
+-1.25	0\\
+-1.25	1.25\\
+-2.5	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	3.75\\
+-2.5	3.75\\
+-2.5	5\\
+-3.75	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	3.125\\
+-2.5	3.125\\
+-2.5	3.75\\
+-3.125	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	2.96875\\
+-2.8125	2.96875\\
+-2.8125	3.125\\
+-2.96875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	2.8125\\
+-2.96875	2.8125\\
+-2.96875	3.125\\
+-3.125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	2.5\\
+-3.125	2.5\\
+-3.125	3.75\\
+-3.75	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	2.5\\
+-3.75	2.5\\
+-3.75	5\\
+-5	5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	2.34375\\
+-3.28125	2.34375\\
+-3.28125	2.5\\
+-3.4375	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	2.1875\\
+-3.4375	2.1875\\
+-3.4375	2.5\\
+-3.75	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	1.875\\
+-3.59375	1.875\\
+-3.59375	2.1875\\
+-3.75	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	0.9375\\
+-2.5	0.9375\\
+-2.5	1.25\\
+-2.65625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	0.625\\
+-2.5	0.625\\
+-2.5	0.9375\\
+-2.8125	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	0\\
+-2.5	0\\
+-2.5	0.625\\
+-2.8125	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0\\
+-2.8125	0\\
+-2.8125	0.3125\\
+-2.96875	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	1.875\\
+-3.75	1.875\\
+-3.75	2.5\\
+-4.375	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	1.5625\\
+-3.75	1.5625\\
+-3.75	1.875\\
+-4.0625	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	1.40625\\
+-3.75	1.40625\\
+-3.75	1.5625\\
+-3.90625	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	1.25\\
+-3.90625	1.25\\
+-3.90625	1.5625\\
+-4.0625	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	1.25\\
+-4.0625	1.25\\
+-4.0625	1.875\\
+-4.375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	1.25\\
+-4.375	1.25\\
+-4.375	2.5\\
+-5	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.9375\\
+-3.90625	0.9375\\
+-3.90625	1.25\\
+-4.0625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	0.625\\
+-4.0625	0.625\\
+-4.0625	1.25\\
+-4.375	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	0\\
+-4.0625	0\\
+-4.0625	0.625\\
+-4.375	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	0\\
+-4.375	0\\
+-4.375	1.25\\
+-5	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	-2.5\\
+0	-2.5\\
+0	0\\
+-1.25	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	-1.25\\
+-1.25	-1.25\\
+-1.25	0\\
+-2.5	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	-2.5\\
+-1.25	-2.5\\
+-1.25	-1.25\\
+-2.5	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	-5\\
+0	-5\\
+0	-2.5\\
+-2.5	-2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	-0.625\\
+-2.5	-0.625\\
+-2.5	0\\
+-2.8125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	-0.3125\\
+-2.8125	-0.3125\\
+-2.8125	0\\
+-2.96875	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	-0.3125\\
+-2.96875	-0.3125\\
+-2.96875	-0.15625\\
+-3.125	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	-0.625\\
+-2.8125	-0.625\\
+-2.8125	-0.3125\\
+-3.125	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	-1.25\\
+-2.5	-1.25\\
+-2.5	-0.625\\
+-3.125	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.28125	-0.3125\\
+-3.125	-0.3125\\
+-3.125	-0.15625\\
+-3.28125	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	-0.3125\\
+-3.28125	-0.3125\\
+-3.28125	-0.15625\\
+-3.4375	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	-0.625\\
+-3.125	-0.625\\
+-3.125	-0.3125\\
+-3.4375	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	-0.3125\\
+-3.4375	-0.3125\\
+-3.4375	-0.15625\\
+-3.59375	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	-0.3125\\
+-3.59375	-0.3125\\
+-3.59375	-0.15625\\
+-3.75	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	-0.625\\
+-3.4375	-0.625\\
+-3.4375	-0.3125\\
+-3.75	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	-1.25\\
+-3.125	-1.25\\
+-3.125	-0.625\\
+-3.75	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	-2.5\\
+-2.5	-2.5\\
+-2.5	-1.25\\
+-3.75	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	-0.3125\\
+-3.75	-0.3125\\
+-3.75	-0.15625\\
+-3.90625	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	-0.3125\\
+-3.90625	-0.3125\\
+-3.90625	-0.15625\\
+-4.0625	-0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	-0.625\\
+-3.75	-0.625\\
+-3.75	-0.3125\\
+-4.0625	-0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	-0.625\\
+-4.0625	-0.625\\
+-4.0625	0\\
+-4.375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.375	-1.25\\
+-3.75	-1.25\\
+-3.75	-0.625\\
+-4.375	-0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	-1.25\\
+-4.375	-1.25\\
+-4.375	0\\
+-5	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	-2.5\\
+-3.75	-2.5\\
+-3.75	-1.25\\
+-5	-1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-5	-5\\
+-2.5	-5\\
+-2.5	-2.5\\
+-5	-2.5\\
+}--cycle;
+\addplot [color=white, forget plot]
+  table[row sep=crcr]{%
+0	1.953125\\
+};
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	2.8125\\
+2.96875	2.8125\\
+2.96875	2.96875\\
+2.8125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	2.65625\\
+3.125	2.65625\\
+3.125	2.8125\\
+2.96875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	2.5\\
+3.125	2.5\\
+3.125	2.65625\\
+2.96875	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	2.65625\\
+2.96875	2.65625\\
+2.96875	2.8125\\
+2.8125	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	2.96875\\
+2.8125	2.96875\\
+2.8125	3.125\\
+2.65625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	2.8125\\
+2.8125	2.8125\\
+2.8125	2.96875\\
+2.65625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	2.96875\\
+2.65625	2.96875\\
+2.65625	3.125\\
+2.5	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	1.25\\
+3.90625	1.25\\
+3.90625	1.40625\\
+3.75	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	1.09375\\
+3.90625	1.09375\\
+3.90625	1.25\\
+3.75	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	0.9375\\
+3.90625	0.9375\\
+3.90625	1.09375\\
+3.75	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.78125\\
+4.0625	0.78125\\
+4.0625	0.9375\\
+3.90625	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.625\\
+4.0625	0.625\\
+4.0625	0.78125\\
+3.90625	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	0.78125\\
+3.90625	0.78125\\
+3.90625	0.9375\\
+3.75	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.46875\\
+4.0625	0.46875\\
+4.0625	0.625\\
+3.90625	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.3125\\
+4.0625	0.3125\\
+4.0625	0.46875\\
+3.90625	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0.15625\\
+4.0625	0.15625\\
+4.0625	0.3125\\
+3.90625	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	0\\
+4.0625	0\\
+4.0625	0.15625\\
+3.90625	0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	2.03125\\
+3.59375	2.03125\\
+3.59375	2.1875\\
+3.4375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	1.875\\
+3.59375	1.875\\
+3.59375	2.03125\\
+3.4375	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	2.1875\\
+3.4375	2.1875\\
+3.4375	2.34375\\
+3.28125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	2.34375\\
+3.28125	2.34375\\
+3.28125	2.5\\
+3.125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	2.1875\\
+3.28125	2.1875\\
+3.28125	2.34375\\
+3.125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	2.03125\\
+3.4375	2.03125\\
+3.4375	2.1875\\
+3.28125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	1.71875\\
+3.75	1.71875\\
+3.75	1.875\\
+3.59375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	1.5625\\
+3.75	1.5625\\
+3.75	1.71875\\
+3.59375	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	1.71875\\
+3.59375	1.71875\\
+3.59375	1.875\\
+3.4375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	1.40625\\
+3.75	1.40625\\
+3.75	1.5625\\
+3.59375	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	1.25\\
+3.75	1.25\\
+3.75	1.40625\\
+3.59375	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	2.34375\\
+3.125	2.34375\\
+3.125	2.5\\
+2.96875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	1.5625\\
+2.65625	1.5625\\
+2.65625	1.71875\\
+2.5	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	1.25\\
+2.8125	1.25\\
+2.8125	1.40625\\
+2.65625	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	1.40625\\
+2.65625	1.40625\\
+2.65625	1.5625\\
+2.5	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	1.25\\
+2.65625	1.25\\
+2.65625	1.40625\\
+2.5	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0.9375\\
+2.96875	0.9375\\
+2.96875	1.09375\\
+2.8125	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0.78125\\
+2.96875	0.78125\\
+2.96875	0.9375\\
+2.8125	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0.625\\
+2.96875	0.625\\
+2.96875	0.78125\\
+2.8125	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	1.09375\\
+2.8125	1.09375\\
+2.8125	1.25\\
+2.65625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	0.9375\\
+2.8125	0.9375\\
+2.8125	1.09375\\
+2.65625	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0.3125\\
+3.125	0.3125\\
+3.125	0.46875\\
+2.96875	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0.46875\\
+2.96875	0.46875\\
+2.96875	0.625\\
+2.8125	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	0.3125\\
+2.96875	0.3125\\
+2.96875	0.46875\\
+2.8125	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0.15625\\
+3.125	0.15625\\
+3.125	0.3125\\
+2.96875	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0\\
+3.125	0\\
+3.125	0.15625\\
+2.96875	0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	3.75\\
+1.40625	3.75\\
+1.40625	3.90625\\
+1.25	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	3.125\\
+2.5	3.125\\
+2.5	3.28125\\
+2.34375	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	3.28125\\
+2.34375	3.28125\\
+2.34375	3.4375\\
+2.1875	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	3.125\\
+2.34375	3.125\\
+2.34375	3.28125\\
+2.1875	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	3.4375\\
+2.1875	3.4375\\
+2.1875	3.59375\\
+2.03125	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	3.4375\\
+2.03125	3.4375\\
+2.03125	3.59375\\
+1.875	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	3.28125\\
+2.1875	3.28125\\
+2.1875	3.4375\\
+2.03125	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	2.96875\\
+2.5	2.96875\\
+2.5	3.125\\
+2.34375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.71875	3.59375\\
+1.875	3.59375\\
+1.875	3.75\\
+1.71875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.71875	3.4375\\
+1.875	3.4375\\
+1.875	3.59375\\
+1.71875	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	3.59375\\
+1.71875	3.59375\\
+1.71875	3.75\\
+1.5625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.40625	3.59375\\
+1.5625	3.59375\\
+1.5625	3.75\\
+1.40625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	3.59375\\
+1.40625	3.59375\\
+1.40625	3.75\\
+1.25	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	2.5\\
+1.71875	2.5\\
+1.71875	2.65625\\
+1.5625	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.40625	2.5\\
+1.5625	2.5\\
+1.5625	2.65625\\
+1.40625	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	2.65625\\
+1.40625	2.65625\\
+1.40625	2.8125\\
+1.25	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	2.5\\
+1.40625	2.5\\
+1.40625	2.65625\\
+1.25	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.09375	3.75\\
+1.25	3.75\\
+1.25	3.90625\\
+1.09375	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	3.75\\
+1.09375	3.75\\
+1.09375	3.90625\\
+0.9375	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.78125	3.90625\\
+0.9375	3.90625\\
+0.9375	4.0625\\
+0.78125	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.78125	3.75\\
+0.9375	3.75\\
+0.9375	3.90625\\
+0.78125	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	3.90625\\
+0.78125	3.90625\\
+0.78125	4.0625\\
+0.625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.46875	3.90625\\
+0.625	3.90625\\
+0.625	4.0625\\
+0.46875	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	3.90625\\
+0.46875	3.90625\\
+0.46875	4.0625\\
+0.3125	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.15625	3.90625\\
+0.3125	3.90625\\
+0.3125	4.0625\\
+0.15625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	3.90625\\
+0.15625	3.90625\\
+0.15625	4.0625\\
+0	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	2.8125\\
+1.09375	2.8125\\
+1.09375	2.96875\\
+0.9375	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.09375	2.65625\\
+1.25	2.65625\\
+1.25	2.8125\\
+1.09375	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	2.65625\\
+1.09375	2.65625\\
+1.09375	2.8125\\
+0.9375	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.78125	2.8125\\
+0.9375	2.8125\\
+0.9375	2.96875\\
+0.78125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	2.8125\\
+0.78125	2.8125\\
+0.78125	2.96875\\
+0.625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.46875	2.8125\\
+0.625	2.8125\\
+0.625	2.96875\\
+0.46875	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	2.96875\\
+0.46875	2.96875\\
+0.46875	3.125\\
+0.3125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	2.8125\\
+0.46875	2.8125\\
+0.46875	2.96875\\
+0.3125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.15625	2.96875\\
+0.3125	2.96875\\
+0.3125	3.125\\
+0.15625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	2.96875\\
+0.15625	2.96875\\
+0.15625	3.125\\
+0	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	2.03125\\
+2.34375	2.03125\\
+2.34375	2.1875\\
+2.1875	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	1.875\\
+2.34375	1.875\\
+2.34375	2.03125\\
+2.1875	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	2.1875\\
+2.1875	2.1875\\
+2.1875	2.34375\\
+2.03125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	2.1875\\
+2.03125	2.1875\\
+2.03125	2.34375\\
+1.875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	2.03125\\
+2.1875	2.03125\\
+2.1875	2.1875\\
+2.03125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	1.71875\\
+2.5	1.71875\\
+2.5	1.875\\
+2.34375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	1.5625\\
+2.5	1.5625\\
+2.5	1.71875\\
+2.34375	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	1.71875\\
+2.34375	1.71875\\
+2.34375	1.875\\
+2.1875	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.71875	2.34375\\
+1.875	2.34375\\
+1.875	2.5\\
+1.71875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.71875	2.1875\\
+1.875	2.1875\\
+1.875	2.34375\\
+1.71875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	2.34375\\
+1.71875	2.34375\\
+1.71875	2.5\\
+1.5625	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.90625	-0.15625\\
+4.0625	-0.15625\\
+4.0625	0\\
+3.90625	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	-0.15625\\
+3.90625	-0.15625\\
+3.90625	0\\
+3.75	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.59375	-0.15625\\
+3.75	-0.15625\\
+3.75	0\\
+3.59375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	-0.15625\\
+3.59375	-0.15625\\
+3.59375	0\\
+3.4375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	-0.15625\\
+3.4375	-0.15625\\
+3.4375	0\\
+3.28125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	-0.15625\\
+3.28125	-0.15625\\
+3.28125	0\\
+3.125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	-0.15625\\
+3.125	-0.15625\\
+3.125	0\\
+2.96875	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.15625	3.90625\\
+0	3.90625\\
+0	4.0625\\
+-0.15625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	3.90625\\
+-0.15625	3.90625\\
+-0.15625	4.0625\\
+-0.3125	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.46875	3.90625\\
+-0.3125	3.90625\\
+-0.3125	4.0625\\
+-0.46875	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	3.90625\\
+-0.46875	3.90625\\
+-0.46875	4.0625\\
+-0.625	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.78125	3.90625\\
+-0.625	3.90625\\
+-0.625	4.0625\\
+-0.78125	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	3.90625\\
+-0.78125	3.90625\\
+-0.78125	4.0625\\
+-0.9375	4.0625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	3.75\\
+-0.78125	3.75\\
+-0.78125	3.90625\\
+-0.9375	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	3.75\\
+-0.9375	3.75\\
+-0.9375	3.90625\\
+-1.09375	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	3.75\\
+-1.09375	3.75\\
+-1.09375	3.90625\\
+-1.25	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.15625	2.96875\\
+0	2.96875\\
+0	3.125\\
+-0.15625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	2.96875\\
+-0.15625	2.96875\\
+-0.15625	3.125\\
+-0.3125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.46875	2.96875\\
+-0.3125	2.96875\\
+-0.3125	3.125\\
+-0.46875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.46875	2.8125\\
+-0.3125	2.8125\\
+-0.3125	2.96875\\
+-0.46875	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	2.8125\\
+-0.46875	2.8125\\
+-0.46875	2.96875\\
+-0.625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.78125	2.8125\\
+-0.625	2.8125\\
+-0.625	2.96875\\
+-0.78125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	2.8125\\
+-0.78125	2.8125\\
+-0.78125	2.96875\\
+-0.9375	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	2.8125\\
+-0.9375	2.8125\\
+-0.9375	2.96875\\
+-1.09375	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	2.65625\\
+-0.9375	2.65625\\
+-0.9375	2.8125\\
+-1.09375	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	2.65625\\
+-1.09375	2.65625\\
+-1.09375	2.8125\\
+-1.25	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	3.75\\
+-1.25	3.75\\
+-1.25	3.90625\\
+-1.40625	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	3.59375\\
+-1.25	3.59375\\
+-1.25	3.75\\
+-1.40625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	3.59375\\
+-1.40625	3.59375\\
+-1.40625	3.75\\
+-1.5625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	3.59375\\
+-1.5625	3.59375\\
+-1.5625	3.75\\
+-1.71875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	3.59375\\
+-1.71875	3.59375\\
+-1.71875	3.75\\
+-1.875	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	3.4375\\
+-1.71875	3.4375\\
+-1.71875	3.59375\\
+-1.875	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	2.65625\\
+-1.25	2.65625\\
+-1.25	2.8125\\
+-1.40625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	2.5\\
+-1.25	2.5\\
+-1.25	2.65625\\
+-1.40625	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	2.5\\
+-1.40625	2.5\\
+-1.40625	2.65625\\
+-1.5625	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	2.5\\
+-1.5625	2.5\\
+-1.5625	2.65625\\
+-1.71875	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	3.4375\\
+-1.875	3.4375\\
+-1.875	3.59375\\
+-2.03125	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	3.4375\\
+-2.03125	3.4375\\
+-2.03125	3.59375\\
+-2.1875	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	3.28125\\
+-2.03125	3.28125\\
+-2.03125	3.4375\\
+-2.1875	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	3.28125\\
+-2.1875	3.28125\\
+-2.1875	3.4375\\
+-2.34375	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	3.125\\
+-2.1875	3.125\\
+-2.1875	3.28125\\
+-2.34375	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	3.125\\
+-2.34375	3.125\\
+-2.34375	3.28125\\
+-2.5	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	2.96875\\
+-2.34375	2.96875\\
+-2.34375	3.125\\
+-2.5	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	2.34375\\
+-1.5625	2.34375\\
+-1.5625	2.5\\
+-1.71875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	2.34375\\
+-1.71875	2.34375\\
+-1.71875	2.5\\
+-1.875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	2.1875\\
+-1.71875	2.1875\\
+-1.71875	2.34375\\
+-1.875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	2.1875\\
+-1.875	2.1875\\
+-1.875	2.34375\\
+-2.03125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	2.1875\\
+-2.03125	2.1875\\
+-2.03125	2.34375\\
+-2.1875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	2.03125\\
+-2.03125	2.03125\\
+-2.03125	2.1875\\
+-2.1875	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	2.03125\\
+-2.1875	2.03125\\
+-2.1875	2.1875\\
+-2.34375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	1.875\\
+-2.1875	1.875\\
+-2.1875	2.03125\\
+-2.34375	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	1.71875\\
+-2.1875	1.71875\\
+-2.1875	1.875\\
+-2.34375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	1.71875\\
+-2.34375	1.71875\\
+-2.34375	1.875\\
+-2.5	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	1.5625\\
+-2.34375	1.5625\\
+-2.34375	1.71875\\
+-2.5	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	2.96875\\
+-2.5	2.96875\\
+-2.5	3.125\\
+-2.65625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	2.96875\\
+-2.65625	2.96875\\
+-2.65625	3.125\\
+-2.8125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	2.8125\\
+-2.65625	2.8125\\
+-2.65625	2.96875\\
+-2.8125	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	2.8125\\
+-2.8125	2.8125\\
+-2.8125	2.96875\\
+-2.96875	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	2.65625\\
+-2.8125	2.65625\\
+-2.8125	2.8125\\
+-2.96875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	2.65625\\
+-2.96875	2.65625\\
+-2.96875	2.8125\\
+-3.125	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	2.5\\
+-2.96875	2.5\\
+-2.96875	2.65625\\
+-3.125	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	2.34375\\
+-2.96875	2.34375\\
+-2.96875	2.5\\
+-3.125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	1.5625\\
+-2.5	1.5625\\
+-2.5	1.71875\\
+-2.65625	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	1.40625\\
+-2.5	1.40625\\
+-2.5	1.5625\\
+-2.65625	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	1.25\\
+-2.5	1.25\\
+-2.5	1.40625\\
+-2.65625	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	1.25\\
+-2.65625	1.25\\
+-2.65625	1.40625\\
+-2.8125	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.28125	2.34375\\
+-3.125	2.34375\\
+-3.125	2.5\\
+-3.28125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.28125	2.1875\\
+-3.125	2.1875\\
+-3.125	2.34375\\
+-3.28125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	2.1875\\
+-3.28125	2.1875\\
+-3.28125	2.34375\\
+-3.4375	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	2.03125\\
+-3.28125	2.03125\\
+-3.28125	2.1875\\
+-3.4375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	2.03125\\
+-3.4375	2.03125\\
+-3.4375	2.1875\\
+-3.59375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	1.875\\
+-3.4375	1.875\\
+-3.4375	2.03125\\
+-3.59375	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	1.71875\\
+-3.4375	1.71875\\
+-3.4375	1.875\\
+-3.59375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	1.71875\\
+-3.59375	1.71875\\
+-3.59375	1.875\\
+-3.75	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	1.5625\\
+-3.59375	1.5625\\
+-3.59375	1.71875\\
+-3.75	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	1.40625\\
+-3.59375	1.40625\\
+-3.59375	1.5625\\
+-3.75	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	1.25\\
+-3.59375	1.25\\
+-3.59375	1.40625\\
+-3.75	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	1.09375\\
+-2.65625	1.09375\\
+-2.65625	1.25\\
+-2.8125	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	0.9375\\
+-2.65625	0.9375\\
+-2.65625	1.09375\\
+-2.8125	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0.9375\\
+-2.8125	0.9375\\
+-2.8125	1.09375\\
+-2.96875	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0.78125\\
+-2.8125	0.78125\\
+-2.8125	0.9375\\
+-2.96875	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0.625\\
+-2.8125	0.625\\
+-2.8125	0.78125\\
+-2.96875	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0.46875\\
+-2.8125	0.46875\\
+-2.8125	0.625\\
+-2.96875	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	0.3125\\
+-2.8125	0.3125\\
+-2.8125	0.46875\\
+-2.96875	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0.3125\\
+-2.96875	0.3125\\
+-2.96875	0.46875\\
+-3.125	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0.15625\\
+-2.96875	0.15625\\
+-2.96875	0.3125\\
+-3.125	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0\\
+-2.96875	0\\
+-2.96875	0.15625\\
+-3.125	0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	1.25\\
+-3.75	1.25\\
+-3.75	1.40625\\
+-3.90625	1.40625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	1.09375\\
+-3.75	1.09375\\
+-3.75	1.25\\
+-3.90625	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	0.9375\\
+-3.75	0.9375\\
+-3.75	1.09375\\
+-3.90625	1.09375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	0.78125\\
+-3.75	0.78125\\
+-3.75	0.9375\\
+-3.90625	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.78125\\
+-3.90625	0.78125\\
+-3.90625	0.9375\\
+-4.0625	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.625\\
+-3.90625	0.625\\
+-3.90625	0.78125\\
+-4.0625	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.46875\\
+-3.90625	0.46875\\
+-3.90625	0.625\\
+-4.0625	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.3125\\
+-3.90625	0.3125\\
+-3.90625	0.46875\\
+-4.0625	0.46875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0.15625\\
+-3.90625	0.15625\\
+-3.90625	0.3125\\
+-4.0625	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	0\\
+-3.90625	0\\
+-3.90625	0.15625\\
+-4.0625	0.15625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	-0.15625\\
+-2.96875	-0.15625\\
+-2.96875	0\\
+-3.125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.28125	-0.15625\\
+-3.125	-0.15625\\
+-3.125	0\\
+-3.28125	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	-0.15625\\
+-3.28125	-0.15625\\
+-3.28125	0\\
+-3.4375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	-0.15625\\
+-3.4375	-0.15625\\
+-3.4375	0\\
+-3.59375	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	-0.15625\\
+-3.59375	-0.15625\\
+-3.59375	0\\
+-3.75	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	-0.15625\\
+-3.75	-0.15625\\
+-3.75	0\\
+-3.90625	0\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=mycolor1, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-4.0625	-0.15625\\
+-3.90625	-0.15625\\
+-3.90625	0\\
+-4.0625	0\\
+}--cycle;
+\addplot [color=white, forget plot]
+  table[row sep=crcr]{%
+0	1.953125\\
+};
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	2.5\\
+2.96875	2.5\\
+2.96875	2.65625\\
+2.8125	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	2.8125\\
+2.65625	2.8125\\
+2.65625	2.96875\\
+2.5	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	2.5\\
+2.8125	2.5\\
+2.8125	2.8125\\
+2.5	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	0.625\\
+3.90625	0.625\\
+3.90625	0.78125\\
+3.75	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	0.3125\\
+3.90625	0.3125\\
+3.90625	0.625\\
+3.75	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.75	0\\
+3.90625	0\\
+3.90625	0.3125\\
+3.75	0.3125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.28125	1.875\\
+3.4375	1.875\\
+3.4375	2.03125\\
+3.28125	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	1.875\\
+3.28125	1.875\\
+3.28125	2.1875\\
+3.125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	1.5625\\
+3.59375	1.5625\\
+3.59375	1.71875\\
+3.4375	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.4375	1.25\\
+3.59375	1.25\\
+3.59375	1.5625\\
+3.4375	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	1.25\\
+3.4375	1.25\\
+3.4375	1.875\\
+3.125	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	2.1875\\
+3.125	2.1875\\
+3.125	2.34375\\
+2.96875	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	2.1875\\
+2.96875	2.1875\\
+2.96875	2.5\\
+2.8125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	1.875\\
+3.125	1.875\\
+3.125	2.1875\\
+2.8125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	1.875\\
+2.8125	1.875\\
+2.8125	2.5\\
+2.5	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	1.25\\
+3.125	1.25\\
+3.125	1.875\\
+2.8125	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	1.5625\\
+2.8125	1.5625\\
+2.8125	1.875\\
+2.65625	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.5	1.71875\\
+2.65625	1.71875\\
+2.65625	1.875\\
+2.5	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.65625	1.40625\\
+2.8125	1.40625\\
+2.8125	1.5625\\
+2.65625	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+3.125	0\\
+3.75	0\\
+3.75	1.25\\
+3.125	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0.9375\\
+3.125	0.9375\\
+3.125	1.25\\
+2.96875	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.8125	1.09375\\
+2.96875	1.09375\\
+2.96875	1.25\\
+2.8125	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0.625\\
+3.125	0.625\\
+3.125	0.9375\\
+2.96875	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.96875	0.46875\\
+3.125	0.46875\\
+3.125	0.625\\
+2.96875	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	3.125\\
+2.1875	3.125\\
+2.1875	3.28125\\
+2.03125	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	3.125\\
+2.03125	3.125\\
+2.03125	3.4375\\
+1.875	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	2.8125\\
+2.5	2.8125\\
+2.5	2.96875\\
+2.34375	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	2.8125\\
+2.34375	2.8125\\
+2.34375	3.125\\
+2.1875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	2.5\\
+2.5	2.5\\
+2.5	2.8125\\
+2.1875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	2.5\\
+2.1875	2.5\\
+2.1875	3.125\\
+1.875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	3.4375\\
+1.71875	3.4375\\
+1.71875	3.59375\\
+1.5625	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	3.125\\
+1.875	3.125\\
+1.875	3.4375\\
+1.5625	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.40625	3.4375\\
+1.5625	3.4375\\
+1.5625	3.59375\\
+1.40625	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	3.4375\\
+1.40625	3.4375\\
+1.40625	3.59375\\
+1.25	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	3.125\\
+1.5625	3.125\\
+1.5625	3.4375\\
+1.25	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	2.8125\\
+1.875	2.8125\\
+1.875	3.125\\
+1.5625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.71875	2.5\\
+1.875	2.5\\
+1.875	2.8125\\
+1.71875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.5625	2.65625\\
+1.71875	2.65625\\
+1.71875	2.8125\\
+1.5625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.25	2.8125\\
+1.5625	2.8125\\
+1.5625	3.125\\
+1.25	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.40625	2.65625\\
+1.5625	2.65625\\
+1.5625	2.8125\\
+1.40625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	3.75\\
+0.78125	3.75\\
+0.78125	3.90625\\
+0.625	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.46875	3.75\\
+0.625	3.75\\
+0.625	3.90625\\
+0.46875	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.3125	3.75\\
+0.46875	3.75\\
+0.46875	3.90625\\
+0.3125	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.15625	3.75\\
+0.3125	3.75\\
+0.3125	3.90625\\
+0.15625	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	3.75\\
+0.15625	3.75\\
+0.15625	3.90625\\
+0	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	3.125\\
+1.25	3.125\\
+1.25	3.75\\
+0.625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.09375	2.8125\\
+1.25	2.8125\\
+1.25	3.125\\
+1.09375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.9375	2.96875\\
+1.09375	2.96875\\
+1.09375	3.125\\
+0.9375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.78125	2.96875\\
+0.9375	2.96875\\
+0.9375	3.125\\
+0.78125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.625	2.96875\\
+0.78125	2.96875\\
+0.78125	3.125\\
+0.625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	3.125\\
+0.625	3.125\\
+0.625	3.75\\
+0	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0.46875	2.96875\\
+0.625	2.96875\\
+0.625	3.125\\
+0.46875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.1875	2.1875\\
+2.5	2.1875\\
+2.5	2.5\\
+2.1875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.34375	1.875\\
+2.5	1.875\\
+2.5	2.1875\\
+2.34375	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2.03125	2.34375\\
+2.1875	2.34375\\
+2.1875	2.5\\
+2.03125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1.875	2.34375\\
+2.03125	2.34375\\
+2.03125	2.5\\
+1.875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.15625	3.75\\
+0	3.75\\
+0	3.90625\\
+-0.15625	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.3125	3.75\\
+-0.15625	3.75\\
+-0.15625	3.90625\\
+-0.3125	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.46875	3.75\\
+-0.3125	3.75\\
+-0.3125	3.90625\\
+-0.46875	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	3.75\\
+-0.46875	3.75\\
+-0.46875	3.90625\\
+-0.625	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.78125	3.75\\
+-0.625	3.75\\
+-0.625	3.90625\\
+-0.78125	3.90625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	3.125\\
+0	3.125\\
+0	3.75\\
+-0.625	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.625	2.96875\\
+-0.46875	2.96875\\
+-0.46875	3.125\\
+-0.625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	3.125\\
+-0.625	3.125\\
+-0.625	3.75\\
+-1.25	3.75\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.78125	2.96875\\
+-0.625	2.96875\\
+-0.625	3.125\\
+-0.78125	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-0.9375	2.96875\\
+-0.78125	2.96875\\
+-0.78125	3.125\\
+-0.9375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.09375	2.96875\\
+-0.9375	2.96875\\
+-0.9375	3.125\\
+-1.09375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.25	2.8125\\
+-1.09375	2.8125\\
+-1.09375	3.125\\
+-1.25	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.40625	3.4375\\
+-1.25	3.4375\\
+-1.25	3.59375\\
+-1.40625	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	3.4375\\
+-1.40625	3.4375\\
+-1.40625	3.59375\\
+-1.5625	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	3.125\\
+-1.25	3.125\\
+-1.25	3.4375\\
+-1.5625	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	3.4375\\
+-1.5625	3.4375\\
+-1.5625	3.59375\\
+-1.71875	3.59375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	3.125\\
+-1.5625	3.125\\
+-1.5625	3.4375\\
+-1.875	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	2.8125\\
+-1.25	2.8125\\
+-1.25	3.125\\
+-1.5625	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.5625	2.65625\\
+-1.40625	2.65625\\
+-1.40625	2.8125\\
+-1.5625	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	2.8125\\
+-1.5625	2.8125\\
+-1.5625	3.125\\
+-1.875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.71875	2.65625\\
+-1.5625	2.65625\\
+-1.5625	2.8125\\
+-1.71875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-1.875	2.5\\
+-1.71875	2.5\\
+-1.71875	2.8125\\
+-1.875	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	3.125\\
+-1.875	3.125\\
+-1.875	3.4375\\
+-2.03125	3.4375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	3.125\\
+-2.03125	3.125\\
+-2.03125	3.28125\\
+-2.1875	3.28125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	2.5\\
+-1.875	2.5\\
+-1.875	3.125\\
+-2.1875	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.34375	2.8125\\
+-2.1875	2.8125\\
+-2.1875	3.125\\
+-2.34375	3.125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	2.8125\\
+-2.34375	2.8125\\
+-2.34375	2.96875\\
+-2.5	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	2.5\\
+-2.1875	2.5\\
+-2.1875	2.8125\\
+-2.5	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.03125	2.34375\\
+-1.875	2.34375\\
+-1.875	2.5\\
+-2.03125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.1875	2.34375\\
+-2.03125	2.34375\\
+-2.03125	2.5\\
+-2.1875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	2.1875\\
+-2.1875	2.1875\\
+-2.1875	2.5\\
+-2.5	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.5	1.875\\
+-2.34375	1.875\\
+-2.34375	2.1875\\
+-2.5	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	2.8125\\
+-2.5	2.8125\\
+-2.5	2.96875\\
+-2.65625	2.96875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	2.5\\
+-2.5	2.5\\
+-2.5	2.8125\\
+-2.8125	2.8125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	2.5\\
+-2.8125	2.5\\
+-2.8125	2.65625\\
+-2.96875	2.65625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	1.875\\
+-2.5	1.875\\
+-2.5	2.5\\
+-2.8125	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	2.1875\\
+-2.8125	2.1875\\
+-2.8125	2.5\\
+-2.96875	2.5\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	2.1875\\
+-2.96875	2.1875\\
+-2.96875	2.34375\\
+-3.125	2.34375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	1.875\\
+-2.8125	1.875\\
+-2.8125	2.1875\\
+-3.125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.65625	1.71875\\
+-2.5	1.71875\\
+-2.5	1.875\\
+-2.65625	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	1.5625\\
+-2.65625	1.5625\\
+-2.65625	1.875\\
+-2.8125	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.8125	1.40625\\
+-2.65625	1.40625\\
+-2.65625	1.5625\\
+-2.8125	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	1.25\\
+-2.8125	1.25\\
+-2.8125	1.875\\
+-3.125	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.28125	1.875\\
+-3.125	1.875\\
+-3.125	2.1875\\
+-3.28125	2.1875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	1.875\\
+-3.28125	1.875\\
+-3.28125	2.03125\\
+-3.4375	2.03125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.4375	1.25\\
+-3.125	1.25\\
+-3.125	1.875\\
+-3.4375	1.875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	1.5625\\
+-3.4375	1.5625\\
+-3.4375	1.71875\\
+-3.59375	1.71875\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.59375	1.25\\
+-3.4375	1.25\\
+-3.4375	1.5625\\
+-3.59375	1.5625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-2.96875	1.09375\\
+-2.8125	1.09375\\
+-2.8125	1.25\\
+-2.96875	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0.9375\\
+-2.96875	0.9375\\
+-2.96875	1.25\\
+-3.125	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0.625\\
+-2.96875	0.625\\
+-2.96875	0.9375\\
+-3.125	0.9375\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.125	0.46875\\
+-2.96875	0.46875\\
+-2.96875	0.625\\
+-3.125	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.75	0\\
+-3.125	0\\
+-3.125	1.25\\
+-3.75	1.25\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	0.625\\
+-3.75	0.625\\
+-3.75	0.78125\\
+-3.90625	0.78125\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	0.3125\\
+-3.75	0.3125\\
+-3.75	0.625\\
+-3.90625	0.625\\
+}--cycle;
+
+\addplot[area legend, draw=black, fill=red, forget plot]
+table[row sep=crcr] {%
+x	y\\
+-3.90625	0\\
+-3.75	0\\
+-3.75	0.3125\\
+-3.90625	0.3125\\
+}--cycle;
+\addplot [color=mycolor2, line width=2.0pt, forget plot]
+  table[row sep=crcr]{%
+-4	0\\
+-3.99	0.282665880502049\\
+-3.98	0.399499687108763\\
+-3.97	0.488978527135905\\
+-3.96	0.564269439186636\\
+-3.95	0.630476010645924\\
+-3.94	0.690217357069496\\
+-3.93	0.745050333870135\\
+-3.92	0.795989949685297\\
+-3.91	0.843741666625513\\
+-3.9	0.888819441731559\\
+-3.89	0.931611507013518\\
+-3.88	0.972419662491458\\
+-3.87	1.01148405820359\\
+-3.86	1.04899952335547\\
+-3.85	1.08512672071053\\
+-3.84	1.12\\
+-3.83	1.15373307138176\\
+-3.82	1.18642319599711\\
+-3.81	1.21815434161686\\
+-3.8	1.24899959967968\\
+-3.79	1.27902306468648\\
+-3.78	1.3082813153141\\
+-3.77	1.336824595824\\
+-3.76	1.36469776873856\\
+-3.75	1.39194109070751\\
+-3.74	1.41859085010443\\
+-3.73	1.44467989534014\\
+-3.72	1.47023807595913\\
+-3.71	1.49529261350413\\
+-3.7	1.51986841535707\\
+-3.69	1.5439883419249\\
+-3.68	1.56767343538123\\
+-3.67	1.59094311651926\\
+-3.66	1.61381535498953\\
+-3.65	1.63630681719536\\
+-3.64	1.65843299533023\\
+-3.63	1.68020832041744\\
+-3.62	1.70164626171246\\
+-3.61	1.72275941442791\\
+-3.6	1.74355957741627\\
+-3.59	1.76405782218157\\
+-3.58	1.78426455437528\\
+-3.57	1.80418956875379\\
+-3.56	1.82384209842848\\
+-3.55	1.84323085911668\\
+-3.54	1.86236408900086\\
+-3.53	1.88124958471756\\
+-3.52	1.89989473392607\\
+-3.51	1.91830654484626\\
+-3.5	1.93649167310371\\
+-3.49	1.95445644617628\\
+-3.48	1.97220688569937\\
+-3.47	1.98974872785485\\
+-3.46	2.00708744204133\\
+-3.45	2.02422824799972\\
+-3.44	2.04117613154769\\
+-3.43	2.05793585905878\\
+-3.42	2.07451199080651\\
+-3.41	2.09090889328062\\
+-3.4	2.10713075057055\\
+-3.39	2.12318157490121\\
+-3.38	2.13906521639711\\
+-3.37	2.15478537214266\\
+-3.36	2.17034559460009\\
+-3.35	2.18574929943944\\
+-3.34	2.20099977283052\\
+-3.33	2.21610017824105\\
+-3.32	2.23105356278149\\
+-3.31	2.24586286313301\\
+-3.3	2.26053091109146\\
+-3.29	2.27506043875762\\
+-3.28	2.28945408340067\\
+-3.27	2.30371439201998\\
+-3.26	2.3178438256276\\
+-3.25	2.3318447632722\\
+-3.24	2.34571950582332\\
+-3.23	2.3594702795331\\
+-3.22	2.37309923939139\\
+-3.21	2.38660847228866\\
+-3.2	2.4\\
+-3.19	2.41327578200255\\
+-3.18	2.42643771813744\\
+-3.17	2.43948765112677\\
+-3.16	2.45242736895509\\
+-3.15	2.46525860712421\\
+-3.14	2.47798305078949\\
+-3.13	2.49060233678522\\
+-3.12	2.50311805554592\\
+-3.11	2.51553175293018\\
+-3.1	2.52784493195291\\
+-3.09	2.54005905443161\\
+-3.08	2.55217554255188\\
+-3.07	2.56419578035687\\
+-3.06	2.5761211151652\\
+-3.05	2.58795285892151\\
+-3.04	2.59969228948351\\
+-3.03	2.61134065184916\\
+-3.02	2.62289915932733\\
+-3.01	2.63436899465508\\
+-3	2.64575131106459\\
+-2.99	2.65704723330241\\
+-2.98	2.66825785860362\\
+-2.97	2.67938425762338\\
+-2.96	2.69042747532804\\
+-2.95	2.70138853184802\\
+-2.94	2.71226842329442\\
+-2.93	2.72306812254119\\
+-2.92	2.73378857997468\\
+-2.91	2.74443072421222\\
+-2.9	2.75499546279118\\
+-2.89	2.76548368283018\\
+-2.88	2.7758962516636\\
+-2.87	2.7862340174508\\
+-2.86	2.79649780976135\\
+-2.85	2.80668844013724\\
+-2.84	2.81680670263332\\
+-2.83	2.82685337433691\\
+-2.82	2.8368292158676\\
+-2.81	2.84673497185811\\
+-2.8	2.85657137141714\\
+-2.79	2.86633912857498\\
+-2.78	2.8760389427127\\
+-2.77	2.88567149897559\\
+-2.76	2.89523746867161\\
+-2.75	2.90473750965556\\
+-2.74	2.91417226669941\\
+-2.73	2.9235423718496\\
+-2.72	2.93284844477174\\
+-2.71	2.94209109308329\\
+-2.7	2.95127091267474\\
+-2.69	2.96038848801977\\
+-2.68	2.96944439247479\\
+-2.67	2.9784391885684\\
+-2.66	2.9873734282811\\
+-2.65	2.99624765331573\\
+-2.64	3.00506239535887\\
+-2.63	3.0138181763338\\
+-2.62	3.02251550864508\\
+-2.61	3.03115489541528\\
+-2.6	3.03973683071413\\
+-2.59	3.04826179978033\\
+-2.58	3.05673027923629\\
+-2.57	3.06514273729626\\
+-2.56	3.07349963396777\\
+-2.55	3.081801421247\\
+-2.54	3.09004854330802\\
+-2.53	3.0982414366863\\
+-2.52	3.10638053045663\\
+-2.51	3.11446624640563\\
+-2.5	3.1224989991992\\
+-2.49	3.13047919654484\\
+-2.48	3.13840723934928\\
+-2.47	3.14628352187148\\
+-2.46	3.15410843187104\\
+-2.45	3.16188235075248\\
+-2.44	3.1696056537052\\
+-2.43	3.1772787098396\\
+-2.42	3.18490188231914\\
+-2.41	3.19247552848882\\
+-2.4	3.2\\
+-2.39	3.20747564293168\\
+-2.38	3.21490279790852\\
+-2.37	3.22228180021549\\
+-2.36	3.22961297990951\\
+-2.35	3.2368966619279\\
+-2.34	3.24413316619401\\
+-2.33	3.25132280771996\\
+-2.32	3.25846589670661\\
+-2.31	3.26556273864092\\
+-2.3	3.27261363439071\\
+-2.29	3.27961888029692\\
+-2.28	3.28657876826344\\
+-2.27	3.29349358584467\\
+-2.26	3.30036361633078\\
+-2.25	3.30718913883074\\
+-2.24	3.31397042835328\\
+-2.23	3.32070775588578\\
+-2.22	3.32740138847119\\
+-2.21	3.33405158928293\\
+-2.2	3.34065861769801\\
+-2.19	3.34722272936833\\
+-2.18	3.35374417629014\\
+-2.17	3.36022320687183\\
+-2.16	3.36666006600013\\
+-2.15	3.37305499510459\\
+-2.14	3.37940823222055\\
+-2.13	3.38572001205061\\
+-2.12	3.39199056602462\\
+-2.11	3.39822012235817\\
+-2.1	3.40440890610984\\
+-2.09	3.41055713923693\\
+-2.08	3.41666504065002\\
+-2.07	3.42273282626617\\
+-2.06	3.42876070906093\\
+-2.05	3.43474889911912\\
+-2.04	3.44069760368446\\
+-2.03	3.44660702720806\\
+-2.02	3.45247737139579\\
+-2.01	3.4583088352546\\
+-2	3.46410161513775\\
+-1.99	3.46985590478913\\
+-1.98	3.47557189538643\\
+-1.97	3.48124977558348\\
+-1.96	3.4868897315516\\
+-1.95	3.49249194702006\\
+-1.94	3.49805660331562\\
+-1.93	3.50358387940121\\
+-1.92	3.50907395191381\\
+-1.91	3.51452699520149\\
+-1.9	3.51994318135961\\
+-1.89	3.5253226802663\\
+-1.88	3.53066565961718\\
+-1.87	3.53597228495926\\
+-1.86	3.54124271972425\\
+-1.85	3.54647712526107\\
+-1.84	3.5516756608677\\
+-1.83	3.5568384838224\\
+-1.82	3.56196574941422\\
+-1.81	3.56705761097294\\
+-1.8	3.57211421989835\\
+-1.79	3.57713572568892\\
+-1.78	3.58212227596993\\
+-1.77	3.58707401652099\\
+-1.76	3.59199109130298\\
+-1.75	3.59687364248454\\
+-1.74	3.60172181046788\\
+-1.73	3.60653573391419\\
+-1.72	3.61131554976853\\
+-1.71	3.61606139328414\\
+-1.7	3.62077339804633\\
+-1.69	3.62545169599596\\
+-1.68	3.6300964174523\\
+-1.67	3.63470769113556\\
+-1.66	3.63928564418898\\
+-1.65	3.64383040220041\\
+-1.64	3.64834208922354\\
+-1.63	3.6528208277987\\
+-1.62	3.65726673897325\\
+-1.61	3.66167994232156\\
+-1.6	3.66606055596467\\
+-1.59	3.67040869658952\\
+-1.58	3.67472447946781\\
+-1.57	3.67900801847455\\
+-1.56	3.68325942610618\\
+-1.55	3.68747881349846\\
+-1.54	3.69166629044392\\
+-1.53	3.69582196540905\\
+-1.52	3.6999459455511\\
+-1.51	3.70403833673465\\
+-1.5	3.70809924354783\\
+-1.49	3.71212876931822\\
+-1.48	3.71612701612849\\
+-1.47	3.72009408483173\\
+-1.46	3.72403007506653\\
+-1.45	3.72793508527174\\
+-1.44	3.73180921270099\\
+-1.43	3.73565255343695\\
+-1.42	3.73946520240529\\
+-1.41	3.74324725338843\\
+-1.4	3.74699879903904\\
+-1.39	3.75071993089327\\
+-1.38	3.75441073938375\\
+-1.37	3.75807131385236\\
+-1.36	3.7617017425628\\
+-1.35	3.76530211271287\\
+-1.34	3.76887251044659\\
+-1.33	3.77241302086609\\
+-1.32	3.77592372804325\\
+-1.31	3.77940471503119\\
+-1.3	3.78285606387555\\
+-1.29	3.7862778556255\\
+-1.28	3.78967017034464\\
+-1.27	3.7930330871217\\
+-1.26	3.79636668408098\\
+-1.25	3.79967103839267\\
+-1.24	3.80294622628299\\
+-1.23	3.80619232304412\\
+-1.22	3.80940940304399\\
+-1.21	3.81259753973587\\
+-1.2	3.81575680566778\\
+-1.19	3.81888727249182\\
+-1.18	3.82198901097321\\
+-1.17	3.82506209099931\\
+-1.16	3.82810658158834\\
+-1.15	3.8311225508981\\
+-1.14	3.83411006623441\\
+-1.13	3.83706919405945\\
+-1.12	3.84\\
+-1.11	3.84290254885549\\
+-1.1	3.84577690460588\\
+-1.09	3.8486231304195\\
+-1.08	3.85144128866065\\
+-1.07	3.85423144089713\\
+-1.06	3.85699364790766\\
+-1.05	3.85972796968906\\
+-1.04	3.86243446546346\\
+-1.03	3.86511319368528\\
+-1.02	3.86776421204809\\
+-1.01	3.87038757749143\\
+-1	3.87298334620742\\
+-0.99	3.87555157364729\\
+-0.98	3.87809231452785\\
+-0.97	3.88060562283776\\
+-0.96	3.88309155184371\\
+-0.95	3.88555015409659\\
+-0.94	3.88798148143738\\
+-0.93	3.89038558500311\\
+-0.92	3.8927625152326\\
+-0.91	3.89511232187212\\
+-0.9	3.89743505398102\\
+-0.89	3.89973075993715\\
+-0.88	3.9019994874423\\
+-0.87	3.90424128352744\\
+-0.86	3.90645619455793\\
+-0.85	3.90864426623861\\
+-0.84	3.91080554361886\\
+-0.83	3.91294007109743\\
+-0.82	3.91504789242737\\
+-0.81	3.91712905072069\\
+-0.8	3.91918358845308\\
+-0.79	3.92121154746846\\
+-0.78	3.92321296898346\\
+-0.77	3.92518789359185\\
+-0.76	3.92713636126886\\
+-0.75	3.92905841137543\\
+-0.74	3.93095408266238\\
+-0.73	3.93282341327449\\
+-0.72	3.93466644075454\\
+-0.71	3.93648320204723\\
+-0.7	3.93827373350304\\
+-0.69	3.94003807088206\\
+-0.68	3.94177624935764\\
+-0.67	3.94348830352012\\
+-0.66	3.94517426738034\\
+-0.65	3.94683417437318\\
+-0.64	3.94846805736098\\
+-0.63	3.95007594863694\\
+-0.62	3.95165787992837\\
+-0.61	3.95321388239999\\
+-0.6	3.95474398665704\\
+-0.59	3.95624822274842\\
+-0.58	3.95772662016972\\
+-0.57	3.9591792078662\\
+-0.56	3.9606060142357\\
+-0.55	3.96200706713151\\
+-0.54	3.96338239386512\\
+-0.53	3.964732021209\\
+-0.52	3.96605597539924\\
+-0.51	3.96735428213816\\
+-0.5	3.96862696659689\\
+-0.49	3.96987405341782\\
+-0.48	3.97109556671707\\
+-0.47	3.97229153008688\\
+-0.46	3.97346196659789\\
+-0.45	3.97460689880144\\
+-0.44	3.97572634873176\\
+-0.43	3.97682033790816\\
+-0.42	3.9778888873371\\
+-0.41	3.97893201751425\\
+-0.4	3.97994974842648\\
+-0.39	3.98094209955382\\
+-0.38	3.98190908987134\\
+-0.37	3.98285073785097\\
+-0.36	3.98376706146331\\
+-0.35	3.98465807817936\\
+-0.34	3.98552380497219\\
+-0.33	3.9863642583186\\
+-0.32	3.98717945420068\\
+-0.31	3.98796940810734\\
+-0.3	3.98873413503583\\
+-0.29	3.98947364949313\\
+-0.28	3.99018796549736\\
+-0.27	3.99087709657915\\
+-0.26	3.99154105578284\\
+-0.25	3.99217985566783\\
+-0.24	3.99279350830969\\
+-0.23	3.99338202530136\\
+-0.22	3.99394541775423\\
+-0.21	3.99448369629919\\
+-0.2	3.99499687108764\\
+-0.19	3.99548495179246\\
+-0.18	3.99594794760893\\
+-0.17	3.99638586725556\\
+-0.16	3.99679871897497\\
+-0.15	3.99718651053463\\
+-0.14	3.99754924922758\\
+-0.13	3.99788694187317\\
+-0.12	3.99819959481765\\
+-0.11	3.99848721393479\\
+-0.1	3.99874980462644\\
+-0.0899999999999999	3.99898737182302\\
+-0.0800000000000001	3.999199919984\\
+-0.0699999999999998	3.99938745309829\\
+-0.0600000000000001	3.99954997468465\\
+-0.0499999999999998	3.99968748779201\\
+-0.04	3.99979999499975\\
+-0.0299999999999998	3.99988749841792\\
+-0.02	3.9999499996875\\
+-0.00999999999999979	3.99998749998047\\
+0	4\\
+0.00999999999999979	3.99998749998047\\
+0.02	3.9999499996875\\
+0.0299999999999998	3.99988749841792\\
+0.04	3.99979999499975\\
+0.0499999999999998	3.99968748779201\\
+0.0600000000000001	3.99954997468465\\
+0.0699999999999998	3.99938745309829\\
+0.0800000000000001	3.999199919984\\
+0.0899999999999999	3.99898737182302\\
+0.1	3.99874980462644\\
+0.11	3.99848721393479\\
+0.12	3.99819959481765\\
+0.13	3.99788694187317\\
+0.14	3.99754924922758\\
+0.15	3.99718651053463\\
+0.16	3.99679871897497\\
+0.17	3.99638586725556\\
+0.18	3.99594794760893\\
+0.19	3.99548495179246\\
+0.2	3.99499687108764\\
+0.21	3.99448369629919\\
+0.22	3.99394541775423\\
+0.23	3.99338202530136\\
+0.24	3.99279350830969\\
+0.25	3.99217985566783\\
+0.26	3.99154105578284\\
+0.27	3.99087709657915\\
+0.28	3.99018796549736\\
+0.29	3.98947364949313\\
+0.3	3.98873413503583\\
+0.31	3.98796940810734\\
+0.32	3.98717945420068\\
+0.33	3.9863642583186\\
+0.34	3.98552380497219\\
+0.35	3.98465807817936\\
+0.36	3.98376706146331\\
+0.37	3.98285073785097\\
+0.38	3.98190908987134\\
+0.39	3.98094209955382\\
+0.4	3.97994974842648\\
+0.41	3.97893201751425\\
+0.42	3.9778888873371\\
+0.43	3.97682033790816\\
+0.44	3.97572634873176\\
+0.45	3.97460689880144\\
+0.46	3.97346196659789\\
+0.47	3.97229153008688\\
+0.48	3.97109556671707\\
+0.49	3.96987405341782\\
+0.5	3.96862696659689\\
+0.51	3.96735428213816\\
+0.52	3.96605597539924\\
+0.53	3.964732021209\\
+0.54	3.96338239386512\\
+0.55	3.96200706713151\\
+0.56	3.9606060142357\\
+0.57	3.9591792078662\\
+0.58	3.95772662016972\\
+0.59	3.95624822274842\\
+0.6	3.95474398665704\\
+0.61	3.95321388239999\\
+0.62	3.95165787992837\\
+0.63	3.95007594863694\\
+0.64	3.94846805736098\\
+0.65	3.94683417437318\\
+0.66	3.94517426738034\\
+0.67	3.94348830352012\\
+0.68	3.94177624935764\\
+0.69	3.94003807088206\\
+0.7	3.93827373350304\\
+0.71	3.93648320204723\\
+0.72	3.93466644075454\\
+0.73	3.93282341327449\\
+0.74	3.93095408266238\\
+0.75	3.92905841137543\\
+0.76	3.92713636126886\\
+0.77	3.92518789359185\\
+0.78	3.92321296898346\\
+0.79	3.92121154746846\\
+0.8	3.91918358845308\\
+0.81	3.91712905072069\\
+0.82	3.91504789242737\\
+0.83	3.91294007109743\\
+0.84	3.91080554361886\\
+0.85	3.90864426623861\\
+0.86	3.90645619455793\\
+0.87	3.90424128352744\\
+0.88	3.9019994874423\\
+0.89	3.89973075993715\\
+0.9	3.89743505398102\\
+0.91	3.89511232187212\\
+0.92	3.8927625152326\\
+0.93	3.89038558500311\\
+0.94	3.88798148143738\\
+0.95	3.88555015409659\\
+0.96	3.88309155184371\\
+0.97	3.88060562283776\\
+0.98	3.87809231452785\\
+0.99	3.87555157364729\\
+1	3.87298334620742\\
+1.01	3.87038757749143\\
+1.02	3.86776421204809\\
+1.03	3.86511319368528\\
+1.04	3.86243446546346\\
+1.05	3.85972796968906\\
+1.06	3.85699364790766\\
+1.07	3.85423144089713\\
+1.08	3.85144128866065\\
+1.09	3.8486231304195\\
+1.1	3.84577690460588\\
+1.11	3.84290254885549\\
+1.12	3.84\\
+1.13	3.83706919405945\\
+1.14	3.83411006623441\\
+1.15	3.8311225508981\\
+1.16	3.82810658158834\\
+1.17	3.82506209099931\\
+1.18	3.82198901097321\\
+1.19	3.81888727249182\\
+1.2	3.81575680566778\\
+1.21	3.81259753973587\\
+1.22	3.80940940304399\\
+1.23	3.80619232304412\\
+1.24	3.80294622628299\\
+1.25	3.79967103839267\\
+1.26	3.79636668408098\\
+1.27	3.7930330871217\\
+1.28	3.78967017034464\\
+1.29	3.7862778556255\\
+1.3	3.78285606387555\\
+1.31	3.77940471503119\\
+1.32	3.77592372804325\\
+1.33	3.77241302086609\\
+1.34	3.76887251044659\\
+1.35	3.76530211271287\\
+1.36	3.7617017425628\\
+1.37	3.75807131385236\\
+1.38	3.75441073938375\\
+1.39	3.75071993089327\\
+1.4	3.74699879903904\\
+1.41	3.74324725338843\\
+1.42	3.73946520240529\\
+1.43	3.73565255343695\\
+1.44	3.73180921270099\\
+1.45	3.72793508527174\\
+1.46	3.72403007506653\\
+1.47	3.72009408483173\\
+1.48	3.71612701612849\\
+1.49	3.71212876931822\\
+1.5	3.70809924354783\\
+1.51	3.70403833673465\\
+1.52	3.6999459455511\\
+1.53	3.69582196540905\\
+1.54	3.69166629044392\\
+1.55	3.68747881349846\\
+1.56	3.68325942610618\\
+1.57	3.67900801847455\\
+1.58	3.67472447946781\\
+1.59	3.67040869658952\\
+1.6	3.66606055596467\\
+1.61	3.66167994232156\\
+1.62	3.65726673897325\\
+1.63	3.6528208277987\\
+1.64	3.64834208922354\\
+1.65	3.64383040220041\\
+1.66	3.63928564418898\\
+1.67	3.63470769113556\\
+1.68	3.6300964174523\\
+1.69	3.62545169599596\\
+1.7	3.62077339804633\\
+1.71	3.61606139328414\\
+1.72	3.61131554976853\\
+1.73	3.60653573391419\\
+1.74	3.60172181046788\\
+1.75	3.59687364248454\\
+1.76	3.59199109130298\\
+1.77	3.58707401652099\\
+1.78	3.58212227596993\\
+1.79	3.57713572568892\\
+1.8	3.57211421989835\\
+1.81	3.56705761097294\\
+1.82	3.56196574941422\\
+1.83	3.5568384838224\\
+1.84	3.5516756608677\\
+1.85	3.54647712526107\\
+1.86	3.54124271972425\\
+1.87	3.53597228495926\\
+1.88	3.53066565961718\\
+1.89	3.5253226802663\\
+1.9	3.51994318135961\\
+1.91	3.51452699520149\\
+1.92	3.50907395191381\\
+1.93	3.50358387940121\\
+1.94	3.49805660331562\\
+1.95	3.49249194702006\\
+1.96	3.4868897315516\\
+1.97	3.48124977558348\\
+1.98	3.47557189538643\\
+1.99	3.46985590478913\\
+2	3.46410161513775\\
+2.01	3.4583088352546\\
+2.02	3.45247737139579\\
+2.03	3.44660702720806\\
+2.04	3.44069760368446\\
+2.05	3.43474889911912\\
+2.06	3.42876070906093\\
+2.07	3.42273282626617\\
+2.08	3.41666504065002\\
+2.09	3.41055713923693\\
+2.1	3.40440890610984\\
+2.11	3.39822012235817\\
+2.12	3.39199056602462\\
+2.13	3.38572001205061\\
+2.14	3.37940823222055\\
+2.15	3.37305499510459\\
+2.16	3.36666006600013\\
+2.17	3.36022320687183\\
+2.18	3.35374417629014\\
+2.19	3.34722272936833\\
+2.2	3.34065861769801\\
+2.21	3.33405158928293\\
+2.22	3.32740138847119\\
+2.23	3.32070775588578\\
+2.24	3.31397042835328\\
+2.25	3.30718913883074\\
+2.26	3.30036361633078\\
+2.27	3.29349358584467\\
+2.28	3.28657876826344\\
+2.29	3.27961888029692\\
+2.3	3.27261363439071\\
+2.31	3.26556273864092\\
+2.32	3.25846589670661\\
+2.33	3.25132280771996\\
+2.34	3.24413316619401\\
+2.35	3.2368966619279\\
+2.36	3.22961297990951\\
+2.37	3.22228180021549\\
+2.38	3.21490279790852\\
+2.39	3.20747564293168\\
+2.4	3.2\\
+2.41	3.19247552848882\\
+2.42	3.18490188231914\\
+2.43	3.1772787098396\\
+2.44	3.1696056537052\\
+2.45	3.16188235075248\\
+2.46	3.15410843187104\\
+2.47	3.14628352187148\\
+2.48	3.13840723934928\\
+2.49	3.13047919654484\\
+2.5	3.1224989991992\\
+2.51	3.11446624640563\\
+2.52	3.10638053045663\\
+2.53	3.0982414366863\\
+2.54	3.09004854330802\\
+2.55	3.081801421247\\
+2.56	3.07349963396777\\
+2.57	3.06514273729626\\
+2.58	3.05673027923629\\
+2.59	3.04826179978033\\
+2.6	3.03973683071413\\
+2.61	3.03115489541528\\
+2.62	3.02251550864508\\
+2.63	3.0138181763338\\
+2.64	3.00506239535887\\
+2.65	2.99624765331573\\
+2.66	2.9873734282811\\
+2.67	2.9784391885684\\
+2.68	2.96944439247479\\
+2.69	2.96038848801977\\
+2.7	2.95127091267474\\
+2.71	2.94209109308329\\
+2.72	2.93284844477174\\
+2.73	2.9235423718496\\
+2.74	2.91417226669941\\
+2.75	2.90473750965556\\
+2.76	2.89523746867161\\
+2.77	2.88567149897559\\
+2.78	2.8760389427127\\
+2.79	2.86633912857498\\
+2.8	2.85657137141714\\
+2.81	2.84673497185811\\
+2.82	2.8368292158676\\
+2.83	2.82685337433691\\
+2.84	2.81680670263332\\
+2.85	2.80668844013724\\
+2.86	2.79649780976135\\
+2.87	2.7862340174508\\
+2.88	2.7758962516636\\
+2.89	2.76548368283018\\
+2.9	2.75499546279118\\
+2.91	2.74443072421222\\
+2.92	2.73378857997468\\
+2.93	2.72306812254119\\
+2.94	2.71226842329442\\
+2.95	2.70138853184802\\
+2.96	2.69042747532804\\
+2.97	2.67938425762338\\
+2.98	2.66825785860362\\
+2.99	2.65704723330241\\
+3	2.64575131106459\\
+3.01	2.63436899465508\\
+3.02	2.62289915932733\\
+3.03	2.61134065184916\\
+3.04	2.59969228948351\\
+3.05	2.58795285892151\\
+3.06	2.5761211151652\\
+3.07	2.56419578035687\\
+3.08	2.55217554255188\\
+3.09	2.54005905443161\\
+3.1	2.52784493195291\\
+3.11	2.51553175293018\\
+3.12	2.50311805554592\\
+3.13	2.49060233678522\\
+3.14	2.47798305078949\\
+3.15	2.46525860712421\\
+3.16	2.45242736895509\\
+3.17	2.43948765112677\\
+3.18	2.42643771813744\\
+3.19	2.41327578200255\\
+3.2	2.4\\
+3.21	2.38660847228866\\
+3.22	2.37309923939139\\
+3.23	2.3594702795331\\
+3.24	2.34571950582332\\
+3.25	2.3318447632722\\
+3.26	2.3178438256276\\
+3.27	2.30371439201998\\
+3.28	2.28945408340067\\
+3.29	2.27506043875762\\
+3.3	2.26053091109146\\
+3.31	2.24586286313301\\
+3.32	2.23105356278149\\
+3.33	2.21610017824105\\
+3.34	2.20099977283052\\
+3.35	2.18574929943944\\
+3.36	2.17034559460009\\
+3.37	2.15478537214266\\
+3.38	2.13906521639711\\
+3.39	2.12318157490121\\
+3.4	2.10713075057055\\
+3.41	2.09090889328062\\
+3.42	2.07451199080651\\
+3.43	2.05793585905878\\
+3.44	2.04117613154769\\
+3.45	2.02422824799972\\
+3.46	2.00708744204133\\
+3.47	1.98974872785485\\
+3.48	1.97220688569937\\
+3.49	1.95445644617628\\
+3.5	1.93649167310371\\
+3.51	1.91830654484626\\
+3.52	1.89989473392607\\
+3.53	1.88124958471756\\
+3.54	1.86236408900086\\
+3.55	1.84323085911668\\
+3.56	1.82384209842848\\
+3.57	1.80418956875379\\
+3.58	1.78426455437528\\
+3.59	1.76405782218157\\
+3.6	1.74355957741627\\
+3.61	1.72275941442791\\
+3.62	1.70164626171246\\
+3.63	1.68020832041744\\
+3.64	1.65843299533023\\
+3.65	1.63630681719536\\
+3.66	1.61381535498953\\
+3.67	1.59094311651926\\
+3.68	1.56767343538123\\
+3.69	1.5439883419249\\
+3.7	1.51986841535707\\
+3.71	1.49529261350413\\
+3.72	1.47023807595913\\
+3.73	1.44467989534014\\
+3.74	1.41859085010443\\
+3.75	1.39194109070751\\
+3.76	1.36469776873856\\
+3.77	1.336824595824\\
+3.78	1.3082813153141\\
+3.79	1.27902306468648\\
+3.8	1.24899959967968\\
+3.81	1.21815434161686\\
+3.82	1.18642319599711\\
+3.83	1.15373307138176\\
+3.84	1.12\\
+3.85	1.08512672071053\\
+3.86	1.04899952335547\\
+3.87	1.01148405820359\\
+3.88	0.972419662491458\\
+3.89	0.931611507013518\\
+3.9	0.888819441731559\\
+3.91	0.843741666625513\\
+3.92	0.795989949685297\\
+3.93	0.745050333870135\\
+3.94	0.690217357069496\\
+3.95	0.630476010645924\\
+3.96	0.564269439186636\\
+3.97	0.488978527135905\\
+3.98	0.399499687108763\\
+3.99	0.282665880502049\\
+4	0\\
+};
+\addplot [color=mycolor2, line width=2.0pt, forget plot]
+  table[row sep=crcr]{%
+-4	0\\
+-3.99	0\\
+-3.98	0\\
+-3.97	0\\
+-3.96	0\\
+-3.95	0\\
+-3.94	0\\
+-3.93	0\\
+-3.92	0\\
+-3.91	0\\
+-3.9	0\\
+-3.89	0\\
+-3.88	0\\
+-3.87	0\\
+-3.86	0\\
+-3.85	0\\
+-3.84	0\\
+-3.83	0\\
+-3.82	0\\
+-3.81	0\\
+-3.8	0\\
+-3.79	0\\
+-3.78	0\\
+-3.77	0\\
+-3.76	0\\
+-3.75	0\\
+-3.74	0\\
+-3.73	0\\
+-3.72	0\\
+-3.71	0\\
+-3.7	0\\
+-3.69	0\\
+-3.68	0\\
+-3.67	0\\
+-3.66	0\\
+-3.65	0\\
+-3.64	0\\
+-3.63	0\\
+-3.62	0\\
+-3.61	0\\
+-3.6	0\\
+-3.59	0\\
+-3.58	0\\
+-3.57	0\\
+-3.56	0\\
+-3.55	0\\
+-3.54	0\\
+-3.53	0\\
+-3.52	0\\
+-3.51	0\\
+-3.5	0\\
+-3.49	0\\
+-3.48	0\\
+-3.47	0\\
+-3.46	0\\
+-3.45	0\\
+-3.44	0\\
+-3.43	0\\
+-3.42	0\\
+-3.41	0\\
+-3.4	0\\
+-3.39	0\\
+-3.38	0\\
+-3.37	0\\
+-3.36	0\\
+-3.35	0\\
+-3.34	0\\
+-3.33	0\\
+-3.32	0\\
+-3.31	0\\
+-3.3	0\\
+-3.29	0\\
+-3.28	0\\
+-3.27	0\\
+-3.26	0\\
+-3.25	0\\
+-3.24	0\\
+-3.23	0\\
+-3.22	0\\
+-3.21	0\\
+-3.2	0\\
+-3.19	0\\
+-3.18	0\\
+-3.17	0\\
+-3.16	0\\
+-3.15	0\\
+-3.14	0\\
+-3.13	0\\
+-3.12	0\\
+-3.11	0\\
+-3.1	0\\
+-3.09	0\\
+-3.08	0\\
+-3.07	0\\
+-3.06	0\\
+-3.05	0\\
+-3.04	0\\
+-3.03	0\\
+-3.02	0\\
+-3.01	0\\
+-3	0\\
+-2.99	0.244744765010406\\
+-2.98	0.345832329315812\\
+-2.97	0.423202079389979\\
+-2.96	0.488262224629349\\
+-2.95	0.545435605731785\\
+-2.94	0.596992462263973\\
+-2.93	0.644282546713786\\
+-2.92	0.688186021363411\\
+-2.91	0.729314746868592\\
+-2.9	0.768114574786861\\
+-2.89	0.804922356504031\\
+-2.88	0.84\\
+-2.87	0.873555951270438\\
+-2.86	0.905759349937941\\
+-2.85	0.93674969975976\\
+-2.84	0.966643677887566\\
+-2.83	0.995540054442813\\
+-2.82	1.02352332655392\\
+-2.81	1.05066645516072\\
+-2.8	1.0770329614269\\
+-2.79	1.10267855696935\\
+-2.78	1.12765242872084\\
+-2.77	1.15199826388758\\
+-2.76	1.17575507653593\\
+-2.75	1.19895788082818\\
+-2.74	1.22163824432604\\
+-2.73	1.24382474649767\\
+-2.72	1.26554336156451\\
+-2.71	1.28681778041804\\
+-2.7	1.3076696830622\\
+-2.69	1.32811897057455\\
+-2.68	1.34818396370822\\
+-2.67	1.36788157382136\\
+-2.66	1.38722745070879\\
+-2.65	1.40623611104252\\
+-2.64	1.42492105044455\\
+-2.63	1.44329484167304\\
+-2.62	1.46136922097053\\
+-2.61	1.47915516427453\\
+-2.6	1.49666295470958\\
+-2.59	1.51390224255069\\
+-2.58	1.53088209866077\\
+-2.57	1.54761106225046\\
+-2.56	1.56409718368137\\
+-2.55	1.58034806292791\\
+-2.54	1.59637088422459\\
+-2.53	1.61217244735171\\
+-2.52	1.62775919595006\\
+-2.51	1.64313724320277\\
+-2.5	1.6583123951777\\
+-2.49	1.67329017208612\\
+-2.48	1.68807582768074\\
+-2.47	1.70267436698859\\
+-2.46	1.7170905625505\\
+-2.45	1.73132896931808\\
+-2.44	1.74539393834171\\
+-2.43	1.75928962936749\\
+-2.42	1.77302002244758\\
+-2.41	1.78658892865707\\
+-2.4	1.8\\
+-2.39	1.81325673857841\\
+-2.38	1.82636250509038\\
+-2.37	1.83932052671632\\
+-2.36	1.85213390444644\\
+-2.35	1.86480561989715\\
+-2.34	1.87733854165944\\
+-2.33	1.88973543121782\\
+-2.32	1.901998948475\\
+-2.31	1.91413165691391\\
+-2.3	1.92613602842582\\
+-2.29	1.93801444783056\\
+-2.28	1.94976921711263\\
+-2.27	1.96140255939468\\
+-2.26	1.97291662266807\\
+-2.25	1.98431348329844\\
+-2.24	1.99559514932263\\
+-2.23	2.00676356355202\\
+-2.22	2.01782060649603\\
+-2.21	2.02876809911828\\
+-2.2	2.03960780543711\\
+-2.19	2.05034143498101\\
+-2.18	2.06097064510876\\
+-2.17	2.0714970432033\\
+-2.16	2.0819221887477\\
+-2.15	2.09224759529077\\
+-2.14	2.10247473230952\\
+-2.13	2.11260502697499\\
+-2.12	2.12263986582746\\
+-2.11	2.13258059636676\\
+-2.1	2.14242852856286\\
+-2.09	2.15218493629149\\
+-2.08	2.16185105869947\\
+-2.07	2.17142810150371\\
+-2.06	2.18091723822799\\
+-2.05	2.19031961138095\\
+-2.04	2.1996363335788\\
+-2.03	2.20886848861583\\
+-2.02	2.21801713248568\\
+-2.01	2.2270832943561\\
+-2	2.23606797749979\\
+-1.99	2.24497216018373\\
+-1.98	2.25379679651915\\
+-1.97	2.2625428172744\\
+-1.96	2.27121113065254\\
+-1.95	2.2798026230356\\
+-1.94	2.2883181596972\\
+-1.93	2.2967585854852\\
+-1.92	2.30512472547583\\
+-1.91	2.31341738560079\\
+-1.9	2.32163735324878\\
+-1.89	2.32978539784247\\
+-1.88	2.33786227139239\\
+-1.87	2.3458687090287\\
+-1.86	2.35380542951196\\
+-1.85	2.36167313572391\\
+-1.84	2.36947251513918\\
+-1.83	2.3772042402789\\
+-1.82	2.38486896914694\\
+-1.81	2.39246734564968\\
+-1.8	2.4\\
+-1.79	2.40746754910632\\
+-1.78	2.41487059694717\\
+-1.77	2.42220973493213\\
+-1.76	2.42948554224963\\
+-1.75	2.43669858620224\\
+-1.74	2.44384942252996\\
+-1.73	2.45093859572206\\
+-1.72	2.45796663931795\\
+-1.71	2.46493407619758\\
+-1.7	2.47184141886166\\
+-1.69	2.47868916970241\\
+-1.68	2.48547782126496\\
+-1.67	2.49220785649994\\
+-1.66	2.49887974900754\\
+-1.65	2.50549396327351\\
+-1.64	2.51205095489721\\
+-1.63	2.5185511708123\\
+-1.62	2.5249950495001\\
+-1.61	2.53138302119612\\
+-1.6	2.5377155080899\\
+-1.59	2.54399292451846\\
+-1.58	2.5502156771536\\
+-1.57	2.55638416518332\\
+-1.56	2.56249878048751\\
+-1.55	2.56855990780826\\
+-1.54	2.57456792491478\\
+-1.53	2.58052320276335\\
+-1.52	2.58642610565235\\
+-1.51	2.59227699137264\\
+-1.5	2.59807621135332\\
+-1.49	2.60382411080319\\
+-1.48	2.60952102884801\\
+-1.47	2.6151672986637\\
+-1.46	2.62076324760555\\
+-1.45	2.62630919733378\\
+-1.44	2.63180546393536\\
+-1.43	2.63725235804236\\
+-1.42	2.64265018494692\\
+-1.41	2.64799924471288\\
+-1.4	2.65329983228432\\
+-1.39	2.65855223759098\\
+-1.38	2.66375674565077\\
+-1.37	2.66891363666942\\
+-1.36	2.67402318613732\\
+-1.35	2.67908566492376\\
+-1.34	2.68410133936854\\
+-1.33	2.6890704713711\\
+-1.32	2.69399331847724\\
+-1.31	2.69887013396347\\
+-1.3	2.70370116691916\\
+-1.29	2.7084866623264\\
+-1.28	2.71322686113786\\
+-1.27	2.71792200035248\\
+-1.26	2.72257231308922\\
+-1.25	2.72717802865893\\
+-1.24	2.73173937263422\\
+-1.23	2.73625656691766\\
+-1.22	2.74072982980811\\
+-1.21	2.74515937606544\\
+-1.2	2.7495454169735\\
+-1.19	2.75388816040158\\
+-1.18	2.75818781086423\\
+-1.17	2.76244456957963\\
+-1.16	2.76665863452649\\
+-1.15	2.77083020049948\\
+-1.14	2.77495945916332\\
+-1.13	2.77904659910553\\
+-1.12	2.78309180588783\\
+-1.11	2.78709526209636\\
+-1.1	2.79105714739057\\
+-1.09	2.79497763855098\\
+-1.08	2.79885690952574\\
+-1.07	2.80269513147613\\
+-1.06	2.80649247282083\\
+-1.05	2.81024909927928\\
+-1.04	2.81396517391385\\
+-1.03	2.81764085717112\\
+-1.02	2.8212763069221\\
+-1.01	2.82487167850152\\
+-1	2.82842712474619\\
+-0.99	2.83194279603243\\
+-0.98	2.83541884031266\\
+-0.97	2.83885540315107\\
+-0.96	2.84225262775848\\
+-0.95	2.84561065502644\\
+-0.94	2.8489296235604\\
+-0.93	2.85220966971224\\
+-0.92	2.85545092761196\\
+-0.91	2.85865352919867\\
+-0.9	2.86181760425084\\
+-0.89	2.86494328041586\\
+-0.88	2.86803068323894\\
+-0.87	2.87107993619126\\
+-0.86	2.87409116069759\\
+-0.85	2.87706447616316\\
+-0.84	2.88\\
+-0.83	2.8828978476526\\
+-0.82	2.88575813262304\\
+-0.81	2.88858096649549\\
+-0.8	2.89136645896019\\
+-0.79	2.89411471783687\\
+-0.78	2.89682584909759\\
+-0.77	2.89949995688912\\
+-0.76	2.90213714355473\\
+-0.75	2.90473750965556\\
+-0.74	2.90730115399145\\
+-0.73	2.90982817362125\\
+-0.72	2.91231866388278\\
+-0.71	2.91477271841219\\
+-0.7	2.91719042916296\\
+-0.69	2.91957188642445\\
+-0.68	2.92191717883995\\
+-0.67	2.92422639342442\\
+-0.66	2.92649961558173\\
+-0.65	2.92873692912149\\
+-0.64	2.93093841627558\\
+-0.63	2.93310415771414\\
+-0.62	2.93523423256135\\
+-0.61	2.93732871841066\\
+-0.6	2.93938769133981\\
+-0.59	2.94141122592541\\
+-0.58	2.94339939525712\\
+-0.57	2.94535227095164\\
+-0.56	2.94726992316618\\
+-0.55	2.94915242061173\\
+-0.54	2.9509998305659\\
+-0.53	2.95281221888558\\
+-0.52	2.9545896500191\\
+-0.51	2.95633218701823\\
+-0.5	2.95803989154981\\
+-0.49	2.95971282390708\\
+-0.48	2.96135104302074\\
+-0.47	2.9629546064697\\
+-0.46	2.96452357049156\\
+-0.45	2.96605798999278\\
+-0.44	2.96755791855863\\
+-0.43	2.96902340846279\\
+-0.42	2.97045451067678\\
+-0.41	2.97185127487901\\
+-0.4	2.9732137494637\\
+-0.39	2.97454198154943\\
+-0.38	2.9758360169875\\
+-0.37	2.97709590037002\\
+-0.36	2.97832167503781\\
+-0.35	2.97951338308792\\
+-0.34	2.98067106538108\\
+-0.33	2.98179476154882\\
+-0.32	2.98288451000035\\
+-0.31	2.98394034792923\\
+-0.3	2.98496231131986\\
+-0.29	2.98595043495367\\
+-0.28	2.98690475241512\\
+-0.27	2.98782529609748\\
+-0.26	2.98871209720843\\
+-0.25	2.98956518577535\\
+-0.24	2.99038459065051\\
+-0.23	2.99117033951596\\
+-0.22	2.99192245888826\\
+-0.21	2.99264097412302\\
+-0.2	2.99332590941915\\
+-0.19	2.99397728782301\\
+-0.18	2.99459513123227\\
+-0.17	2.99517946039966\\
+-0.16	2.99573029493645\\
+-0.15	2.99624765331573\\
+-0.14	2.99673155287557\\
+-0.13	2.99718200982189\\
+-0.12	2.99759903923123\\
+-0.11	2.99798265505323\\
+-0.1	2.99833287011299\\
+-0.0899999999999999	2.99864969611324\\
+-0.0800000000000001	2.99893314363625\\
+-0.0699999999999998	2.99918322214566\\
+-0.0600000000000001	2.999399939988\\
+-0.0499999999999998	2.99958330439413\\
+-0.04	2.99973332148043\\
+-0.0299999999999998	2.99984999624981\\
+-0.02	2.99993333259258\\
+-0.00999999999999979	2.99998333328704\\
+0	3\\
+0.00999999999999979	2.99998333328704\\
+0.02	2.99993333259258\\
+0.0299999999999998	2.99984999624981\\
+0.04	2.99973332148043\\
+0.0499999999999998	2.99958330439413\\
+0.0600000000000001	2.999399939988\\
+0.0699999999999998	2.99918322214566\\
+0.0800000000000001	2.99893314363625\\
+0.0899999999999999	2.99864969611324\\
+0.1	2.99833287011299\\
+0.11	2.99798265505323\\
+0.12	2.99759903923123\\
+0.13	2.99718200982189\\
+0.14	2.99673155287557\\
+0.15	2.99624765331573\\
+0.16	2.99573029493645\\
+0.17	2.99517946039966\\
+0.18	2.99459513123227\\
+0.19	2.99397728782301\\
+0.2	2.99332590941915\\
+0.21	2.99264097412302\\
+0.22	2.99192245888826\\
+0.23	2.99117033951596\\
+0.24	2.99038459065051\\
+0.25	2.98956518577535\\
+0.26	2.98871209720843\\
+0.27	2.98782529609748\\
+0.28	2.98690475241512\\
+0.29	2.98595043495367\\
+0.3	2.98496231131986\\
+0.31	2.98394034792923\\
+0.32	2.98288451000035\\
+0.33	2.98179476154882\\
+0.34	2.98067106538108\\
+0.35	2.97951338308792\\
+0.36	2.97832167503781\\
+0.37	2.97709590037002\\
+0.38	2.9758360169875\\
+0.39	2.97454198154943\\
+0.4	2.9732137494637\\
+0.41	2.97185127487901\\
+0.42	2.97045451067678\\
+0.43	2.96902340846279\\
+0.44	2.96755791855863\\
+0.45	2.96605798999278\\
+0.46	2.96452357049156\\
+0.47	2.9629546064697\\
+0.48	2.96135104302074\\
+0.49	2.95971282390708\\
+0.5	2.95803989154981\\
+0.51	2.95633218701823\\
+0.52	2.9545896500191\\
+0.53	2.95281221888558\\
+0.54	2.9509998305659\\
+0.55	2.94915242061173\\
+0.56	2.94726992316618\\
+0.57	2.94535227095164\\
+0.58	2.94339939525712\\
+0.59	2.94141122592541\\
+0.6	2.93938769133981\\
+0.61	2.93732871841066\\
+0.62	2.93523423256135\\
+0.63	2.93310415771414\\
+0.64	2.93093841627558\\
+0.65	2.92873692912149\\
+0.66	2.92649961558173\\
+0.67	2.92422639342442\\
+0.68	2.92191717883995\\
+0.69	2.91957188642445\\
+0.7	2.91719042916296\\
+0.71	2.91477271841219\\
+0.72	2.91231866388278\\
+0.73	2.90982817362125\\
+0.74	2.90730115399145\\
+0.75	2.90473750965556\\
+0.76	2.90213714355473\\
+0.77	2.89949995688912\\
+0.78	2.89682584909759\\
+0.79	2.89411471783687\\
+0.8	2.89136645896019\\
+0.81	2.88858096649549\\
+0.82	2.88575813262304\\
+0.83	2.8828978476526\\
+0.84	2.88\\
+0.85	2.87706447616316\\
+0.86	2.87409116069759\\
+0.87	2.87107993619126\\
+0.88	2.86803068323894\\
+0.89	2.86494328041586\\
+0.9	2.86181760425084\\
+0.91	2.85865352919867\\
+0.92	2.85545092761196\\
+0.93	2.85220966971224\\
+0.94	2.8489296235604\\
+0.95	2.84561065502644\\
+0.96	2.84225262775848\\
+0.97	2.83885540315107\\
+0.98	2.83541884031266\\
+0.99	2.83194279603243\\
+1	2.82842712474619\\
+1.01	2.82487167850152\\
+1.02	2.8212763069221\\
+1.03	2.81764085717112\\
+1.04	2.81396517391385\\
+1.05	2.81024909927928\\
+1.06	2.80649247282083\\
+1.07	2.80269513147613\\
+1.08	2.79885690952574\\
+1.09	2.79497763855098\\
+1.1	2.79105714739057\\
+1.11	2.78709526209636\\
+1.12	2.78309180588783\\
+1.13	2.77904659910553\\
+1.14	2.77495945916332\\
+1.15	2.77083020049948\\
+1.16	2.76665863452649\\
+1.17	2.76244456957963\\
+1.18	2.75818781086423\\
+1.19	2.75388816040158\\
+1.2	2.7495454169735\\
+1.21	2.74515937606544\\
+1.22	2.74072982980811\\
+1.23	2.73625656691766\\
+1.24	2.73173937263422\\
+1.25	2.72717802865893\\
+1.26	2.72257231308922\\
+1.27	2.71792200035248\\
+1.28	2.71322686113786\\
+1.29	2.7084866623264\\
+1.3	2.70370116691916\\
+1.31	2.69887013396347\\
+1.32	2.69399331847724\\
+1.33	2.6890704713711\\
+1.34	2.68410133936854\\
+1.35	2.67908566492376\\
+1.36	2.67402318613732\\
+1.37	2.66891363666942\\
+1.38	2.66375674565077\\
+1.39	2.65855223759098\\
+1.4	2.65329983228432\\
+1.41	2.64799924471288\\
+1.42	2.64265018494692\\
+1.43	2.63725235804236\\
+1.44	2.63180546393536\\
+1.45	2.62630919733378\\
+1.46	2.62076324760555\\
+1.47	2.6151672986637\\
+1.48	2.60952102884801\\
+1.49	2.60382411080319\\
+1.5	2.59807621135332\\
+1.51	2.59227699137264\\
+1.52	2.58642610565235\\
+1.53	2.58052320276335\\
+1.54	2.57456792491478\\
+1.55	2.56855990780826\\
+1.56	2.56249878048751\\
+1.57	2.55638416518332\\
+1.58	2.5502156771536\\
+1.59	2.54399292451846\\
+1.6	2.5377155080899\\
+1.61	2.53138302119612\\
+1.62	2.5249950495001\\
+1.63	2.5185511708123\\
+1.64	2.51205095489721\\
+1.65	2.50549396327351\\
+1.66	2.49887974900754\\
+1.67	2.49220785649994\\
+1.68	2.48547782126496\\
+1.69	2.47868916970241\\
+1.7	2.47184141886166\\
+1.71	2.46493407619758\\
+1.72	2.45796663931795\\
+1.73	2.45093859572206\\
+1.74	2.44384942252996\\
+1.75	2.43669858620224\\
+1.76	2.42948554224963\\
+1.77	2.42220973493213\\
+1.78	2.41487059694717\\
+1.79	2.40746754910632\\
+1.8	2.4\\
+1.81	2.39246734564968\\
+1.82	2.38486896914694\\
+1.83	2.3772042402789\\
+1.84	2.36947251513918\\
+1.85	2.36167313572391\\
+1.86	2.35380542951196\\
+1.87	2.3458687090287\\
+1.88	2.33786227139239\\
+1.89	2.32978539784247\\
+1.9	2.32163735324878\\
+1.91	2.31341738560079\\
+1.92	2.30512472547583\\
+1.93	2.2967585854852\\
+1.94	2.2883181596972\\
+1.95	2.2798026230356\\
+1.96	2.27121113065254\\
+1.97	2.2625428172744\\
+1.98	2.25379679651915\\
+1.99	2.24497216018373\\
+2	2.23606797749979\\
+2.01	2.2270832943561\\
+2.02	2.21801713248568\\
+2.03	2.20886848861583\\
+2.04	2.1996363335788\\
+2.05	2.19031961138095\\
+2.06	2.18091723822799\\
+2.07	2.17142810150371\\
+2.08	2.16185105869947\\
+2.09	2.15218493629149\\
+2.1	2.14242852856286\\
+2.11	2.13258059636676\\
+2.12	2.12263986582746\\
+2.13	2.11260502697499\\
+2.14	2.10247473230952\\
+2.15	2.09224759529077\\
+2.16	2.0819221887477\\
+2.17	2.0714970432033\\
+2.18	2.06097064510876\\
+2.19	2.05034143498101\\
+2.2	2.03960780543711\\
+2.21	2.02876809911828\\
+2.22	2.01782060649603\\
+2.23	2.00676356355202\\
+2.24	1.99559514932263\\
+2.25	1.98431348329844\\
+2.26	1.97291662266807\\
+2.27	1.96140255939468\\
+2.28	1.94976921711263\\
+2.29	1.93801444783056\\
+2.3	1.92613602842582\\
+2.31	1.91413165691391\\
+2.32	1.901998948475\\
+2.33	1.88973543121782\\
+2.34	1.87733854165944\\
+2.35	1.86480561989715\\
+2.36	1.85213390444644\\
+2.37	1.83932052671632\\
+2.38	1.82636250509038\\
+2.39	1.81325673857841\\
+2.4	1.8\\
+2.41	1.78658892865707\\
+2.42	1.77302002244758\\
+2.43	1.75928962936749\\
+2.44	1.74539393834171\\
+2.45	1.73132896931808\\
+2.46	1.7170905625505\\
+2.47	1.70267436698859\\
+2.48	1.68807582768074\\
+2.49	1.67329017208612\\
+2.5	1.6583123951777\\
+2.51	1.64313724320277\\
+2.52	1.62775919595006\\
+2.53	1.61217244735171\\
+2.54	1.59637088422459\\
+2.55	1.58034806292791\\
+2.56	1.56409718368137\\
+2.57	1.54761106225046\\
+2.58	1.53088209866077\\
+2.59	1.51390224255069\\
+2.6	1.49666295470958\\
+2.61	1.47915516427453\\
+2.62	1.46136922097053\\
+2.63	1.44329484167304\\
+2.64	1.42492105044455\\
+2.65	1.40623611104252\\
+2.66	1.38722745070879\\
+2.67	1.36788157382136\\
+2.68	1.34818396370822\\
+2.69	1.32811897057455\\
+2.7	1.3076696830622\\
+2.71	1.28681778041804\\
+2.72	1.26554336156451\\
+2.73	1.24382474649767\\
+2.74	1.22163824432604\\
+2.75	1.19895788082818\\
+2.76	1.17575507653593\\
+2.77	1.15199826388758\\
+2.78	1.12765242872084\\
+2.79	1.10267855696935\\
+2.8	1.0770329614269\\
+2.81	1.05066645516072\\
+2.82	1.02352332655392\\
+2.83	0.995540054442813\\
+2.84	0.966643677887566\\
+2.85	0.93674969975976\\
+2.86	0.905759349937941\\
+2.87	0.873555951270438\\
+2.88	0.84\\
+2.89	0.804922356504031\\
+2.9	0.768114574786861\\
+2.91	0.729314746868592\\
+2.92	0.688186021363411\\
+2.93	0.644282546713786\\
+2.94	0.596992462263973\\
+2.95	0.545435605731785\\
+2.96	0.488262224629349\\
+2.97	0.423202079389979\\
+2.98	0.345832329315812\\
+2.99	0.244744765010406\\
+3	0\\
+3.01	0\\
+3.02	0\\
+3.03	0\\
+3.04	0\\
+3.05	0\\
+3.06	0\\
+3.07	0\\
+3.08	0\\
+3.09	0\\
+3.1	0\\
+3.11	0\\
+3.12	0\\
+3.13	0\\
+3.14	0\\
+3.15	0\\
+3.16	0\\
+3.17	0\\
+3.18	0\\
+3.19	0\\
+3.2	0\\
+3.21	0\\
+3.22	0\\
+3.23	0\\
+3.24	0\\
+3.25	0\\
+3.26	0\\
+3.27	0\\
+3.28	0\\
+3.29	0\\
+3.3	0\\
+3.31	0\\
+3.32	0\\
+3.33	0\\
+3.34	0\\
+3.35	0\\
+3.36	0\\
+3.37	0\\
+3.38	0\\
+3.39	0\\
+3.4	0\\
+3.41	0\\
+3.42	0\\
+3.43	0\\
+3.44	0\\
+3.45	0\\
+3.46	0\\
+3.47	0\\
+3.48	0\\
+3.49	0\\
+3.5	0\\
+3.51	0\\
+3.52	0\\
+3.53	0\\
+3.54	0\\
+3.55	0\\
+3.56	0\\
+3.57	0\\
+3.58	0\\
+3.59	0\\
+3.6	0\\
+3.61	0\\
+3.62	0\\
+3.63	0\\
+3.64	0\\
+3.65	0\\
+3.66	0\\
+3.67	0\\
+3.68	0\\
+3.69	0\\
+3.7	0\\
+3.71	0\\
+3.72	0\\
+3.73	0\\
+3.74	0\\
+3.75	0\\
+3.76	0\\
+3.77	0\\
+3.78	0\\
+3.79	0\\
+3.8	0\\
+3.81	0\\
+3.82	0\\
+3.83	0\\
+3.84	0\\
+3.85	0\\
+3.86	0\\
+3.87	0\\
+3.88	0\\
+3.89	0\\
+3.9	0\\
+3.91	0\\
+3.92	0\\
+3.93	0\\
+3.94	0\\
+3.95	0\\
+3.96	0\\
+3.97	0\\
+3.98	0\\
+3.99	0\\
+4	0\\
+};
+\end{axis}
+\end{tikzpicture}%

@@ -1,0 +1,240 @@
+% ******************************************************************
+% Configuration
+% ******************************************************************
+
+\PassOptionsToPackage{eulerchapternumbers, listings, pdfspacing, subfig, beramono, eulermath}{classicthesis}                                        
+
+
+% ******************************************************************
+% Personal Data
+% ******************************************************************
+
+\newcommand{\myTitle}{Hybridisation of Sequential Monte Carlo Simulation with Non-linear Bounded-error State Estimation Based on Interval Analysis Applied to Global Localisation of Mobile Robots
+\xspace} 
+%Hybridisation of an Unscented Particle Filter with Bounded-error Estimation Based on Interval Analysis Applied to Global Localisation of Mobile Robots
+%Comparison of Probabilistic, Bounded-error and Hybrid Techniques for Global Localisation of Mobile Robots % set-membership methods
+\newcommand{\mySubtitle}{A thesis submitted in partial fulfilment of the requirements for \\ the degree of Master of Science in Computer Science\xspace}
+\newcommand{\myDegree}{Master of Science\xspace}
+\newcommand{\myName}{Robin Weiss\xspace}
+\newcommand{\myProf}{Prof. Dr.-Ing. Peter Glösekötter\xspace}
+\newcommand{\mySupervisor}{Prof. Dr. Mariana Luderitz Kolberg\xspace} % Edson Prestes
+\newcommand{\myDepartment}{Department of Electrical Engineering \\
+\vspace{-0.3cm} and Computer Science\xspace}
+\newcommand{\myUni}{Münster University of Applied Sciences\xspace}
+\newcommand{\myLocation}{$\Phi$-Robotics Research Lab, Federal University of Rio Grande do Sul, Porto Alegre, Brazil\xspace}
+\newcommand{\myTime}{November 2018\xspace}%\monthname\ \the\year
+\newcommand{\myVersion}{Version 1.0\xspace}
+\newcommand{\myURL}{http://www.robinweiss.de/static/pdf/master-thesis.pdf}
+
+
+% ******************************************************************
+% Fine Tuning
+% ******************************************************************
+
+\newcounter{dummy} % For correct hyperlinks to index, bib, etc.
+\newlength{\abcd} % for ab..z string length calculation
+\providecommand{\mLyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+\newcommand{\ie}{i.\,e.}
+\newcommand{\eg}{e.\,g.}
+
+% ******************************************************************
+% Load Packages
+% ******************************************************************
+
+\usepackage[british, ngerman]{babel}                  
+\usepackage{csquotes}
+\usepackage[backend=bibtex8, bibencoding=ascii, language=auto, style=numeric-comp, sorting=none, maxbibnames=10, natbib=true]{biblatex}
+
+\usepackage[T1]{fontenc}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+\usepackage{textcomp}
+\usepackage{datetime}
+
+% Some fixes:
+\usepackage{scrhack}
+\usepackage{xspace}
+\usepackage{mparhack}
+\usepackage{fixltx2e}
+
+% Tables, Figures, Captions:
+\usepackage{tabularx}
+\setlength{\extrarowheight}{3pt} % increase table row height
+
+\usepackage{makecell}
+\renewcommand\theadalign{bl}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\usepackage{booktabs}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+\newcommand{\tableheadline}[1]{\multicolumn{1}{c}{\spacedlowsmallcaps{#1}}}
+\newcommand{\myfloatalign}{\centering} % to be used with each float for alignment
+
+\usepackage{caption}
+\captionsetup{font=small}
+\usepackage{subfigure}
+
+\usepackage{listings}
+\lstset{language=[LaTeX]Tex,
+    morekeywords={PassOptionsToPackage, selectlanguage},
+    keywordstyle=\color{RoyalBlue},
+    basicstyle=\small\ttfamily,
+    commentstyle=\color{Green}\ttfamily,
+    stringstyle=\rmfamily,
+    numbers=left,
+    numberstyle=\scriptsize\color{gray},%\tiny
+    stepnumber=2,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    %frameround=tttt,
+    %frame=single,
+    belowcaptionskip=.75\baselineskip
+} 
+
+% Code hightlighting
+\newcommand{\code}[1]{
+	\tikzexternaldisable
+	\tikz[baseline=(text.base)]{\node [rounded corners,fill=gray!12](text){\texttt{#1}};}
+	\tikzexternalenable
+}%
+
+% PDFLaTeX, Hyperreferences and Citation
+\usepackage[pdftex, hyperfootnotes=false, pdfpagelabels]{hyperref}
+\pdfcompresslevel=9
+\pdfadjustspacing=1 
+
+\usepackage[pdftex]{graphicx} 
+\usepackage{lscape}
+ 
+\hypersetup{
+    colorlinks=true,
+    linktocpage=true,
+    pdfstartpage=3,
+    pdfstartview=FitV,%
+    % Uncomment for printing
+    %colorlinks=false, linktocpage=false, pdfstartpage=3, pdfstartview=FitV, pdfborder={0 0 0},%
+    breaklinks=true,
+    pdfpagemode=UseNone,
+    pageanchor=true,
+    plainpages=false,
+    bookmarksopen=true,
+    bookmarksopenlevel=1,
+    hypertexnames=true,
+    pdfhighlight=/O,
+    urlcolor=black,
+    linkcolor=black,
+    citecolor=black,
+    pdftitle={\myTitle},
+    pdfauthor={\textcopyright\ \myName, \myUni},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfcreator={pdfLaTeX},
+    pdfproducer={LaTeX with hyperref and classicthesis}%
+}   
+
+
+\makeatletter
+\@ifpackageloaded{babel}
+    {
+       \addto\extrasbritish{
+			\renewcommand*{\figureautorefname}{Figure}
+			\renewcommand*{\tableautorefname}{Table}
+			\renewcommand*{\partautorefname}{Part}
+			\renewcommand*{\chapterautorefname}{Chapter}
+			\renewcommand*{\sectionautorefname}{Section}
+			\renewcommand*{\subsectionautorefname}{Section}
+			\renewcommand*{\subsubsectionautorefname}{Section}   
+                }
+       \addto\extrasngerman{
+			\renewcommand*{\paragraphautorefname}{Absatz}
+			\renewcommand*{\subparagraphautorefname}{Unterabsatz}
+			\renewcommand*{\footnoteautorefname}{Fu\"snote}
+			\renewcommand*{\FancyVerbLineautorefname}{Zeile}
+			\renewcommand*{\theoremautorefname}{Theorem}
+			\renewcommand*{\appendixautorefname}{Anhang}
+			\renewcommand*{\equationautorefname}{Gleichung}      
+			\renewcommand*{\itemautorefname}{Punkt}
+                }
+            \providecommand{\subfigureautorefname}{\figureautorefname}%             
+    }{\relax}
+\makeatother
+
+\listfiles
+
+\usepackage{classicthesis}
+
+% ******************************************************************
+% Fonts
+% ******************************************************************
+
+%\usepackage[oldstylenums]{kpfonts} % oldstyle notextcomp
+%\usepackage[osf]{libertine}
+%\usepackage[light,condensed,math]{iwona}
+%\renewcommand{\sfdefault}{iwona}
+%\usepackage{lmodern} % <-- no osf support :-(
+%\usepackage{cfr-lm} % 
+%\usepackage[urw-garamond]{mathdesign} % <-- no osf support :-(
+
+% ******************************************************************
+% Mathematics
+% ******************************************************************
+
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{units}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\algnewcommand{\algorithmicgoto}{\textbf{go to}}%
+\algnewcommand{\Goto}[1]{\algorithmicgoto~\ref{#1}}%
+
+%\renewcommand{\algorithmname}{Algorithm}
+%\renewcommand{\ALG@name}{Algorithm}
+%\renewcommand{\algorithmcfname}{Algorithm}
+%\floatname{algorithm}{MegaAlgorithm}
+%\makeatletter
+%\let\algorithmname\fname@algorithm
+%\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% ******************************************************************
+% TikZ and PGFplot
+% ******************************************************************
+
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{external, trees, shapes, arrows, calc, patterns, decorations.pathmorphing, decorations.markings, positioning}\tikzexternalize[prefix=Tikz/]
+\tikzsetexternalprefix{Figures/Tikz/}
+%\tikzset{external/force remake} % Remake all tikz pictures.
+\maxdeadcycles3000
+\usepackage{morefloats}
+
+\newlength\figureheight 
+\newlength\figurewidth 
+
+\usepackage{pgfplots}
+\pgfplotsset{    tick label style={font=\scriptsize},    label style={font=\small},
+	title style={font=\normalsize\normalfont},    legend style={font=\scriptsize}}
+
+% ******************************************************************
+% Acronyms and Notation
+% ******************************************************************
+
+\usepackage[acronym, nopostdot, nonumberlist]{glossaries}
+\newglossary[nlg]{notation}{not}{ntn}{Notation}
+
+\input{FrontBackMatter/Acronyms}
+\input{FrontBackMatter/Notation}
+
+\makeglossaries
+\glsaddall
+
+
+

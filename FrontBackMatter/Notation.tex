@@ -1,0 +1,413 @@
+\newglossaryentry{not:B_v}{
+  type=notation,
+  name={$\bm{B}$},
+  description={Control matrix that relates the control input to the state of a linear dynamical system},
+  sort={Ba}}
+ 
+ \newglossaryentry{not:n}{
+  type=notation,
+  name={$n$},
+  description={Non-dimensional number},
+  sort={n}}
+  
+\newglossaryentry{not:x_v}{
+  type=notation,
+  name={$\bm{x}$},
+  description={State vector of a dynamical system},
+  sort={xb}}
+    
+\newglossaryentry{not:w_v}{
+  type=notation,
+  name={$\bm{w}$},
+  description={Process noise vector},
+  sort={wa}}
+  
+\newglossaryentry{not:u}{
+  type=notation,
+  name={$\bm{u}$},
+  description={Control input vector},
+  sort={u}}
+  
+\newglossaryentry{not:v}{
+  type=notation,
+  name={$\bm{v}$},
+  description={Measurement noise vector},
+  sort={v}}
+  
+ \newglossaryentry{not:x_hat_v}{
+  type=notation,
+  name={$\hat{\bm{x}}$},
+  description={Estimate of the state vector of a dynamical system},
+  sort={xd}}
+  
+  \newglossaryentry{not:x_bar_v}{
+  type=notation,
+  name={$\bar{\bm{x}}$},
+  description={Mean of the random vector $\bm{x}$},
+  sort={xdd}}
+  
+\newglossaryentry{not:prediction_measurement}{
+  type=notation,
+  name={$\hat{\bm{z}}_{k|k-1}$},
+  description={Prediction of the measurement vector $\bm{z}_k$ before it comes available at time $k$},
+  sort={zaaaaa}}
+  
+\newglossaryentry{not:x_hat_minus}{
+  type=notation,
+  name={$\hat{\bm{x}}_{k|k-1}$},
+  description={A priori estimate of $\hat{\bm{x}}_k$, conditioned on all prior measurements except the one at time $k$},
+  sort={xe}}
+  
+\newglossaryentry{not:z}{
+  type=notation,
+  name={$\bm{z}$},
+  description={Observation or measurement vector of a dynamical system},
+  sort={zaa}}
+  
+  \newglossaryentry{not:z0}{
+  type=notation,
+  name={$\bm{z}_0$},
+  description={Empty measurement},
+  sort={zaaa}}
+  
+\newglossaryentry{not:H}{
+  type=notation,
+  name={$\bm{H}$},
+  description={Measurement sensitivity matrix defining the linear relationship between the state of a dynamical system and its observation},
+  sort={Haa}}
+  
+\newglossaryentry{not:H1}{
+  type=notation,
+  name={$\bm{H}^{[1]}$},
+  description={Jacobian matrix of the function $\bm{h}$},
+  sort={Haaa}}
+  
+\newglossaryentry{not:K_v}{
+  type=notation,
+  name={$\bm{K}$},
+  description={Kalman gain matrix},
+  sort={kaaa}}
+  
+ \newglossaryentry{not:k}{
+  type=notation,
+  name={$k$},
+  description={Discrete time, $k \in \mathbb{N}^0$},
+  sort={k}}
+  
+\newglossaryentry{not:P}{
+  type=notation,
+  name={$\bm{P}_{k}$},
+  description={Error covariance matrix representing the uncertainty in the state estimation},
+  sort={paa}}
+  
+  \newglossaryentry{not:Pinnov}{
+  type=notation,
+  name={$\bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k}$},
+  description={Innovation covariance matrix},
+  sort={paaaaa}}
+  
+  \newglossaryentry{not:Pcrosscov}{
+  type=notation,
+  name={$\bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k}$},
+  description={Cross covariance matrix},
+  sort={paaaaaa}}
+  
+ \newglossaryentry{not:Papri}{
+  type=notation,
+  name={$\bm{P}_{k|k-1}$},
+  description={A priori error covariance matrix representing the uncertainty of the a priori estimate $\hat{\bm{x}}_{k|k-1}$ },
+  sort={paaa}}
+  
+\newglossaryentry{not:Q}{
+  type=notation,
+  name={$\bm{Q}$},
+  description={Covariance matrix of the process noise},
+  sort={Q}}
+  
+\newglossaryentry{not:R}{
+  type=notation,
+  name={$\bm{R}$},
+  description={Covariance matrix of the measurement noise},
+  sort={R}}
+  
+\newglossaryentry{not:phi1}{
+  type=notation,
+  name={$\bm{\Phi}$},
+  description={State transition matrix of a linear dynamical system},
+  sort={phiaa}}
+  
+\newglossaryentry{not:phi}{
+  type=notation,
+  name={$\bm{\Phi}^{[1]}$},
+  description={Jacobian matrix of the function $\bm{\phi}$},
+  sort={phiaaa}}
+  
+\newglossaryentry{not:x_k}{
+  type=notation,
+  name={$\bm{x}_k$},
+  description={The $k$th element of a sequence $\dots$, $\bm{x}_{k-1}$, $\bm{x}_k$, $\bm{x}_{k+1}, \dots$ of vectors},
+  sort={xc}}
+  
+ \newglossaryentry{not:unit-delay}{
+  type=notation,
+  name={$z^{-1}$},
+  description={Unit-delay},
+  sort={za}}
+
+\newglossaryentry{not:phi_vec}{
+  type=notation,
+  name={$\bm{\phi}$},
+  description={Non-linear state transition function of a dynamical system},
+  sort={phia}}
+  
+\newglossaryentry{not:h_vec}{
+  type=notation,
+  name={$\bm{h}$},
+  description={Non-linear function that relates the measurement to the state of a dynamical system},
+  sort={ha}}
+  
+\newglossaryentry{not:identity_matrix}{
+  type=notation,
+  name={$\bm{I}_n$},
+  description={Identity matrix, $\bm{I}_n \in \mathbb{R}^{n \times n}$},
+  sort={I}}  
+  
+\newglossaryentry{not:sampling interval}{
+  type=notation,
+  name={$\bm{w} \sim \mathcal{N}(\bm{\mu}, \bm{P})$},
+  description={The random variable $\bm{w}$ is distributed normally with mean $\bm{\mu}$ and covariance $\bm{P}$},
+  sort={waaa}}    
+  
+
+\newglossaryentry{not:sequence_x}{
+  type=notation,
+  name={$\bm{X}_k$},
+  description={Sequence of states, denoting $\{\bm{x}_i\}^k_{i = 0}$},
+  sort={xk}}   
+  
+  \newglossaryentry{not:sequence_u}{
+  type=notation,
+  name={$\bm{U}_k$},
+  description={Sequence of control inputs, denoting $\{\bm{u}_i\}^k_{i = 0}$},
+  sort={uk}}  
+  
+  \newglossaryentry{not:sequence_y}{
+  type=notation,
+  name={$\bm{Z}_k$},
+  description={Sequence of observations, denoting $\{\bm{z}_i\}^k_{i = 1}$},
+  sort={zk}}   
+  
+\newglossaryentry{not:initial_dist}{
+  type=notation,
+  name={$p(\bm{x}_0)$},
+  description={Probability distribution of the initial state},
+  sort={p0}}    
+  
+  \newglossaryentry{not:pred_dist}{
+  type=notation,
+  name={$p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})$},
+  description={Predictive distribution of the state $\bm{x}_k$ at the current time $k$, given the entire sequence of observations and the entire sequence of control inputs up to and including time $k-1$},
+  sort={p1}}    
+  
+\newglossaryentry{not:post_dist}{
+  type=notation,
+  name={$p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$},
+  description={Posterior distribution of the current state $\bm{x}_k$, given the entire sequence of observations up to and including the current time $k$ and the entire sequence of control inputs up to and including time $k-1$},
+  sort={p2}}   
+  
+  \newglossaryentry{not:post_dist_normally}{
+  type=notation,
+  name={$p_{\mathcal{N}}(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$},
+  description={Gaussian approximation of the posterior distribution of the current state $\bm{x}_k$, given the entire sequence of observations up to and including the current time $k$ and the entire sequence of control inputs up to and including time $k-1$},
+  sort={p22}}  
+  
+  \newglossaryentry{not:post_dist_constraint}{
+  type=notation,
+  name={$p_C(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$},
+  description={Constrained posterior distribution of the current state $\bm{x}_k$, given the entire sequence of observations up to and including the current time $k$ and the entire sequence of control inputs up to and including time $k-1$},
+  sort={p21}}  
+  
+  
+  \newglossaryentry{not:trans_dist}{
+  type=notation,
+  name={$p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$},
+  description={State-transition distribution of the current state $\bm{x}_k$, given the immediate past state $\bm{x}_{k-1}$ and control input $\bm{u}_{k-1}$},
+  sort={p3}} 
+  
+  \newglossaryentry{not:likelyhood_dist}{
+  type=notation,
+  name={$p(\bm{z}_k\,|\,\bm{x}_{k})$},
+  description={Likelihood function of the current observation $\bm{z}_k$, given the current state $\bm{x}_{k}$},
+  sort={p4}}  
+  
+  
+ \newglossaryentry{not:expected}{
+  type=notation,
+  name={$\mathbb{E}[\bm{x}]$},
+  description={Expected value of $\bm{x}$},
+  sort={e}}  
+  
+  \newglossaryentry{not:partial}{
+  type=notation,
+  name={$\displaystyle \left. \frac{\partial \bm{f}(\bm{x})}{\partial \bm{x}} \right|_{\bm{x}=\bm{x}_{0}}$},
+  description={Partial derivative of $\bm{f}$ with respect to $\bm{x}$, evaluated at $\bm{x}_0$},
+  sort={Dervi}}  
+  
+    \newglossaryentry{not:sigmapoints}{
+  type=notation,
+  name={$\bm{\mathcal{X}}$},
+  description={Set of sigma points, denoting $\big\{\mathcal{X}_i\big\}^{2n}_{i = 0}$},
+  sort={Xzzzzzzz}}  
+  
+      \newglossaryentry{not:ndimreals}{
+  type=notation,
+  name={$\mathbb{R}^{n}$},
+  description={$n$-dimensional real vector space},
+  sort={Rr}}  
+  
+  
+  \newglossaryentry{not:sigmapoint}{
+  type=notation,
+  name={$\mathcal{X}_i$},
+  description={The $i$-th sigma point},
+  sort={Xxxx}}  
+  
+   \newglossaryentry{not:matrixroot}{
+  type=notation,
+  name={$\Big(\sqrt{(n + \lambda) \bm{P}_{\bm{x}}}\Big)_i$},
+  description={The $i$-th column of the matrix square root of $(n + \lambda) \bm{P}_{\bm{x}}$},
+  sort={squareRoot}}  
+  
+     \newglossaryentry{not:alpha}{
+  type=notation,
+  name={$\alpha$},
+  description={Scaling parameter that controls the spread of sigma points around the mean},
+  sort={alpha}}  
+  
+       \newglossaryentry{not:kappa}{
+  type=notation,
+  name={$\kappa$},
+  description={Scaling parameter in unscented transformation; $\kappa \geq 1$ guarantees positive semi-definiteness of the covariance matrix},
+  sort={kappa}}  
+  
+  
+ \newglossaryentry{not:weightmean}{
+  type=notation,
+  name={$W_i^{(m)}$},
+  description={Weight of the $i$-th sigma point for the computation of the mean},
+  sort={weightmean}} 
+  
+ \newglossaryentry{not:weightcov}{
+  type=notation,
+  name={$W_i^{(c)}$},
+  description={Weight of the $i$-th sigma point for the computation of the covariance},
+  sort={weightcov}} 
+  
+
+ \newglossaryentry{not:sigmapointold}{
+  type=notation,
+  name={$\bm{\mathcal{X}}_{k-1}$},
+  description={Set of sigma points computed using the previous state estimate},
+  sort={Xxxxx}} 
+  
+   \newglossaryentry{not:sigmapointolda}{
+  type=notation,
+  name={$\bm{\mathcal{X}}^a_{k-1}$},
+  description={Set of augmented sigma points computed using the previous state estimate},
+  sort={Xxxxx}}
+  
+   \newglossaryentry{not:sigmapointoldx}{
+  type=notation,
+  name={$\bm{\mathcal{X}}^{\bm{x}}_{k|k-1}$},
+  description={Set of sigma points constituted of the components that are associated with the state},
+  sort={Xxxxxd}} 
+  
+   \newglossaryentry{not:sigmapointoldw}{
+  type=notation,
+  name={$\bm{\mathcal{X}}^{\bm{w}}_{k|k-1}$},
+  description={Set of sigma points constituted of the components that are associated with the process noise},
+  sort={Xxxxxc}} 
+  
+   \newglossaryentry{not:sigmapointoldv}{
+  type=notation,
+  name={$\bm{\mathcal{X}}^{\bm{v}}_{k|k-1}$},
+  description={Set of sigma points constituted of the components that are associated with the measurement noise},
+  sort={Xxxxxb}} 
+  
+  
+   \newglossaryentry{not:sigmapointmeasure}{
+  type=notation,
+  name={$\bm{\mathcal{Z}}_{k|k-1}$},
+  description={Set of sigma points capturing the predicted measurement},
+  sort={Zzzzzzz}} 
+ 
+  
+   \newglossaryentry{not:expectation}{
+  type=notation,
+  name={$\mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big]$},
+  description={Expectation under $p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$},
+  sort={eeee}} 
+  
+  
+     \newglossaryentry{not:expectationest}{
+  type=notation,
+  name={$\hat{\mathbb{E}}\big[f(\bm{x}_k)\big]$},
+  description={Estimate of the expectation $\mathbb{E}\big[f(\bm{x}_k)\big]$},
+  sort={eeeee}} 
+  
+  
+       \newglossaryentry{not:realinterval}{
+  type=notation,
+  name={$[x]$},
+  description={Real interval, denoting $\big\{x \in \mathbb{R} \,\,|\,\, \underline{x} \leq x \leq \overline{x}\big\}$},
+  sort={x}} 
+  
+  
+       \newglossaryentry{not:realintervalvec}{
+  type=notation,
+  name={$[\bm{x}]$},
+  description={Real interval vector, denoting the Cartesian product of intervals, $[x]_1 \times [x]_2 \times \dots \times [x]_n$},
+  sort={xa}} 
+  
+  \newglossaryentry{not:realintervalwid}{
+  type=notation,
+  name={$\mathrm{w}\big([x]\big)$},
+  description={Width of an interval $[x]$},
+  sort={waa}} 
+  
+    \newglossaryentry{not:realintervalmid}{
+  type=notation,
+  name={$\mathrm{mid}\big([x]\big)$},
+  description={Midpoint of an interval $[x]$},
+  sort={mid}} 
+  
+   \newglossaryentry{not:realintervalabs}{
+  type=notation,
+  name={$\big|[x]\big|$},
+  description={Absolute value of an interval $[x]$},
+  sort={abs}} 
+  
+  
+    \newglossaryentry{not:inclfunc}{
+  type=notation,
+  name={$[\bm{f}]\big([\bm{x}]\big)$},
+  description={Inclusion function of $\bm{f}$},
+  sort={faa}} 
+  
+  
+      \newglossaryentry{not:sulutionset}{
+  type=notation,
+  name={$\mathbb{S}$},
+  description={Solution set of a numerical constraint satisfaction problem or of a set inversion problem},
+  sort={sa}} 
+  
+  
+        \newglossaryentry{not:contractor}{
+  type=notation,
+  name={$ \mathcal{C}\big([\bm{x}]\big)$},
+  description={Contractor applied to the box $[\bm{x}]$},
+  sort={ca}} 
+  
+ 
+  
+   

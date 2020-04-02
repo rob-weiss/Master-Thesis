@@ -1,0 +1,64 @@
+%*****************************************
+\chapter{Conclusion and Future Work}\label{ch:Conclusion and Future Work}
+%*****************************************
+
+After an introduction into the subject matter, we have elaborated upon the theoretical foundations of probabilistic filtering and interval analysis. Subsequently, we presented a detailed description of the newly proposed filter algorithms. On the basis of the experiments and their results in the previous chapter, in this chapter we shall now conclude and present possible future work in Section \ref{sec:future_work}.
+
+
+\section{Conclusion}
+
+Localisation is a fundamental problem in mobile robotics. When creating mobile robots that operate autonomously, possibly without any human supervision, accurate self-localisation is one of the fundamental abilities such robots should possess. At the same time, computational cost is a critical feature for many practical applications, which causes a natural dilemma between the localisation accuracy and the number of particles in real-life Monte Carlo localisation. Thus, it is desirable to make good use of particles by moving them to regions of the search space that are associated with a high observation likelihood. 
+
+
+
+%, which causes a natural dilemma between the localisation accuracy.
+% and the number of particles in real-life Monte Carlo localisation. Thus, it is desirable to make good use of particles by moving them to regions of the search space that are associated with a high observation likelihood. 
+
+
+%Localisation is a fundamental problem in mobile robotics. When creating mobile robots that operate autonomously, possibly without any human supervision, accurate self-localisation is one of the fundamental abilities such robots should possess. At the same time, computational cost is a critical feature for many practical applications. This causes a natural dilemma between the localisation accuracy and the number of particles in real-life Monte Carlo localisation.When using real-life Monte Carlo localisation, there is a natural dilemma between the localisation accuracy and the number of particles. Thus, it is desirable to make good use of particles by moving them to regions of the search space that are associated with a high observation likelihood. 
+
+
+Motivated by the above dilemma, we presented four new hybrid localisation algorithms based on non-linear bounded-error state estimation and probabilistic filtering. The rationale behind these new algorithms is to only perform Monte Carlo localisation over a limited region of the search space. Both a bootstrap filter and an unscented particle filter was combined with two bounded-error estimators, namely the forward-backward contractor and the Set Inverter via Interval Analysis, respectively.
+
+As opposed to existing hybrid localisation approaches based on Monte Carlo simulation and interval analysis, in the new algorithms the bounded-error state estimate is not maintained throughout the whole estimation process, so as to save computational cost. Instead, additionally available information in the form of constraints based on geometrical considerations of the environment were incorporated in the Bayesian filters in order to improve the accuracy throughout the estimation process and to detect kidnapping. The bounded-error estimate is only computed in the beginning when solving the wake-up robot problem or after kidnapping. %Therefore, the benefits of bounded-error estimation, which are particularly pronounced in the beginning of the localisation process and after kidnapping, are kept while the computational cost are reduced, when compared to previous methods.
+ In comparison with the hybrid approaches in \cite{neulandh_ybridazation} and \cite{neuland_set_inversion}, the additional computational cost for the bounded-error state estimation is reduced drastically by not maintaining the box estimate throughout the entire estimation process, while the benefits in terms of an increase in the localisation accuracy are preserved. Given a sequence of 200 measurements, like in the experiments above, when computing position estimates for the entire sequence of measurements, the bounded-error estimation is carried out once instead of 200 times, which demonstrates the potential for saving computational cost. When solving the kidnapped-robot problem, the reduction depends on the number of kidnappings. In the simulated scenarios, with one kidnapping per trajectory, the bounded-error position estimate is computed twice instead of 200 times.
+ 
+
+
+Evaluating the performance of the new algorithms in various simulated underwater robot localisation scenarios, we have shown that the hypotheses are true and that the newly proposed algorithms are generally able to solve the wake-up robot problem as well as the kidnapped robot problem more accurately, when compared to conventional unconstrained probabilistic filtering, with an improvement of up to 88 percent in the median estimation error when compared to conventional filtering methods. In addition to that, the mean initial estimation error is significantly reduced by up to 94 percent and the mean error after kidnapping is reduced by up to 99 percent. The improvement is particularly pronounced when four or nine landmarks are available.
+
+
+When the observation likelihood is very peaked, due to very accurate measurements, and when a sufficiently large number of landmarks is available to unambiguously determine the robot's position, the hybrid unscented particle filter performs as well as the hybrid bootstrap filter or better. Especially when the resulting box of the bounded-error localisation has a relatively large volume, the constrained unscented particle filters improve the estimation accuracy in the beginning and increase the speed of convergence, when compared to the three bootstrap filters.
+
+
+%, while using up to a hundred times fewer particles. 
+
+%Whether the reduction in computational cost by reducing the number of particles outweighs the increased cost due to the unscented Kalman filter used for generating better proposal distributions depends on the implementation and remains to be seen in a specific application scenario. However, an increase in computational complexity by a factor of 100, when increasing the number of particles by a factor of 100, is likely to be undercut by the slightly increased complexity of the unscented particle filter through the use of an unscented Kalman filter for each particle, especially when only 10 particles are enough for accurate self localisation.
+
+With four or more landmarks, the bootstrap filter with \texttt{SIVIA} and the unscented particle filter with \texttt{SIVIA} deliver a very accurate position estimate with errors always smaller than 70 centimetres. If computational cost is a critical feature and a slightly higher initial error that decreases fast is tolerable in a certain application scenario, the two filters with the forward-backward contractor (\texttt{PFC}, \texttt{UPFC}) are the filters of choice, as the contractor is computationally less demanding than \texttt{SIVIA}. All four new algorithms detected kidnapping reliably in all the experiments so that the respective improvement after kidnapping is roughly according to that when solving the wake-up robot problem.
+
+The four new localisation algorithms are not limited to underwater robot localisation but instead are applicable to any landmark-based localisation scenario. Of course, an estimation of the robot's pose or other state variables that are related to the position and orientation, such as the velocity, can easily be integrated in the algorithms as well. We shall now identify possible future work in order to further improve the proposed localisation algorithms.
+
+
+\section{Future Work}\label{sec:future_work}
+
+If the confined region obtained by bounded-error state estimation is narrow enough, the problem may be regarded as a tracking problem. In the scenario that contained nine landmarks, the volume of the contracted box or subpaving suggests that a uni-modal distribution may be a sufficiently accurate approximation of the true posterior probability distribution. Possible alterations of the proposed algorithms are using an unscented Kalman filter together with interval analysis in order to reduce computational cost. After a bounded-error state estimation algorithm has narrowed down the search space to a smaller region, a truncated unscented Kalman filter \cite{6178018} could be utilised to obtain a trimmed Gaussian posterior probability distribution over the state. These modifications require one subpaving with a volume smaller than some predefined threshold.
+
+If this condition is not fulfilled the proposed particle filter can be utilised until the particle variance is lower than some threshold. One may conclude that the filter has converged and that tracking is appropriate. Then, the particle filter could be replaced dynamically by a parameterised filter such as the unscented Kalman filter. All four hybrid localisation algorithms are designed so that any filter that matches the Bayesian framework can be plugged in easily to replace the respective particle filter.
+
+
+Furthermore, it would be desirable to extend the new localisation algorithms so that they work with indistinguishable landmarks. Instead of a fixed number of landmarks, using a varying number at each time step would increase the freedom of application to a wider class of localisation problems and would map the inherently limited range of distance measurements in practice.
+
+Regarding the bounded-error state estimator, an algorithm based on relaxed intersections, such as the Robust \texttt{SIVIA} algorithm \cite{rsivia}, may be used in real-life scenarios where the measurement data can contain outliers that would cause an empty solution set with the conventional \texttt{SIVIA} algorithm.
+
+In order to avoid the slow convergence of the UPF when only two landmarks are available, the influence of the latest measurement on the proposal distribution can be influenced by varying the measurement noise covariance matrix depending on the number of landmarks present. Then, when a sufficient number of landmarks is available but the volume of a contracted box or \texttt{SIVIA} hull is still large, the benefits of the unscented particle filter would manifest, whereas when the likelihood is not very peaked, a high measurement covariance value will dampen the impact of the unscented Kalman filter in the generation of the proposal distribution, so that the filter behaves like a bootstrap particle filter in such scenario.
+
+
+
+
+
+
+
+
+
+

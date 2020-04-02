@@ -1,0 +1,84 @@
+% ******************************************************************
+% Master Thesis
+% ******************************************************************
+
+\NeedsTeXFormat{LaTeX2e}
+
+\documentclass[twoside, openright, titlepage, numbers=noenddot, headinclude, footinclude, cleardoublepage=empty, abstractoff, BCOR=5mm, paper=a4, fontsize=11pt, british, ngerman]{scrreprt}
+
+\usepackage[utf8]{inputenc}
+
+\input{Configuration}
+
+\addbibresource{Bibliography.bib}
+
+
+\begin{document}
+\frenchspacing
+\raggedbottom
+ 
+\selectlanguage{british}
+\pagenumbering{roman}
+\pagestyle{plain}
+
+
+% ******************************************************************
+% Front Matter
+% ******************************************************************
+
+%\include{FrontBackmatter/Deckblatt}
+\include{FrontBackmatter/Titlepage}
+\include{FrontBackmatter/Titleback}
+%\cleardoublepage
+
+\include{FrontBackmatter/Dedication}
+\cleardoublepage
+
+\include{FrontBackmatter/Abstract}
+\cleardoublepage
+
+\include{FrontBackmatter/Acknowledgments}
+
+\pagestyle{scrheadings}
+\cleardoublepage
+
+\include{FrontBackmatter/Contents}
+
+% ******************************************************************
+% Main Matter
+% ******************************************************************
+
+\cleardoublepage\pagenumbering{arabic}
+\cleardoublepage
+
+\include{Chapters/Chapter01}
+\cleardoublepage
+
+\include{Chapters/Chapter02}
+\cleardoublepage
+
+\include{Chapters/Chapter03}
+\cleardoublepage
+
+\include{Chapters/Chapter04}
+\cleardoublepage
+
+\include{Chapters/Chapter05}
+\cleardoublepage
+
+%\include{Chapters/Formulas}
+%\cleardoublepage
+
+% ******************************************************************
+% Back Matter
+% ******************************************************************
+
+\appendix
+\cleardoublepage
+\setcounter{chapter}{-1}
+\include{Chapters/Chapter0A}
+
+\cleardoublepage\include{FrontBackmatter/Bibliography}
+%\cleardoublepage\include{FrontBackmatter/Declaration}
+
+\end{document}

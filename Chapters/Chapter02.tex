@@ -1,0 +1,2204 @@
+%*****************************************
+\chapter{Theoretical Background}\label{ch:theoretical_background}
+%*****************************************
+
+Conceived in general terms, a filter is a device for removing unwanted components of a mixture. In accordance with this definition, in the technical sphere, a \emph{filter} refers to a system designed to extract information about a quantity of interest, using noisy observations of a process. That is, a filter delivers an estimate of the variables of principal interest, which is why it is also called an \emph{estimator}.
+
+In the next section, we will present the filtering problem in a formal manner, followed by a comprehensive introduction of a generic framework to cope with it, the Bayesian filter. The Kalman filter presented in Section \ref{sec:Kalman} is suitable for linear models and additive white Gaussian noise. We deliberately chose to start from this special-case scenario, generalising step by step, as the Kalman filter is an easy to comprehend, straight forward solution to the filtering problem and its mechanism and underlying terminology is essential for the remainder of this thesis. In Section \ref{sec:extended_kalman}, we will introduce the extended Kalman filter, which uses linearisation around the latest state estimate in order to cope with non-linear models. A higher-order approximation of non-linear models is obtained by the unscented Kalman filter described in Section \ref{sec:unscented_kalman}. After elaborating on sequential Monte Carlo simulation, including sequential importance sampling in Section \ref{sec:importance_sampling} and resampling in Section \ref{sec:importance_resampling}, we focus on the importance of the proposal distribution in Section \ref{sec:importance_proposal}. In order to drop the Gaussian assumption and allow for arbitrary, multi-modal distributions, we introduce the generic particle filter in Section \ref{sec:particle}, followed by two concrete implementations, namely the bootstrap filter in Section \ref{sec:bootstrap_filter} and the unscented particle filter in Section \ref{sec:unscented_particle}. Finally, we will close this chapter with basic concepts of interval analysis in Section \ref{sec: interval_basic_concepts} including the notion of constraint satisfaction problems and set inversion problems in Sections \ref{sec:csp} and \ref{sec:sip}, respectively. Both types of problems will be encountered in the following Chapter \ref{ch:implementation} and will be tackled with either the \texttt{HC4} contractor described in Section \ref{sec:contractors} or the Set Inverter via Interval Analysis presented in Section \ref{sec:sivia}.
+
+
+
+\section{The Filtering Problem}
+
+Consider, as an example involving filter theory, the discrete-time dynamical system depicted in Figure \ref{fig:state_estimation}. The desired state vector of the system, $\bm{x}_k$, at the discrete time step $k$, is usually hidden and can only be observed by indirect measurements $\bm{z}_k$ that are a function of $\bm{x}_k$ and subject to noise. Equally, the equation describing the evolution of the state $\bm{x}_k$ is usually subject to errors, caused by effects not accounted for in the model. The dynamical system may be an underwater robot, in which case the elements of the state vector are constituted by its position and velocity, while the measuring system may be an inertial measurement unit producing the observation vector $\bm{z}_k$. The requirement of the filter is to deliver a reliable estimate $\hat{\bm{x}}_k$ of the actual state, by taking the measurement as well as prior information into account.
+
+\tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=6em]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-, thick, black}, align=center]
+
+\begin{figure}[]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[auto, thick, rounded corners=1pt, node distance=3cm,>=latex']
+    \node [block, align=center, 
+    	pin={[pinstyle]below:System \\ errors}]
+    	(dynamical) {Dynamical \\ system};
+    \node [block, align=center, right of=dynamical, pin={[pinstyle]below:Measurement \\ errors}, node distance=4.5cm] (measuring) {Measuring \\ system};
+    \node [block, align=center, right of=measuring, pin={[pinstyle]below:Prior \\ information}, node distance=4.5cm] (estimator) {Estimator};
+    \node [output, right of=estimator] (output) {};
+    
+    \draw [->, align=center] (dynamical) -- node[name=x] {State \\ $\bm{x}_k$} (measuring);
+    \draw [->, align=center] (measuring) -- node[name=y] {Observation \\ $\bm{z}_k$} (estimator);
+    \draw [->, align=center] (estimator) -- node[name=y] {State \\ estimate \\ $\hat{\bm{x}}_k$} (output);
+\end{tikzpicture}
+}
+\caption[Block diagram depicting the components involved in state estimation of a discrete-time dynamical system.]{Block diagram depicting the components involved in state estimation of a discrete-time dynamical system \cite{haykin2013adaptive}.} \label{fig:state_estimation}
+\end{figure}
+
+Assuming a stationary stochastic process with known statistical parameters as the mean and correlation function of the useful signal and the unwanted additive noise, the solution to the filtering problem is commonly known as the \emph{Wiener filter}. Yet, since the Wiener filter requires a priori information about the statistics of the data to be processed, it may not be optimal for non-stationary processes. For such an environment, in which the statistics are time-varying, it needs a filter that constantly adapts its parameters to optimise its output. A so-called \emph{adaptive filter} is a self-designing system that relies, in contrast to the non-recursive Wiener filter, on a recursive algorithm, allowing the filter to perform satisfactorily, even if there is no complete knowledge of the relevant signal characteristics. Provided the variations in the  statistics of the input data are sufficiently slow, the algorithm can track time variations and is thus suitable for non-stationary environments. In a stationary environment it converges to the optimum Wiener solution in some statistical sense after successive iterations.
+
+
+\subsubsection{Generic State-space Model}
+
+Now, let us consider the generic stochastic filtering problem in a dynamic state-space form:
+
+\begin{equation}\label{eq:generic-state_dynamics}
+  \bm{x}_k = \bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1}, \bm{w}_{k-1}), \quad k > 0\,.
+\end{equation}
+
+\noindent
+Here, $\bm{x}_k \in \mathbb{R}^{n_{\bm{x}}}$ is the state vector to be estimated, $k$ denotes the time step, and $\bm{\phi}_{k-1}: \mathbb{R}^{n_{\bm{x}}} \times \mathbb{R}^{n_{\bm{u}}} \times \mathbb{R}^{n_{\bm{w}}} \rightarrow \mathbb{R}^{n_{\bm{x}}}$ is the known, possibly non-linear state transition function at time $k-1$. The control vector $\bm{u}_{k-1} \in \mathbb{R}^{n_{\bm{u}}}$ represents an exogenous input to the system and $\bm{w}_{k-1} \in \mathbb{R}^{n_{\bm{w}}}$ represents a white noise sequence, usually referred to as the process noise. The state vector is related to the observation or measurement of the process, $\bm{z}_k \in \mathbb{R}^{n_{\bm{z}}}$, by
+
+\begin{equation}\label{eq:generic-measurement}
+  \bm{z}_k = \bm{h}_{k}(\bm{x}_{k}, \bm{v}_{k}), \quad k > 0\,,
+\end{equation}
+
+\noindent
+where $\bm{h}_k: \mathbb{R}^{n_{\bm{x}}} \times \mathbb{R}^{n_{\bm{v}}} \rightarrow \mathbb{R}^{n_{\bm{z}}}$ is a known, possibly non-linear transformation from state variables to measurement variables and $\bm{v}_{k} \in \mathbb{R}^{n_{\bm{v}}}$ represents a white noise sequence, usually referred to as the measurement noise. Note that here we do not assume additivity of the noise sources. A block diagram of the non-linear discrete-time dynamic system and its observation is depicted in Figure \ref{fig:non-linear-dynamic-system}, where $z^{-1}$ denotes the unit-delay and $\bm{I}_{n_{\bm{x}}}$ the $n_{\bm{x}}\times n_{\bm{x}}$ identity matrix.
+%In the following section we will present a framework that utilises the measurements as well as available prior information to tackle the filtering problem.
+
+\tikzstyle{block} = [draw, rectangle, minimum height=0.8cm, minimum width=0.8cm]
+\tikzstyle{sum} = [draw, circle]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{input} = [coordinate]
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[auto, thick, node distance=1.5cm,>=latex']
+	
+	\node [block] (phi) {$\bm{\phi}_{k-1}$};
+	\node [input, above of=phi] (w) {};
+    \node [block, align=center, 
+    	right of=phi, node distance=3cm] (H) {$\bm{h}_k$};
+    \node [input, left of=phi, node distance=2cm] (u) {};
+    \node [input, above of=H] (v) {};
+    \node [output, right of=H, node distance=1.5cm] (out) {};
+    
+    \draw [->] (phi) -- node[] {$\bm{x}_k$} node[name=x_k, pos=0.5] {} (H);
+    \node [block, below of=phi, node distance=1.8cm] (delay) {$z^{-1_{ }}\bm{I}_{n_{\bm{z}}}$};
+    \draw [->] (delay) -- node [] {$\bm{x}_{k-1}$} (phi);
+    \draw [->] (w) -- node [label={left:$\bm{w}_{k-1}$}, pos=0.29]{} (phi);
+    \draw [->] (u) -- node[] {$\bm{u}_{k-1}$} (phi);
+    \draw [->] (v) -- node [label={left:$\bm{v}_{k}$}, pos=0.29]{}  (H);
+    \draw [->] (x_k) |- (delay);
+    \draw [->] (H) -- node[pos=0.77, name=xk_hat] {$\bm{z}_k$} (out);
+         
+\end{tikzpicture}
+
+
+\caption[Block diagram depicting a non-linear discrete-time dynamical system, its internal state, and its observation.]{Block diagram depicting a non-linear discrete-time dynamical system, its internal state $\bm{x}_{k}$, and its observation $\bm{z}_{k}$.} \label{fig:non-linear-dynamic-system}
+\end{figure}
+
+\section{Recursive Bayesian Estimation}\label{sec:bayesian_estimation}
+
+Provided the system dynamics model and the measurement model can be expressed in a probabilistic form, a Bayesian approach to solving the filtering problem may be adopted. The formal \emph{Bayesian filter} constitutes a general unifying framework for sequential state estimation, at least in a conceptual sense \cite{haykin2009neural}. We will only go into detail as far as necessary for the treatment of the subject matter of this thesis. A complete mathematical derivation of the Bayesian filter can be found in \cite{thrun2005probabilistic}.
+
+
+The system model given by Equation \ref{eq:generic-state_dynamics} implicitly assumes that the state $\bm{x}_k$ depends only on the immediate past state $\bm{x}_{k-1}$ and the control input $\bm{u}_{k-1}$. Thus, it defines a first-order discrete Markov process and has an equivalent probabilistic description given by the conditional probability distribution $p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$, with the initial state distributed according to 
+
+\begin{equation}\label{eq:initial_markov}
+  p(\bm{x}_0\,|\,\bm{z}_0) = p(\bm{x}_0)\,,
+\end{equation}
+
+\noindent
+where $\bm{z}_0$ denotes the empty measurement.
+
+Likewise, the measurement model given by Equation \ref{eq:generic-measurement} has an equivalent probabilistic description given by the conditional probability density $p(\bm{z}_k\,|\,\bm{x}_{k})$. Here, we implicitly assume that if we knew the state $\bm{x}_{k}$ and were to predict the measurement $\bm{y}_{k}$, no past measurement or control input would provide us additional information. This conditional independence given the state, the Markov property, and the fact that we cannot observe the state directly let us describe our system using the hidden Markov model depicted in Figure \ref{fig:generic-ss-model}. In the remainder of this chapter, we will use the notation below:
+
+% depicted in Table \ref{tab:notation_bayes}.
+
+\begin{table*}[h]
+\begin{tabularx}{\textwidth}{lX}
+$\bm{X}_k$          		 & \emph{sequence of states}, denoting $\{\bm{x}_i\}^k_{i = 0}$. \\
+$\bm{U}_k$          		 & \emph{sequence of control inputs}, denoting $\{\bm{u}_i\}^k_{i = 0}$. \\
+$\bm{Z}_k$          		 & \emph{sequence of observations}, denoting $\{\bm{z}_i\}^k_{i = 1}$. \\
+$p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})$ & \emph{predictive distribution} of the state $\bm{x}_k$ at the current time $k$, given the entire sequence of observations and the entire sequence of control inputs up to and including time $k-1$. \\
+$p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$ & \emph{posterior distribution} of the current state $\bm{x}_k$, given the entire sequence of observations up to and including the current time $k$ and the entire sequence of control inputs up to and including time $k-1$; this distribution is commonly referred to as simply the posterior. \\
+$p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$ & \emph{state-transition distribution} of the current state $\bm{x}_k$, given the immediate past state $\bm{x}_{k-1}$ and control input $\bm{u}_{k-1}$; this distribution is defined in terms of the system model and is commonly referred to as the transition prior or simply the prior. \\
+$p(\bm{z}_k\,|\,\bm{x}_{k})$ & \emph{likelihood function} of the current observation $\bm{z}_k$, given the current state $\bm{x}_{k}$. This function is defined in terms of the observation model.
+\end{tabularx}
+%\caption{Conditional probability distributions used in recursive Bayesian state estimation.}
+%\label{tab:notation_bayes}
+\end{table*}
+
+\tikzstyle{state}=[shape=circle,draw=black!100,fill=black!10, minimum width=1.2cm]
+\tikzstyle{input}=[shape=circle,draw=black!100,fill=white!100,  minimum width=1.2cm]
+\tikzstyle{observation}=[shape=rectangle,draw=black!100,fill=white!100, minimum width=1.2cm]
+\tikzstyle{lightedge}=[<-,dotted]
+\tikzstyle{mainstate}=[state,thick]
+\tikzstyle{mainedge}=[<-,thick]
+
+
+\begin{figure}[t]
+\begin{center}
+\begin{tikzpicture}[]
+% 1st column
+\node[left] at (-1.2,5) {Input};
+\node[left] at (-1.2,3) {State};
+\node[left] at (-1.2,1) {Observation};
+% 2st column
+\node[input] (u_k-1) at (0,5) {$\bm{u}_{k-1}$};
+\node[state] (x_k-1) at (0,3) {$\bm{x}_{k-1}$};
+\node[observation] (y_k-1) at (0,1) {$\bm{z}_{k-1}$}
+	edge[mainedge] node[auto,swap] {$\bm{h}_{k-1}$} (x_k-1);
+\node at (1,3.6) {$\bm{\phi}_{k-1}$};
+% 3rd column
+\node[input] (u_k) at (2,5) {$\bm{u}_{k}$}
+    edge[lightedge] (u_k-1);
+\node[state] (x_k) at (2,3) {$\bm{x}_{k}$}
+    edge[mainedge] (x_k-1)
+    edge [<-,bend right=35, thick] (u_k-1);
+\node[observation] (y_k) at (2,1) {$\bm{z}_{k}$}
+	edge[mainedge] node[auto,swap] {$\bm{h}_{k}$} (x_k);
+\node at (3,3.6) {$\bm{\phi}_{k}$};
+% 4th column
+\node[input] (u_k+1) at (4,5) {$\bm{u}_{k+1}$}
+    edge[lightedge] (u_k);
+\node[state] (x_k+1) at (4,3) {$\bm{x}_{k+1}$}
+    edge[mainedge] (x_k)
+    edge [<-,bend right=35, thick] (u_k);
+\node[observation] (y_k+1) at (4,1) {$\bm{z}_{k+1}$}
+	edge[mainedge] node[auto,swap] {$\bm{h}_{k+1}$} (x_k+1);
+\end{tikzpicture}
+\end{center}
+\caption[Hidden Markov model of a non-linear discrete-time dynamical system.]{Hidden Markov model of a non-linear discrete-time dynamical system, characterising the evolution of the control inputs, states, and observations.}
+\label{fig:generic-ss-model}
+\end{figure}
+
+
+Now, the aim of the Bayesian filter is to determine the posterior distribution $p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$, which embodies the entire knowledge that we have about the state $\bm{x}_k$ at time $k$, after being given all the control inputs $\bm{U}_{k-1}$ and having received the entire observation sequence $\bm{Z}_k$. Given this probability distribution, we can determine an optimal estimator under a specified performance criterion, as for instance the minimum mean-squared error estimator. Then, the optimal state estimate $\hat{\bm{x}}_k$ is determined by the mean of the posterior probability distribution, 
+
+\begin{equation}
+  \hat{\bm{x}}_k = \mathbb{E}\big[\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}\big] = \int \bm{x}_k p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k\,.
+\end{equation}
+
+\noindent
+In order to assess the confidence in the estimated state, we compute the covariance matrix as
+
+\begin{equation}
+\begin{split}
+  \bm{P}_k &= \mathbb{E}\Big[(\bm{x}_k - \hat{\bm{x}}_{k})(\bm{x}_k - \hat{\bm{x}}_{k})^T\Big] \\
+  &= \int (\bm{x}_k - \hat{\bm{x}}_{k})(\bm{x}_k - \hat{\bm{x}}_{k})^T p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k\,.
+\end{split}
+\end{equation}
+
+
+ The posterior distribution can be constructed recursively in two steps, namely by a prediction and an update operation:
+
+\begin{enumerate}
+\item \emph{Time update}: given the observation sequence $\bm{Z}_{k-1}$ and the control sequence $\bm{U}_{k-2}$, the predictive distribution is computed according to the Chapman-Kolmogorov identity:
+
+\begin{equation}\label{eq:chapman_kolmogorov}
+\begin{split}
+  \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})}_{\substack{\text{Predictive} \\ \text{distribution}}}
+  &= \int p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{Z}_{k-1}, \bm{U}_{k-1}) \\
+  &\mathrel{\phantom{iiiiiiii}} \cdot\:p(\bm{x}_{k-1}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1}) d\bm{x}_{k-1} \\
+  &= \int \underbrace{p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})}_\text{Prior} \\
+  &\mathrel{\phantom{iiiiiiii}} \cdot \underbrace{p(\bm{x}_{k-1}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-2})}_\text{Old posterior} d\bm{x}_{k-1}\,.
+  \end{split}
+\end{equation}
+
+\noindent
+Here, we used the Markov property:
+
+\begin{equation}\label{eq:markov_property}
+  p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{Z}_{k-1}, \bm{U}_{k-1}) = p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})\,,
+\end{equation}
+
+\noindent
+and the fact that the old posterior is conditionally independent of future control inputs, so that the following holds:
+
+\begin{equation}
+  p(\bm{x}_{k-1}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1}) = p(\bm{x}_{k-1}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-2})\,.
+\end{equation}
+
+
+\item \emph{Measurement update}: exploiting the current observation $\bm{z}_{k}$ and applying Bayes' theorem, we can compute the updated posterior as follows: 
+
+\begin{equation}\label{eq:updated_posterior}
+\begin{split}
+  \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}_{\substack{\text{Updated} \\ \text{posterior}}} &= p(\bm{x}_k\,|\,\bm{z}_{k}, \bm{Z}_{k-1}, \bm{U}_{k-1}) \\
+  &= \frac{p(\bm{z}_k\,|\,\bm{x}_{k}, \bm{Z}_{k-1}, \bm{U}_{k-1}) p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})}{p(\bm{z}_{k}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})} \\
+  &= \underbrace{p(\bm{z}_k\,|\,\bm{x}_{k})}_{\substack{\text{Likelihood} \\ \text{function}}} \underbrace{p(\bm{x}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1})}_{\substack{\text{Predictive} \\ \text{distribution}}} \eta^{-1} \,,
+\end{split}
+\end{equation}
+
+\noindent
+where the normalising constant $\eta$ is given by
+
+\begin{equation}\label{eq:partition_function}
+\begin{split}
+\eta &= p(\bm{z}_k\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1}) \\ 
+  &= \int p(\bm{z}_k\,|\,\bm{x}_{k}) p(\bm{x}_{k}\,|\,\bm{Z}_{k-1}, \bm{U}_{k-1}) d\bm{x}_{k}\,.
+\end{split}
+\end{equation}
+
+\noindent
+Note how in the last transformation step of Equation \ref{eq:updated_posterior} we used conditional independence given the state, that is
+ 
+ \begin{equation}\label{eq:markov_property_observation}
+  p(\bm{z}_k\,|\,\bm{x}_{k}, \bm{Z}_{k-1}, \bm{U}_{k-1}) = p(\bm{z}_k\,|\,\bm{x}_{k})\,.
+\end{equation}
+ 
+\end{enumerate}
+
+
+The Bayesian filter is the optimal conceptual solution to the recursive estimation problem. However, due to the multi-dimensional integration, a closed-form algorithm can only be obtained in a few special cases. If the probability distributions $p(\bm{x}_0)$, $p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$, and $p(\bm{z}_k\,|\,\bm{x}_{k})$ are Gaussian and the dynamic system is described by a linear model, the posterior distribution remains Gaussian and the Equations \ref{eq:chapman_kolmogorov} and \ref{eq:updated_posterior} reduce to the celebrated Kalman filter, which is described in the following section. Figure \ref{fig:filter_overview} compares different Bayesian filters that are discussed in further detail below.
+
+
+
+\begin{figure}[t]
+\begin{center}
+\begin{tikzpicture}[
+	level 1/.style = {sibling distance=40mm, minimum height=1.2cm},
+	  edge from parent/.style={-,draw},
+	  >=latex,
+  basic/.style   = {draw, text width=2cm, rounded corners=2pt, rectangle, thin, node distance=1.5cm},
+  root/.style    = {basic, align=center, fill=black!10, text width=2cm},
+  level 2/.style = {basic, align=center, fill=black!10, text width=9em},
+  level 3/.style = {basic, align=left, text width=7.5em, minimum height=1.2cm}]
+	
+	% root of the the initial tree, level 1
+	\node[root] {Bayesian Filters}
+	% The first level, as children of the initial tree
+	  child {node[level 2] (c1) {Linear \\ AWGN}}
+	  child {node[level 2] (c2) {Non-linear \\ AWGN}}
+	  child {node[level 2] (c3) {Non-linear \\ arbitrary noise}};
+	
+	% The second level, relatively positioned nodes
+	\begin{scope}[every node/.style={level 3}]
+	\node [below of = c1, xshift=2pt] (c11) {Kalman Filter};
+	
+	\node [below of = c2, xshift=2pt] (c21) {Extended \\ Kalman Filter};
+	\node [below of = c21] (c22) {Unscented \\ Kalman Filter};
+	
+	\node [below of = c3, xshift=2pt] (c31) {Bootstrap Filter};
+	\node [below of = c31] (c32) {Unscented Particle Filter};
+	\end{scope}
+	
+	% lines from each level 1 node to every one of its "children"
+	\foreach \value in {1}
+	  \draw[-, rounded corners=1pt] (c1.200) |- (c1\value.west);
+	
+	\foreach \value in {1,...,2}
+	  \draw[-, rounded corners=1pt] (c2.200) |- (c2\value.west);
+	
+	\foreach \value in {1,...,2}
+	  \draw[-, rounded corners=1pt] (c3.200) |- (c3\value.west);
+\end{tikzpicture}
+\end{center}
+\caption[Comparison of different Bayesian filters used in self-localisation of mobile robots.]{Comparison of different Bayesian filters used in self-localisation of mobile robots. AWGN denotes additive white Gaussian noise.}
+\label{fig:filter_overview}
+\end{figure}
+
+
+\section{Kalman Filters}
+
+The \emph{Kalman filter} provides an efficient means to analytically compute the evolving sequence of posterior distributions of a linear dynamic system that is perturbed by additive white Gaussian noise \cite{maybeck2002stochastic}. Named after Rudolf E. Kalman, who 1960 published his famous paper describing a recursive solution to the discrete-data linear filtering problem \cite{kalman_1960}, the Kalman filter has been the subject of extensive research, which is due, to a large extent, to the advances in digital computing \cite{welch2014}. The Kalman filter and its many variations find applications in radar tracking, navigation, and orientation estimation, among others. \citeauthor{zarchan2009fundamentals} stated in \cite{zarchan2009fundamentals}: ``With the possible exception of the fast Fourier transform, Kalman filtering is probably the most important algorithmic technique ever devised.'' We will now proceed to formally introduce the Kalman filter, followed by two of its variations for non-linear models in the subsequent sections.
+
+\subsection{The Kalman Filter}\label{sec:Kalman}
+
+Let $\bm{x}_k \in \mathbb{R}^{n_{\bm{x}}}$ be the state vector of a discrete-time controlled process, governed by the \emph{linear} stochastic difference equation 
+
+\begin{equation}\label{eq:time_dynamical_system_plant}
+  \bm{x}_k = \bm{\Phi}_{k-1}\bm{x}_{k-1}+\bm{B}_{k-1}\bm{u}_{k-1}+\bm{w}_{k-1}\,,
+\end{equation}
+
+\noindent
+where the index $k$ again denotes discrete time. The $n_{\bm{x}} \times n_{\bm{x}}$ state transition matrix $\bm{\Phi}_{k-1}$ relates the state at the previous time step $k-1$ to the state at the current step $k$ and the $n_{\bm{x}} \times n_{\bm{u}}$ matrix $\bm{B}_{k-1}$ relates the known, optional control input $\bm{u}_{k-1} \in \mathbb{R}^{n_{\bm{u}}}$ to the state $\bm{x}_k$. Let $\bm{z}_k \in \mathbb{R}^{n_{\bm{z}}}$ denote the measurement vector of this process, which is related to the state by the linear measurement model
+
+\begin{equation}\label{eq:time_dynamical_system_measurement}
+  \bm{z}_k = \bm{H}_{k}\bm{x}_{k}+\bm{v}_{k}\,,
+\end{equation}
+
+\noindent
+ where the $n_{\bm{z}} \times n_{\bm{x}}$ measurement matrix $\bm{H}_{k}$ relates the state $\bm{x}_k$ to the measurement $\bm{z}_k$. The $n_{\bm{x}}\times1$ vector $\bm{w}_k$ and the $n_{\bm{z}}\times1$ vector $\bm{v}_k$ in Equation \ref{eq:time_dynamical_system_plant} and \ref{eq:time_dynamical_system_measurement} represent the additive process and measurement noise, respectively, modelled as zero-mean, Gaussian white noise,
+
+\begin{equation}\label{eq:process_noise}
+  \bm{w}_{k} \sim \mathcal{N}(0,\bm{Q}_k)\,,
+\end{equation}
+
+\begin{equation}\label{eq:measurement_noise}
+  \bm{v}_{k} \sim \mathcal{N}(0,\bm{R}_k)\,,
+\end{equation}
+ 
+\noindent
+with the \emph{process noise covariance matrix} $\bm{Q}_k$ and the \emph{measurement noise covariance matrix} $\bm{R}_k$.
+
+\tikzstyle{block} = [draw, rectangle, minimum height=0.8cm, minimum width=0.8cm]
+\tikzstyle{sum} = [draw, circle]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{input} = [coordinate]
+
+\begin{figure}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[auto, thick, node distance=1.5cm,>=latex']
+	
+	\node [sum] (sum1) {$\sum$};
+	\node [block, align=center, left of=sum1, node distance=1.5cm] (b) {$\bm{B}_{k-1}$};
+	\node [input, above of=sum1] (w) {};
+    \node [block, align=center, 
+    	right of=sum1, node distance=3cm] (H) {$\bm{H}_k$};
+    \node [block, align=center, below of=sum1, node distance=1.8cm] (phi) {$\bm{\Phi}_{k-1}$};
+    \node [input, above of=b] (u) {};
+    \node [sum, right of=H, node distance=1.5cm] (sum2) {$\sum$};
+    \node [sum, below of=sum2, node distance=1.8cm] (sum3) {$\sum$};
+    \node [input, above of=sum2] (v) {};
+    \node [block, align=center, 
+    	right of=sum3, node distance=1.5cm] (K) {$\bm{K}_k$};
+    \node [block, align=center, below of=K, node distance=1.8cm] (H1) {$\bm{H}_k$};
+    \node [block, align=center, right of=H1, node distance=2.5cm] (phi1) {$\bm{\Phi}_{k-1}$};
+    \node [block, align=center, right of=phi1, node distance=2.2cm] (delay1) {$z^{-1_{ }}\bm{I}_{n_{\bm{z}}}$};
+    \node [sum, right of=K, node distance=1.5cm] (sum4) {$\sum$};
+    \node [output, right of=sum4, node distance=4.0cm] (out) {};
+    
+    
+    \draw [->] (b) -- node[label={below:$+$}, pos=0.77] {} (sum1);
+    \draw [->] (sum1) -- node[] {$\bm{x}_k$} node[name=x_k, pos=0.8] {} (H);
+    \node [block, below of=x_k, node distance=1.93cm] (delay) {$z^{-1_{ }}\bm{I}_{n_{\bm{z}}}$};
+    \draw [->, align=center] (delay) -- node [label={below:$\bm{x}_{k-1}$}, pos=0.4] {} (phi);
+    \draw [->] (phi) -- node[pos=0.87] {$+$} (sum1);
+    \draw [->] (H) -- node[label={below:$+$}, pos=0.77] {} (sum2);
+    \draw [->] (sum2) -- node[] {$\bm{z}_k$} node[label={left:$+$}, pos=0.79] {} (sum3);
+    \draw [->] (sum3) -- (K);
+    \draw [->] (w) -- node [label={left:$\bm{w}_{k-1}$}, pos=0.29]{} node[label={left:$+$}, pos=0.88] {} (sum1);
+    \draw [->] (u) -- node[label={left:$\bm{u}_{k-1}$}, pos=0.29] {} (b);
+    \draw [->] (v) -- node [label={left:$\bm{v}_{k}$}, pos=0.29]{} node[label={left:$+$}, pos=0.88] {} (sum2);
+    \draw [->] (x_k) -- (delay);
+    \draw [->] (H1) -| node[pos=0.89] {$-$} (sum3);
+    \draw [->] (K) -- node[label={below:$+$}, pos=0.77] {} (sum4);
+    \draw [->] (phi1) -- node[pos=0.27, name=h-phi] {} node[] {$\hat{\bm{x}}_{k|k-1}$} (H1);
+    \draw [->] (delay1) -- node[label={below:$\hat{\bm{x}}_{k-1}$}, pos=0.4]  {} (phi1);
+     \draw [->] (h-phi) -- node[pos=0.90] {$+$} (sum4);
+     \draw [->] (sum4) -- node[pos=0.77, name=xk_hat] {$\hat{\bm{x}}_k$} (out);
+     \draw [->] (xk_hat) -- (delay1);
+     
+     \draw[dashed, thin, rounded corners=2pt]     ($(sum3.north west)+(-0.5,0.9)$) rectangle ($(delay1.south east)+(0.5,-0.6)$);
+     \node [] (text) at (8.3, -0.2) {Kalman filter};
+\end{tikzpicture}
+}
+
+\caption[Block diagram depicting the relation between a linear discrete-time dynamical system, its observation, and the Kalman filter.]{Block diagram depicting the relation between a linear, discrete-time dynamical system, its observation $\bm{z}_k$, and the Kalman filter.} \label{fig:kalman_filter_model}
+\end{figure}
+
+We define the vector $\hat{\bm{x}}_{k|k-1} \in \mathbb{R}^{n_{\bm{x}}}$ as the \emph{a priori} state estimate, representing knowledge of the process prior to step $k$, given by
+
+\begin{equation}\label{eq:apriori_estimate}
+  \hat{\bm{x}}_{k|k-1} = \bm{\Phi}_{k-1}\hat{\bm{x}}_{k-1}+\bm{B}_{k-1}\bm{u}_{k-1}\,,
+\end{equation}
+
+\noindent
+and $\hat{\bm{x}}_k \in \mathbb{R}^{n_{\bm{x}}}$ as the \emph{a posteriori} state estimate at step $k$, after having received the measurement $\bm{z}_k$, given by
+
+\begin{equation}\label{eq:aposteriori_estimate}
+  \hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \bm{K}_{k} \big(\bm{z}_k-\bm{H}_{k}\hat{\bm{x}}_{k|k-1} \big)\,.
+\end{equation}
+
+\noindent
+The term $[\bm{z}_k-\bm{H}_{k}\hat{\bm{x}}_{k|k-1}]$ is called the measurement \emph{innovation} or \emph{residual}. It reflects the discordance between the predicted measurement $\bm{H}_{k}\hat{\bm{x}}_{k|k-1}$ and the actual measurement $\bm{z}_k$. The ${n_{\bm{x}}} \times {n_{\bm{z}}}$ matrix $\bm{K}_{k}$ is termed the \emph{Kalman gain} and is given by
+
+\begin{equation}\label{eq:Kalman_gain}
+  \bm{K}_{k} = \bm{P}_{k|k-1} \bm{H}^T_k \big(\bm{H}_k \bm{P}_{k|k-1} \bm{H}^T_k + \bm{R}_k \big)^{-1}\,,
+\end{equation}
+
+\noindent
+with the \emph{a priori error covariance matrix}
+
+\begin{equation}\label{eq:apriori_error_cov}
+  \bm{P}_{k|k-1} = \bm{\Phi}_{k-1} \bm{P}_{k-1} \bm{\Phi}^T_{k-1} + \bm{Q}_{k-1}
+\end{equation}
+
+\noindent
+and the \emph{a posteriori error covariance matrix}
+
+\begin{equation}\label{eq:aposteriori_error_cov}
+  \bm{P}_{k} = \big(\bm{I}_n - \bm{K}_{k}\bm{H}_{k}\big)\bm{P}_{k|k-1}\,.
+\end{equation}
+
+\noindent
+Note that the Gaussian posterior distribution is fully determined by its mean $\hat{\bm{x}}_k$ and covariance $\bm{P}_{k}$. 
+
+Figure \ref{fig:kalman_filter_model} illustrates the relation of the Kalman filter to the linear discrete-time dynamical system, where $z^{-1}$ denotes the unit-delay and $\bm{I}_{n_{\bm{x}}}$ the $n_{\bm{x}}\times n_{\bm{x}}$ identity matrix. In accordance with the formal Bayesian filter, the Kalman filter equations can be divided into two groups: \emph{time update} Equations \ref{eq:apriori_estimate}, \ref{eq:apriori_error_cov} and \emph{measurement update} Equations \ref{eq:aposteriori_estimate} , \ref{eq:Kalman_gain}, and \ref{eq:aposteriori_error_cov}, as shown in Figure \ref{fig:kalman_filter_cycle}, which depicts the `predict and correct' behaviour of the filter algorithm. After an initialisation step, the time update and measurement update steps are carried out recursively at every time step.
+
+The Kalman filter represents an optimal solution to the recursive Bayesian state estimation problem but assumes a linear model and Gaussian noise. Since for many practical problems these assumptions do not hold, a variety of state estimators have been proposed to approximate solutions to the non-linear, possibly non-Gaussian state estimation problem, which has shown to be difficult to solve analytically. An important representative of this class of filters is the extended Kalman filter.
+
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=8cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=4cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] $\hat{\bm{x}}_{0} = \mathbb{E}[\bm{x}_{0}], \bm{P}_{0} = \mathbb{E}\big[(\bm{x}_{0} - \hat{\bm{x}}_{0}) (\bm{x}_{0} - \hat{\bm{x}}_{0})^T\big]$};
+\node [block, align=center, below of=init, node distance=3.2cm] (predict) {\emph{Time update} \\[3mm]
+	Compute a priori state estimate: \\ $\hat{\bm{x}}_{k|k-1} = \bm{\Phi}_{k-1}\hat{\bm{x}}_{k-1}+\bm{B}_{k-1}\bm{u}_{k-1}$ \\[2mm]
+	Compute a priori error covariance: \\ $\bm{P}_{k|k-1} = \bm{\Phi}_{k-1} \bm{P}_{k-1} \bm{\Phi}^T_{k-1} + \bm{Q}_{k-1}$};
+\node [block, align=center, below of=predict, node distance=4.5cm] (update) {\emph{Measurement update} \\[3mm]
+	Compute Kalman gain: \\ $\bm{K}_{k} = \bm{P}_{k|k-1} \bm{H}^T_k\big(\bm{H}_k \bm{P}_{k|k-1} \bm{H}^T_k + \bm{R}_k\big)^{-1}$ \\[2mm]
+	Compute a posteriori state estimate: \\ $\hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \bm{K}_{k}\big(\bm{z}_k-\bm{H}_{k}\hat{\bm{x}}_{k|k-1}\big)$ \\[2mm]
+	Update error covariance: \\ $\bm{P}_{k} = \big(\bm{I}_n - \bm{K}_{k}\bm{H}_{k}\big)\bm{P}_{k|k-1}$};
+\node [output, below of=update, node distance=3.2cm, name=output] {Output};
+\node [output, below of=update, node distance=2.7cm, name=help1] {};
+\node [output, right of=help1, node distance=4.6cm, name=help2] {};
+\node [output, below of=init, node distance=1.16cm, name=help4] {};
+\node [output, right of=help4, node distance=4.6cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\caption[Operation cycle of the Kalman filter.]{Operation cycle of the Kalman filter, illustrating its `predict and correct' behaviour.} \label{fig:kalman_filter_cycle}
+\end{figure}
+
+
+\subsection{The Extended Kalman Filter}\label{sec:extended_kalman}
+
+The Kalman filter may be modified so as to make it applicable to the state estimation of systems with \emph{non-linear} state dynamics, that is systems that can be described by a model of the following form:
+
+\begin{equation}\label{eq:time_dynamical_system_plant_extended}
+  \bm{x}_k = \bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1})+\bm{w}_{k-1}, \quad \bm{w}_{k} \sim \mathcal{N}(0,\bm{Q}_k)\,.
+\end{equation}
+
+\noindent
+The state transition function $\bm{\phi}_{k-1}: \mathbb{R}^{n_{\bm{x}}} \times \mathbb{R}^{n_{\bm{u}}} \rightarrow \mathbb{R}^{n_{\bm{x}}}$ relates the state at the previous time step $k-1$ to the current time step $k$, taking into account the exogenous control input $\bm{u}_{k-1}$. The possibly \emph{non-linear} transformation from state variables to measurement variables, $\bm{h}_k: \mathbb{R}^{n_{\bm{x}}} \rightarrow \mathbb{R}^{n_{\bm{z}}}$, is given by
+
+\begin{equation}\label{eq:time_dynamical_system_measurement_extended}
+  \bm{z}_k = \bm{h}_{k}(\bm{x}_{k})+\bm{v}_{k}, \quad \bm{v}_{k} \sim \mathcal{N}(0,\bm{R}_k)\,.
+\end{equation}
+
+\noindent
+Note that, as opposed to the generic state-space model given by Equation \ref{eq:generic-state_dynamics} and \ref{eq:generic-measurement}, again we assume additive zero-mean white Gaussian noise in both Equations \ref{eq:time_dynamical_system_plant_extended} and \ref{eq:time_dynamical_system_measurement_extended}.
+ 
+ \subsubsection{Linearisation}
+ 
+Some non-linear problems can be deemed \emph{quasi-linear}, which means that a variation of the respective non-linear functions $\bm{\phi}_k$ and $\bm{h}_k$ are predominantly linear about a value $\bm{x}_0$. Assuming that $\bm{\phi}_k$ and $\bm{h}_k$ are differentiable at $\bm{x}_0$, they can be approximated as follows:
+
+\begin{equation}\label{eq:linear_phi}
+  \bm{\phi}_{k}(\bm{x}_0 + d \bm{x}, \bm{u}) \approx \bm{\phi}_{k}(\bm{x}_0, \bm{u}) + d \bm{x} \left. \frac{\partial \bm{\phi}_{k}(\bm{x}, \bm{u})}{\partial \bm{x}} \right|_{\bm{x} = \bm{x}_0, \bm{u}}\,,
+\end{equation}
+
+\begin{equation}\label{eq:linear_h}
+  \bm{h}_{k}(\bm{x}_0 + d \bm{x}) \approx \bm{h}_{k}(\bm{x}_0) + d \bm{x} \left. \frac{\partial \bm{h}_{k}(\bm{x})}{\partial \bm{x}} \right|_{\bm{x} = \bm{x}_0}\,.
+\end{equation}
+
+\noindent
+A first-order Taylor series expansion of the state-space model at each time instant around the most recent state estimate allows us to use the standard Kalman filter equations stated in Section \ref{sec:Kalman}. The resulting filter is referred to as the \emph{extended Kalman filter} (EKF). It linearises the functions $\bm{\phi}_{k-1}$ and $\bm{h}_k$ using their respective Jacobian matrices  
+
+\begin{equation}\label{eq:Phi_first_order}
+  \bm{\Phi}^{[1]}_{k-1} =  \left. \frac{\partial \bm{\phi}_{k-1}(\bm{x}, \bm{u})}{\partial \bm{x}} \right|_{\bm{x}=\hat{\bm{x}}_{k-1}, \bm{u} = \bm{u}_{k-1}}
+\end{equation}
+
+\noindent
+and
+
+\begin{equation}\label{eq:H_first_order}
+  \bm{H}^{[1]}_{k} = \left. \frac{\partial \bm{h}_{k}(\bm{x})}{\partial \bm{x}} \right|_{\bm{x}=\hat{\bm{x}}_{k|k-1}} \,,
+\end{equation}
+
+\noindent
+where the superscript ${[1]}$ denotes the \emph{first-order} approximation. The $ij$-th entry of $\bm{\Phi}^{[1]}_{k-1}$ is equal to the partial derivative of the $i$-th component of $\bm{\phi}_{k-1}(\bm{x})$ with respect to the $j$-th component of $\bm{x}$. The derivatives are evaluated at $\bm{x}=\hat{\bm{x}}_{k-1}$ and $\bm{u} = \bm{u}_{k-1}$. Likewise, the $ij$-th entry of $\bm{H}^{[1]}_{k}$ is equal to the partial derivative of the $i$-th component of $\bm{h}_{k}(\bm{x})$ with respect to the $j$-th component of $\bm{x}$. The derivatives are evaluated at $\bm{x}=\hat{\bm{x}}_{k|k-1}$.
+
+
+ \subsubsection{Extended Kalman Filter Equations}
+ 
+In structure similar to the Kalman filter Equations \ref{eq:apriori_estimate} and \ref{eq:aposteriori_estimate}, the a priori state estimate is given by
+
+\begin{equation}\label{eq:apriori_estimate_extended}
+  \hat{\bm{x}}_{k|k-1} = \bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1})
+\end{equation}
+
+\noindent
+and the a posteriori estimate, conditioned on the current measurement, is given by
+
+\begin{equation}\label{eq:aposteriori_estimate_extended}
+  \hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \bm{K}_{k}\big(\bm{z}_k-\bm{h}_k(\hat{\bm{x}}_{k|k-1})\big)\,.
+\end{equation}
+
+\noindent
+The corresponding a priori error covariance matrix $\bm{P}_{k|k-1}$, the Kalman gain $\bm{K}_{k}$, and the a posteriori covariance matrix $\bm{P}_{k}$ are computed as follows:
+
+\begin{equation}\label{eq:apriori_error_cov_extended}
+  \bm{P}_{k|k-1} = \bm{\Phi}^{[1]}_{k-1} \bm{P}_{k-1} \bm{\Phi}^{[1]T}_{k-1} + \bm{Q}_{k-1}\,,
+\end{equation}
+
+\begin{equation}\label{eq:Kalman_gain_extended}
+  \bm{K}_{k} = \bm{P}_{k|k-1} \bm{H}^{[1]T}_k \big(\bm{H}^{[1]}_k \bm{P}_{k|k-1} \bm{H}^{[1]T}_k + \bm{R}_k \big)^{-1}\,,
+\end{equation}
+
+\begin{equation}\label{eq:aposteriori_error_cov_extended}
+  \bm{P}_{k} = \big(\bm{I}_n - \bm{K}_{k}\bm{H}^{[1]}_{k}\big)\bm{P}_{k|k-1}\,.
+\end{equation}
+
+\tikzstyle{block} = [draw, rectangle, minimum height=0.8cm, minimum width=0.8cm]
+\tikzstyle{sum} = [draw, circle]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{input} = [coordinate]
+
+\begin{figure}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[auto, thick, node distance=1.5cm,>=latex']
+	
+	\node [block] (phi) {$\bm{\phi}_{k-1}$};
+	\node [sum, right of=phi, node distance=1.8cm] (sum1) {$\sum$};
+	\node [input, above of=sum1] (w) {};
+    \node [block, align=center, 
+    	right of=sum1, node distance=2cm] (H) {$\bm{h}_k$};
+    \node [input, above of=phi] (u) {};
+    \node [input, above of=H] (v) {};
+    
+    \node [sum, below of=H, node distance=1.8cm] (sum3) {$\sum$};
+    \node [block, align=center, 
+    	right of=sum3, node distance=1.5cm] (K) {$\bm{K}_k$};
+    \node [block, align=center, below of=K, node distance=1.8cm] (H1) {$\bm{h}_k$};
+    \node [block, align=center, right of=H1, node distance=2.5cm] (phi1) {$\bm{\phi}_{k-1}$};
+    \node [block, align=center, right of=phi1, node distance=2.2cm] (delay1) {$z^{-1_{ }}\bm{I}_{n_{\bm{z}}}$};
+    \node [sum, right of=K, node distance=1.5cm] (sum4) {$\sum$};
+    \node [output, right of=sum4, node distance=4.0cm] (out) {};
+    
+    \draw [->] (sum1) -- node[] {$\bm{x}_k$} node[name=x_k, pos=0.3] {} (H);
+    \node [block, below of=phi, node distance=1.8cm] (delay) {$z^{-1_{ }}\bm{I}_{n_{\bm{z}}}$};
+    \draw [->] (delay) -- node [] {$\bm{x}_{k-1}$} (phi);
+    \draw [->] (w) -- node [label={left:$\bm{w}_{k-1}$}, pos=0.29]{} (sum1);
+    \draw [->] (u) -- node [label={left:$\bm{u}_{k-1}$}, pos=0.29]{} (phi);
+    \draw [->] (v) -- node [label={left:$\bm{v}_{k}$}, pos=0.29]{}  (H);
+    \draw [->] (x_k) |- (delay);
+    
+    \draw [->] (phi) -- node[label={below:$+$}, pos=0.77] {} (sum1);
+    
+    \draw [->] (H) -- node[] {$\bm{z}_k$} node[label={left:$+$}, pos=0.79] {} (sum3);
+    \draw [->] (sum3) -- (K);
+    \draw [->] (H1) -| node[pos=0.89] {$-$} (sum3);
+    \draw [->] (K) -- node[label={below:$+$}, pos=0.77] {} (sum4);
+    \draw [->] (phi1) -- node[pos=0.27, name=h-phi] {} node[] {$\hat{\bm{x}}_{k|k-1}$} (H1);
+    \draw [->] (delay1) -- node[label={below:$\hat{\bm{x}}_{k-1}$}, pos=0.4]  {} (phi1);
+     \draw [->] (h-phi) -- node[pos=0.90] {$+$} (sum4);
+     \draw [->] (sum4) -- node[pos=0.77, name=xk_hat] {$\hat{\bm{x}}_k$} (out);
+     \draw [->] (xk_hat) -- (delay1);
+     
+     \draw[dashed, thin, rounded corners=2pt]     ($(sum3.north west)+(-0.5,0.9)$) rectangle ($(delay1.south east)+(0.5,-0.6)$);
+     \node [] (text) at (7.3, -0.2) {Extended Kalman filter};
+\end{tikzpicture}
+}
+
+\caption[Block diagram depicting the relation between a non-linear discrete-time dynamical system, its observation, and the extended Kalman filter.]{Block diagram depicting the relation between a non-linear discrete-time dynamical system, its observation $\bm{z}_k$, and the extended Kalman filter.} \label{fig:extended_kalman_filter_model}
+\end{figure}
+
+Figure \ref{fig:extended_kalman_filter_model} illustrates the relation of the extended Kalman filter to the non-linear discrete-time dynamical system, where $z^{-1}$ denotes the unit-delay and $\bm{I}_{n_{\bm{x}}}$ the $n_{\bm{x}}\times n_{\bm{x}}$ identity matrix. Figure \ref{fig:extended_kalman_filter_cycle} illustrates the `predict and correct' behaviour of the extended Kalman filter algorithm. After an initialisation step, the \emph{time update} and \emph{measurement update} steps are carried out recursively at every time step. In order to linearise the state-space model at each time instant around the most recent state estimate, additionally, the Jacobian matrices have to be computed, which can prove to be computationally demanding for high dimensional systems.
+
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=8cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] $\hat{\bm{x}}_{0} = \mathbb{E}[\bm{x}_{0}], \bm{P}_{0} = \mathbb{E}\big[(\bm{x}_{0} - \hat{\bm{x}}_{0}) (\bm{x}_{0} - \hat{\bm{x}}_{0})^T\big]$};
+\node [block, align=center, below of=init, node distance=4cm] (predict) {\emph{Time update} \\[3mm] 
+	Compute a priori state estimate: \\ $\hat{\bm{x}}_{k|k-1} = \bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1})$ \\[2mm]
+	Compute Jacobian matrix: \\ $\bm{\Phi}^{[1]}_{k-1} =  \left. \frac{\partial \bm{\phi}_{k-1}(\bm{x}, \bm{u})}{\partial \bm{x}} \right|_{\bm{x}=\hat{\bm{x}}_{k-1}, \bm{u} = \bm{u}_{k-1}}$ \\[2mm]
+	Compute a priori error covariance: \\ $\bm{P}_{k|k-1} = \bm{\Phi}^{[1]}_{k-1} \bm{P}_{k-1} \bm{\Phi}^{[1]T}_{k-1} + \bm{Q}_{k-1}$};
+\node [block, align=center, below of=predict, node distance=6.2cm] (update) {\emph{Measurement update} \\[3mm]
+	Compute Jacobian matrix: \\ $\bm{H}^{[1]}_{k} = \left. \frac{\partial \bm{h}_{k}(\bm{x})}{\partial \bm{x}} \right|_{\bm{x}=\hat{\bm{x}}_{k|k-1}}$ \\[2mm]
+	Compute Kalman gain: \\ $\bm{K}_{k} = \bm{P}_{k|k-1} \bm{H}^{[1]T}_k\big(\bm{H}^{[1]}_k \bm{P}_{k|k-1} \bm{H}^{[1]T}_k + \bm{R}_k\big)^{-1}$ \\[2mm]
+	Compute a posteriori state estimate: \\ $\hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \bm{K}_{k}\big(\bm{z}_k-\bm{h}_{k}(\hat{\bm{x}}_{k|k-1})\big)$ \\[2mm]
+	Update error covariance: \\ $\bm{P}_{k} = \big(\bm{I}_n - \bm{K}_{k}\bm{H}^{[1]}_{k}\big)\bm{P}_{k|k-1}$};
+\node [output, below of=update, node distance=3.8cm, name=output] {Output};
+\node [output, below of=update, node distance=3.35cm, name=help1] {};
+\node [output, right of=help1, node distance=4.6cm, name=help2] {};
+\node [output, below of=init, node distance=1.23cm, name=help4] {};
+\node [output, right of=help4, node distance=4.6cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\caption[Operation cycle of the extended Kalman filter.]{Operation cycle of the extended Kalman filter, illustrating its `predict and correct' behaviour.} \label{fig:extended_kalman_filter_cycle}
+\end{figure}
+
+Extended Kalman filtering is commonly used and was, in fact, the first successful application of the Kalman filter \cite{grewal2008kalman}. Unlike its linear counterpart, the extended Kalman filter may not necessarily be an optimal estimator. Owing to its local linearisation the EKF may quickly diverge if the model is highly non-linear. This limitation may be overcome using a higher-order approximation, which characterises the unscented Kalman filter described in the following section.
+
+
+\subsection{The Unscented Kalman Filter}\label{sec:unscented_kalman}
+
+The \emph{unscented Kalman filter} (UKF) is a derivative-free state estimation approach first proposed by \citeauthor{julier1997ukf} in \cite{julier1997ukf} and further developed by \citeauthor{wan2000unscented} in \cite{wan2000unscented}. The Gaussian state distribution is represented using a minimal set of carefully chosen sample points around the mean, called \emph{sigma points}, which capture the true mean and covariance of the process. When propagated through the non-linear system, the sigma points capture the posterior mean and covariance accurate to the second-order Taylor polynomial for any non-linearity \cite{gustafsson2012some}. Whilst providing superior performance, the computational complexity of the UKF is the same order as that of the EKF. In the following section, we will introduce the underlying unscented transformation. A comprehensive description including an extension of the unscented Kalman filter to a broader class of estimation problems can be found in \cite{wan2001unscented}.
+
+\subsubsection{Unscented Transformation}
+
+The \emph{unscented transformation} \cite{Julier96ageneral} and \emph{scaled unscented transformation} \cite{julier2002scaled} was developed by \citeauthor{Julier96ageneral} and is motivated by their following intuition: ``With a fixed number of parameters it should be easier to approximate a Gaussian distribution than it is to approximate an arbitrary nonlinear function.'' Thus, the continuous Gaussian distribution is approximated using a discrete distribution having the same first and second-order moments.
+
+Given an $n$-dimensional Gaussian random variable $\bm{x}$, with mean $\bar{\bm{x}}$ and covariance $\bm{P}_{\bm{x}}$, we represent its distribution using an ensemble $\bm{\mathcal{X}}$ of $2n + 1$ sigma points $\mathcal{X}_i$, with
+
+\begin{alignat}{3}
+  \mathcal{X}_0 &= \bar{\bm{x}}\,, \\
+  \mathcal{X}_i &= \bar{\bm{x}} + \Big(\sqrt{(n + \lambda) \bm{P}_{\bm{x}}}\Big)_i, &&i \in \{1, \dots, n\}\,, \\
+  \mathcal{X}_i &= \bar{\bm{x}} - \Big(\sqrt{(n + \lambda) \bm{P}_{\bm{x}}}\Big)_{i-n}, \quad &&i \in \{n+1, \dots, 2n\} \,,
+\end{alignat}
+
+\noindent
+where $\big(\sqrt{(n + \lambda) \bm{P}_{\bm{x}}}\big)_i$ is the $i$-th column of the matrix square root of $(n + \lambda) \bm{P}_{\bm{x}}$, obtained, for instance, by a Cholesky decomposition. The scaling parameter $\lambda$ is given by
+
+\begin{equation}
+  \lambda = \alpha^2 (n + \kappa) - n, \quad \alpha,\kappa \in \mathbb{R}, \quad 0 \leq \alpha \leq 1, \quad \kappa \geq 1\,,
+\end{equation}
+
+\noindent 
+in which $\alpha$ determines the spread of the sigma points around the mean \cite{julier1995new} and $\kappa \geq 1$ guarantees positive semi-definiteness of the covariance matrix \cite{merwe2000scented}. According to \cite{wan2001unscented}, typical recommendations are $\kappa = 0$ and $10^{-4} \leq \alpha \leq 1$.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=\textwidth]{Figures/unscented_transform}} at (0pt,0pt);
+    
+    \node [label={right:Monte Carlo Simulation}] (a) at (-6, 7.3) {};
+    \node [label={right:Linearisation}] (a) at (-6, 2.5) {};
+    \node [label={right:Unscented Transformation}] (a) at (-6, -2.3) {};
+    
+    \node [] (b) at (-1, 5.2) (1) {};
+    \node [] (c) at (2, 5.2) (2) {};
+    \draw [->, align=center] (1) -- node[] {$\bm{y}^{(i)} = \bm{g}\big(\bm{x}^{(i)}\big)$} (2);
+    
+    \node [] (b) at (-1.5, 4.5)  (3) {\small covariance};
+    \node [] (b) at (-2.7, 5.4) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (-2.3, 3.6)  (3) {\small mean};
+    \node [] (b) at (-3.2, 5.4) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (1.9, 4.5)  (3) {\small sample mean};
+    \node [] (b) at (3.5, 5.8) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (3.1, 3.6)  (3) {\small sample covariance};
+    \node [] (b) at (3.5, 5.4) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (-6, 3)  (3) {};
+    \node [] (b) at (6, 3) (4) {};
+    \draw [dashed] (3) -- node[] {} (4);
+    
+    %%
+    
+    \node [] (b) at (-1, -0.5) (1) {};
+    \node [] (c) at (2, -0.5) (2) {};
+    \draw [->, align=left] (1) -- node[] {$\hat{\bm{y}} = \bm{g}(\bar{\bm{x}})$} (2);
+    
+    \node [] (b) at (4, 1.8) (3) {$\bm{P}_{\bm{y}} = \bm{G}^{[1]} \bm{P}_{\bm{x}} {\bm{G}^{[1]}}^T$};
+    \node [] (b) at (4, 0.3) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (-6, -1.8) (3) {};
+    \node [] (b) at (6, -1.8) (4) {};
+    \draw [dashed] (3) -- node[] {} (4);
+    
+    \node [] (b) at (2, 0.5) (3) {$\hat{\bm{y}}$};
+    \node [] (b) at (3.5, -0.4) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    %%
+    
+    \node [] (b) at (-4, -4)  (3) {\small sigma points $\mathcal{X}_i$};
+    \node [] (b) at (-2.8, -5.2) (4) {};
+    \node [] (b) at (-4.5, -6.3) (5) {};
+    \draw [->] (3) -- node[] {} (4);
+    \draw [->] (3) -- node[] {} (5);
+    
+    \node [] (b) at (-1, -6) (1) {};
+    \node [] (c) at (2, -6) (2) {};
+    \draw [->, align=left] (1) -- node[] {$\mathcal{Y}_i = \bm{g}(\mathcal{X}_i)$} (2);
+    
+    \node [] (b) at (2.0, -3.2) (3) {$\bm{P}_{\bm{y}} \approx \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{Y}_i-\bar{\bm{y}}\big)\big(\mathcal{Y}_i-\bar{\bm{y}}\big)^T$};
+    \node [] (b) at (2.7, -5.4) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+    \node [] (b) at (4.3, -4.0) (3) {$\bar{\bm{y}} \approx \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{Y}_i$};
+    \node [] (b) at (3.5, -5.9) (4) {};
+    \draw [->] (3) -- node[] {} (4);
+    
+\end{tikzpicture}
+\caption[The unscented transformation in comparison with Monte Carlo simulation and linearisation about the mean.]{The unscented transformation in comparison with Monte Carlo sampling and linearisation about the mean \cite{wan2001unscented}. Above, a cloud $\big\{\bm{x}^{(i)}\big\}_{i=1}^N$ of $N = 200$ samples drawn from a two-dimensional Gaussian distribution is propagated individually through a highly non-linear function $\bm{g}$. After the transformation the empirical sample mean and covariance is computed, respectively. In the middle, the mean $\bar{\bm{x}}$ is propagated through $\bm{g}$ to obtain an estimate $\hat{\bm{y}}$ of the true mean $\bar{\bm{y}}$, and the covariance is approximated through a linearisation of $\bm{g}$ about $\bar{\bm{x}}$, using its Jacobian evaluated at $\bar{\bm{x}}$, which is denoted by $\bm{G}^{[1]}$. Below, the set of sigma points $\big\{\mathcal{X}_i\big\}_{i=1}^5$ capturing the true mean and covariance of the distribution of $\bm{x}$ are transformed independently and the mean and covariance is estimated, respectively. As can be seen, the result of the unscented transformation approximates the true mean and covariance better than the linearisation approach.}
+	\label{fig:unscented_transform}
+\end{figure}
+
+In order to compute an estimate of the mean and covariance of an $m$-dimensional random variable $\bm{y}$, which is related to $\bm{x}$ by a non-linear transformation $\bm{g}: \mathbb{R}^{n} \rightarrow \mathbb{R}^{m}$, so that
+ 
+\begin{equation}
+  \bm{y} = \bm{g}(\bm{x})\,,
+\end{equation}
+
+\noindent
+the sigma points $\mathcal{X}_i \in \bm{\mathcal{X}}$ are independently propagated through $\bm{g}$,
+
+\begin{equation}
+  \mathcal{Y}_i = \bm{g}\big(\mathcal{X}_i\big), \quad i \in \{0, \dots, 2n\}\,,
+\end{equation}
+
+\noindent
+ to obtain a set $\bm{\mathcal{Y}}$ of transformed sigma points $\mathcal{Y}_i$.
+ 
+ The mean $\bar{\bm{y}}$ and the covariance $\bm{P}_{\bm{y}}$ of the random variable $\bm{y}$ are approximated as the weighted sample mean and covariance of the posterior sigma points, respectively,
+
+\begin{equation}
+  \bar{\bm{y}} \approx \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{Y}_i\,,
+\end{equation}
+
+\begin{equation}
+  \bm{P}_{\bm{y}} \approx \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{Y}_i-\bar{\bm{y}}\big)\big(\mathcal{Y}_i-\bar{\bm{y}}\big)^T\,.
+\end{equation}
+
+\noindent
+The weights for the mean, $W_i^{(m)}$, and for the covariance, $W_i^{(c)}$, are given by
+
+\begin{equation}\label{eq:weights1}
+  W^{(m)}_0 = \frac{\lambda}{n + \lambda} \,,
+\end{equation}
+
+\begin{equation}\label{eq:weights2}
+  W^{(c)}_0 = \frac{\lambda}{n + \lambda} + (1- \alpha^2 + \beta) \,,
+\end{equation}
+
+\begin{equation}\label{eq:weights3}
+  W_i^{(m)} = W_i^{(c)} = \frac{1}{2(n + \lambda)}, \quad i \in \{1, \dots, 2n\}\,.
+\end{equation}
+
+\noindent
+The real parameter $\beta$ is used to incorporate information about the probability distribution of $\bm{x}$, where $\beta = 2$ is optimal if the distribution is Gaussian \cite{van2001unscented}.
+
+
+Figure \ref{fig:unscented_transform} shows the unscented transformation for a two-dimensional random vector in comparison with Monto-Carlo sampling, which will be introduced in detail in Section \ref{sec:monte_carlo}, and the linearisation approach used by the extended Kalman filter. Note that only five sigma points are required to capture the mean and covariance of the distribution of $\bm{x}$. The mean and covariance of the independently transformed sigma points approximate the true mean and covariance up to the second order. \citeauthor{Julier96ageneral} mention the following significant advantages of the unscented transformation compared to the linearisation used in the EKF:
+
+\begin{itemize}
+	\item It is not necessary to compute Jacobians.
+	\item In the prediction stage only standard linear algebra operations like matrix square roots, outer products, and matrix and vector summations are required.
+	\item The number of computations, including an efficient computation of the matrix square root, scale with dimensions at the same rate as linearisation.
+	\item Constraints can be seamlessly incorporated by applying them to each of the projected sigma points $\mathcal{Y}_i$.
+\end{itemize}
+
+
+
+\subsubsection{Unscented Kalman Filter Equations}
+
+Given a discrete-time dynamic process and its ovservation governed by Equation \ref{eq:time_dynamical_system_plant_extended} and \ref{eq:time_dynamical_system_measurement_extended}, respectively, at each time step $k$ we compute the set of $2n_{\bm{x}}+1$ sigma points using the old posterior mean $\hat{\bm{x}}_{k-1}$ and covariance $\bm{P}_{k-1}$,
+
+\begin{alignat}{3}
+  \mathcal{X}_{0, k-1} &= \hat{\bm{x}}_{k-1}\,, \\
+  \mathcal{X}_{i, k-1} &= \hat{\bm{x}}_{k-1} + \gamma \Big(\sqrt{ \bm{P}_{k-1}}\Big)_i, &&i \in \{1, \dots, n_{\bm{x}}\}\,, \\
+  \mathcal{X}_{i, k-1} &= \hat{\bm{x}}_{k-1} - \gamma \Big(\sqrt{\bm{P}_{k-1}}\Big)_{i-n}, \quad &&i \in \{n_{\bm{x}}+1, \dots, 2n_{\bm{x}}\} \,,
+\end{alignat}
+
+\noindent
+with
+
+\begin{equation}
+  \gamma = \sqrt{(n_{\bm{x}} + \lambda)}\,.
+\end{equation}
+
+\noindent
+For the sake of brevity, in the following, the entire set of sigma points is denoted as
+
+\begin{equation}
+\begin{split}
+  \bm{\mathcal{X}}_{k-1} &= \big\{\mathcal{X}_{0, k-1}, \mathcal{X}_{1, k-1}, \dots, \mathcal{X}_{2n_{\bm{x}}, k-1}\big\} \\
+  &= \big\{\mathcal{X}_{0, k-1}\big\} \cup \big\{\mathcal{X}_{1, k-1}, \dots, \mathcal{X}_{n_{\bm{x}}, k-1}\big\} \\
+  &\mathrel{\phantom{= \big\{\mathcal{X}_{0, k-1}\big\}}} \cup \, \big\{\mathcal{X}_{n_{\bm{x}} + 1, k-1}, \dots, \mathcal{X}_{2n_{\bm{x}}, k-1}\big\} \\
+  &= \Big\{\hat{\bm{x}}_{k-1}, \quad \hat{\bm{x}}_{k-1} + \gamma \sqrt{\bm{P}_{k-1}}, \quad \hat{\bm{x}}_{k-1} - \gamma \sqrt{\bm{P}_{k-1}}\Big\}\,.
+\end{split}
+\end{equation}
+
+
+Now we propagate the sigma points individually, taking into account the control input $\bm{u}_{k-1}$, to obtain the set of transformed sigma points $ \bm{\mathcal{X}}_{k|k-1}$. Again, more succinctly we write
+
+\begin{equation}
+  \bm{\mathcal{X}}_{k|k-1} = \bm{\phi}_{k-1}\big(\bm{\mathcal{X}}_{k-1}, \bm{u}_{k-1}\big)\,.
+\end{equation}
+
+\noindent
+The a priori state estimate is computed as the weighted sample mean
+
+\begin{equation}\label{eq:aprioriunscented}
+  \hat{\bm{x}}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{X}_{i, k|k-1}
+\end{equation}
+
+\noindent
+and the a priori error covariance matrix as
+
+\begin{equation}
+  \bm{P}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{X}_{i, k|k-1} -\hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{X}_{i, k|k-1}-\hat{\bm{x}}_{k|k-1}\big)^T + \bm{Q}_k\,.
+\end{equation}
+
+\noindent
+where $\bm{Q}_k$ again denotes the process noise covariance matrix. Transforming the a priori sigma points individually using the measurement function $\bm{h}_{k}$ of Equation \ref{eq:time_dynamical_system_measurement_extended},
+
+\begin{equation}
+  \bm{\mathcal{Z}}_{k|k-1} = \bm{h}_{k}(\bm{\mathcal{X}}_{k|k-1})\,,
+\end{equation}
+
+\noindent
+lets us compute the predicted measurement as the weighted sample mean of the transformed sigma points,
+
+\begin{equation}\label{eq:innovation_covariance}
+  \hat{\bm{z}}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{Z}_{i, k|k-1}, \quad \mathcal{Z}_{i, k|k-1} \in \bm{\mathcal{Z}}_{k|k-1}\,.
+\end{equation}
+
+
+Now, we can compute the innovation covariance matrix
+
+\begin{equation}\label{eq:cross_covariance}
+  \bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{Z}_{i, k|k-1} -\hat{\bm{z}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T + \bm{R}_k
+\end{equation}
+
+\noindent
+and the cross covariance matrix as
+
+\begin{equation}\label{eq:crosscovunscented}
+  \bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{X}_{i, k|k-1} -\hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T\,,
+\end{equation}
+
+\noindent
+where $\bm{R}_k$ denotes the measurement noise covariance matrix. All weights $W_i$ in Equations \ref{eq:aprioriunscented}\,--\,\ref{eq:crosscovunscented} are computed according to Equations \ref{eq:weights1}\,--\,\ref{eq:weights3}. Given the covariance and cross covariance matrix, we can compute the Kalman gain as
+ 
+\begin{equation}
+  \mathcal{K}_k = \bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k}\bm{P}^{-1}_{\bm{z}_k\bm{z}_k}\,.
+\end{equation}
+
+As with the Kalman filter, the updated state estimate is the predicted state plus the innovation weighted by the Kalman gain,
+
+\begin{equation}
+  \hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \mathcal{K}_k\big(\bm{z}_k - \hat{\bm{z}}_{k|k-1}\big)\,,
+\end{equation}
+
+\noindent
+and the updated error covariance is the a priori error covariance minus the predicted measurement covariance, weighted by the Kalman gain,
+
+\begin{equation}
+  \bm{P}_k = \bm{P}_{k|k-1} - \mathcal{K}_k \bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} \mathcal{K}^T_k\,.
+\end{equation}
+
+
+Figure \ref{fig:unscented_kalman_filter_cycle} shows the entire unscented Kalman filter cycle, illustrating the computation of sigma points and the `predict and correct' behaviour. Note that for now we assume additive zero-mean noise sources. In the next section, we will extend the UKF to arbitrary noise sources with Gaussian distributions.
+
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=11.6cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] 
+	$\hat{\bm{x}}_{0} = \mathbb{E}[\bm{x}_{0}], \bm{P}_{0} = \mathbb{E}\big[(\bm{x}_{0} - \hat{\bm{x}}_{0}) (\bm{x}_{0} - \hat{\bm{x}}_{0})^T\big]$};
+\node [block, align=center, below of=init, node distance=2.6cm] (sigma) {\emph{Calculation of sigma points} \\[3mm] 
+	$\bm{\mathcal{X}}_{k-1} = \Big\{\hat{\bm{x}}_{k-1} \quad \hat{\bm{x}}_{k-1} + \gamma \sqrt{\bm{P}_{k-1}} \quad \hat{\bm{x}}_{k-1} - \gamma \sqrt{\bm{P}_{k-1}}\Big\}$};
+\node [block, align=center, below of=sigma, node distance=4.9cm] (predict) {\emph{Time update} \\[3mm] 
+	Propagate sigma points: \\ 
+	$\bm{\mathcal{X}}_{k|k-1} = \bm{\phi}_{k-1}(\bm{\mathcal{X}}_{k-1}, \bm{u}_{k-1})$ \\[2mm]
+	Compute a priori state estimate: \\ 
+	$\hat{\bm{x}}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{X}_{i, k|k-1}$ \\[2mm]
+	Compute a priori error covariance: \\ 
+	$\bm{P}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{X}_{i, k|k-1} -\hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{X}_{i, k|k-1}-\hat{\bm{x}}_{k|k-1}\big)^T + \bm{Q}_k$ \\[2mm]
+	Predict measurement: \\ 
+	$\bm{\mathcal{Z}}_{k|k-1} = \bm{h}_{k}(\bm{\mathcal{X}}_{k|k-1})$ \\[1mm]
+	$\hat{\bm{z}}_{k|k-1} = \sum^{2n}_{i = 0} W_i^{(m)} \mathcal{Z}_{i, k|k-1}$};
+\node [block, align=center, below of=predict, node distance=7.3cm] (update) {\emph{Measurement update} \\[3mm] 
+	Compute innovation and cross covariance matrix: \\ 
+	$\bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{Z}_{i, k|k-1} -\hat{\bm{z}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T + \bm{R}_k$ \\[2mm]
+	$\bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k} = \sum^{2n}_{i = 0} W_i^{(c)} \big(\mathcal{X}_{i, k|k-1} -\hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T$ \\[2mm]
+	Compute Kalman gain: \\
+	$\mathcal{K}_k = \bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k}\bm{P}^{-1}_{\bm{z}_k\bm{z}_k}$ \\[2mm]
+	Compute a posteriori state estimate: \\ $ \hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \mathcal{K}_k(\bm{z}_k - \hat{\bm{z}}_{k|k-1})$ \\[2mm]
+	Update error covariance: \\ $\bm{P}_k = \bm{P}_{k|k-1} - \mathcal{K}_k \bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} \mathcal{K}^T_k$};
+\node [output, below of=update, node distance=4.35cm, name=output] {Output};
+\node [output, below of=update, node distance=3.8cm, name=help1] {};
+\node [output, right of=help1, node distance=6.3cm, name=help2] {};
+\node [output, below of=init, node distance=1.23cm, name=help4] {};
+\node [output, right of=help4, node distance=6.3cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (sigma);
+\draw [draw,-stealth, thick, align=left] (sigma) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\caption[Operation cycle of the unscented Kalman filter for the additive zero-mean noise case.]{Operation cycle of the unscented Kalman filter for the additive zero-mean noise case, illustrating the computation of sigma points and its `predict and correct' behaviour.} \label{fig:unscented_kalman_filter_cycle}
+\end{figure}
+
+
+\subsubsection{Non-additive Noise}
+
+In the case of non-additive non-zero mean process and measurement noise, the unscented transformation scheme is applied to the \emph{augmented state} $\bm{x}^a_k \in \mathbb{R}^{l}$, which is defined as the concatenation of the original state and the noise variables as
+
+\begin{equation}
+  \bm{x}^a_k = \Big[{\bm{x}_k}^T, {\bm{w}_k}^T, {\bm{v}_{k}}^T \Big]^T\,,
+\end{equation}
+ 
+ \noindent
+ so that $l = n_{\bm{x}} + n_{\bm{w}} + n_{\bm{v}}$. The corresponding augmented error covariance matrix is given by
+ 
+ \begin{equation}
+  \bm{P}^a_k = \mathbb{E}\big[(\bm{x}^a_{k} - \hat{\bm{x}}^a_{k}) (\bm{x}^a_{k} - \hat{\bm{x}}^a_{k})^T\big] = \begin{bmatrix}
+  \bm{P}_k & \bm{0} & \bm{0} \\
+  \bm{0} & \bm{Q}_k & \bm{0} \\
+  \bm{0} & \bm{0} & \bm{R}_k \\
+\end{bmatrix}\,,
+\end{equation}
+
+\noindent
+with
+
+\begin{equation}
+  \hat{\bm{x}}^a_k = \bigg[{\hat{\bm{x}}_k}^T, \mathbb{E}\big[{\bm{w}_k}\big]^T, \mathbb{E}\big[{\bm{v}_{k}}\big]^T \bigg]^T\,.
+\end{equation}
+
+\noindent
+The zeros in bold typeface denote the zero matrix with respective dimension. Equally, every member $\mathcal{X}^{a}_{i, k}$ of the set $\bm{\mathcal{X}}^{a}_{k}$ of augmented sigma points is constituted of three vector-valued components,
+ 
+\begin{equation}
+   \mathcal{X}^{a}_{i, k} = \Big[{\mathcal{X}^{\bm{x}}_{i, k}}^T, {\mathcal{X}^{\bm{w}}_{i, k}}^T, {\mathcal{X}^{\bm{v}}_{i, k}}^T \Big]^T\,.
+\end{equation}
+
+\noindent
+The vector space $\mathbb{R}^{n_{\bm{x}}}$ forms a linear subspace of $\mathbb{R}^{l}$. We denote the set of all sigma points $\mathcal{X}^{\bm{x}}_{i, k}$ belonging to this subspace with ${\bm{\mathcal{X}}^{\bm{x}}_{k}}$. Replacing the superscript $\bm{x}$ with $\bm{w}$ and $\bm{v}$, respectively, denotes the sigma points belonging to the subspaces spanned by the noise vectors, that is ${\bm{\mathcal{X}}^{\bm{w}}_{k}}$ and ${\bm{\mathcal{X}}^{\bm{v}}_{k}}$.
+
+The augmented unscented Kalman filter algorithm is in structure similar to the that assuming additive noise in Figure \ref{fig:unscented_kalman_filter_cycle}, but it uses the augmented state to calculate sigma points, so that the set of sigma points is denoted as
+
+\begin{equation}
+  \bm{\mathcal{X}}^a_{k-1} = \Big\{\hat{\bm{x}}^a_{k-1}, \quad \hat{\bm{x}}^a_{k-1} + \gamma_a \sqrt{\bm{P}^a_{k-1}}, \quad \hat{\bm{x}}^a_{k-1} - \gamma_a \sqrt{\bm{P}^a_{k-1}}\Big\}\,,
+\end{equation}
+
+\noindent
+with
+
+\begin{equation}
+  \gamma_a = \sqrt{(l + \lambda)}\,.
+\end{equation}
+
+
+Since we assume non-additive noise, we individually propagate the components of the sigma points that are associated with the state according to Equation \ref{eq:generic-state_dynamics},
+
+\begin{equation}
+  \bm{\mathcal{X}}^{\bm{x}}_{k|k-1} = \bm{\phi}_{k-1}\big(\bm{\mathcal{X}}^{\bm{x}}_{k-1}, \bm{u}_{k-1}, \bm{\mathcal{X}}^{\bm{w}}_{k-1}\big)\,,
+\end{equation}
+
+\noindent
+and predict the measurement transforming the a priori sigma points according to Equation \ref{eq:generic-measurement},
+
+\begin{equation}
+  \bm{\mathcal{Z}}_{k|k-1} = \bm{h}_{k}\big(\bm{\mathcal{X}}^{\bm{x}}_{k|k-1}, \bm{\mathcal{X}}^{\bm{v}}_{k|k-1}\big)\,.
+\end{equation}
+
+\noindent
+Figure \ref{fig:unscented_kalman_filter_cycle_non_addive} depicts the algorithm in its entirety, including the calculation of augmented sigma points and the predict and update operations that are carried out recursively at each time step.
+
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=10.65cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] 
+	$\hat{\bm{x}}^a_0 = \bigg[{\hat{\bm{x}}_0}^T, \mathbb{E}\Big[{\bm{w}_0}^T\Big], \mathbb{E}\Big[{\bm{v}_{0}}^T\Big] \bigg]^T$ \\[2mm]
+	$\bm{P}^a_{0} = \mathbb{E}\Big[\big(\bm{x}^a_{0} - \hat{\bm{x}}^a_{0}\big) \big(\bm{x}^a_{0} - \hat{\bm{x}}^a_{0}\big)^T\Big] = \begin{bsmallmatrix}
+  \bm{P}_0 & \bm{0} & \bm{0} \\
+  \bm{0} & \bm{Q}_0 & \bm{0} \\
+  \bm{0} & \bm{0} & \bm{R}_0 \\
+\end{bsmallmatrix}$};
+\node [block, align=center, below of=init, node distance=3.4cm] (sigma) {\emph{Calculation of sigma points} \\[3mm] 
+	$\bm{\mathcal{X}}^a_{k-1} = \Big\{\hat{\bm{x}}^a_{k-1}, \quad \hat{\bm{x}}^a_{k-1} + \gamma_a \sqrt{\bm{P}^a_{k-1}}, \quad \hat{\bm{x}}^a_{k-1} - \gamma_a \sqrt{\bm{P}^a_{k-1}}\Big\}$};
+\node [block, align=center, below of=sigma, node distance=4.9cm] (predict) {\emph{Time update} \\[3mm] 
+	Propagate sigma points: \\ 
+	$\bm{\mathcal{X}}^{\bm{x}}_{k|k-1} = \bm{\phi}_{k-1}\big(\bm{\mathcal{X}}^{\bm{x}}_{k-1}, \bm{u}_{k-1}, \bm{\mathcal{X}}^{\bm{w}}_{k-1}\big)$ \\[2mm]
+	Compute a priori state estimate: \\ 
+	$\hat{\bm{x}}_{k|k-1} = \sum^{2l}_{i = 0} W_i^{(m)} \mathcal{X}^{\bm{x}}_{i, k|k-1}$ \\[2mm]
+	Compute a priori error covariance: \\ 
+	$\bm{P}_{k|k-1} = \sum^{2l}_{i = 0} W_i^{(c)} \big(\mathcal{X}^{\bm{x}}_{i, k|k-1} - \hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{X}^{\bm{x}}_{i, k|k-1}-\hat{\bm{x}}_{k|k-1}\big)^T$ \\[2mm]
+	Predict measurement: \\ 
+	$\bm{\mathcal{Z}}_{k|k-1} = \bm{h}_{k}\big(\bm{\mathcal{X}}^{\bm{x}}_{k|k-1}, \bm{\mathcal{X}}^{\bm{v}}_{k|k-1}\big)$ \\[1mm]
+	$\hat{\bm{z}}_{k|k-1} = \sum^{2l}_{i = 0} W_i^{(m)} \mathcal{Z}_{i, k|k-1}$};
+\node [block, align=center, below of=predict, node distance=7.3cm] (update) {\emph{Measurement update} \\[3mm] 
+	Compute innovation and cross covariance matrix: \\ 
+	$\bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} = \sum^{2l}_{i = 0} W_i^{(c)} \big(\mathcal{Z}_{i, k|k-1} -\hat{\bm{z}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T$ \\[2mm]
+	$\bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k} = \sum^{2l}_{i = 0} W_i^{(c)} \big(\mathcal{X}^{\bm{x}}_{i, k|k-1} -\hat{\bm{x}}_{k|k-1}\big)\big(\mathcal{Z}_{i, k|k-1}-\hat{\bm{z}}_{k|k-1}\big)^T$ \\[2mm]
+	Compute Kalman gain: \\
+	$\mathcal{K}_k = \bm{P}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k}\bm{P}^{-1}_{\bm{z}_k\bm{z}_k}$ \\[2mm]
+	Compute a posteriori state estimate: \\ $ \hat{\bm{x}}_k = \hat{\bm{x}}_{k|k-1} + \mathcal{K}_k(\bm{z}_k - \hat{\bm{z}}_{k|k-1})$ \\[2mm]
+	Update error covariance: \\ $\bm{P}_k = \bm{P}_{k|k-1} - \mathcal{K}_k \bm{P}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} \mathcal{K}^T_k$};
+\node [output, below of=update, node distance=4.4cm, name=output] {Output};
+\node [output, below of=update, node distance=3.75cm, name=help1] {};
+\node [output, right of=help1, node distance=5.8cm, name=help2] {};
+\node [output, below of=init, node distance=2.05cm, name=help4] {};
+\node [output, right of=help4, node distance=5.8cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (sigma);
+\draw [draw,-stealth, thick, align=left] (sigma) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\caption[Operation cycle of the unscented Kalman filter for the non-additive non-zero-mean noise case.]{Operation cycle of the unscented Kalman filter for the non-additive non-zero-mean noise case, illustrating the computation of sigma points and its `predict and correct' behaviour.} \label{fig:unscented_kalman_filter_cycle_non_addive}
+\end{figure}
+
+\section{Sequential Monte Carlo Simulation}\label{sec:monte_carlo}
+
+If the assumptions of the Kalman filter hold, that is a linear process and measurement model and Gaussian distributions, then no other algorithm can outperform it \cite{gaussian_bayesian_tracking2002}. Real-life problems, however, may not always be described sufficiently accurate by linear-Gaussian models. \emph{Sequential Monte Carlo} (SMC) methods are a general simulation-based approach that essentially converts the intractable integrals of the Bayesian framework into tractable, finite sums, which converge to the exact solution in the limit. In contrast to the Kalman filtering methods above, they are not subject to any linearity or Gaussianity constraints on the model and entail appealing convergence properties \cite{doucet1998sequential}. These benefits, in turn, come along with increased computational cost.
+
+If a sufficiently large number of samples drawn from the desired posterior distribution of the Bayesian framework is available, it is straightforward to approximate the intractable integrals appearing in Equations \ref{eq:chapman_kolmogorov} and \ref{eq:updated_posterior} in Section \ref{sec:bayesian_estimation}. In \emph{perfect Monte Carlo sampling} we assume that we are able to simulate  $N$ independent and identically distributed random samples $\bm{x}^{(i)}_k$, drawn from the posterior distribution $p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$. These random samples are also called \emph{particles}. Each particle $\bm{x}^{(i)}_k$ is a concrete instantiation of the state at time $k$. That is, each particle represents a possible hypothesis as to what the true state of the system may be. An empirical estimate of the posterior distribution can then be computed as
+
+\begin{equation}\label{eq:approximated_posterior}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \approx \frac{1}{N} \sum^N_{i = 1} \delta\big(\bm{x}_{k} - \bm{x}^{(i)}_k \big) \,,
+\end{equation}
+
+\noindent
+where $\delta\big(\bm{x}_{k} - \bm{x}^{(i)}_k\big)$ denotes the Dirac delta mass located in $\bm{x}^{(i)}_k$. Additionally, any expectation of the form
+
+\begin{equation}\label{eq:expectations}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] = \int f(\bm{x}_k) p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k
+\end{equation}
+
+\noindent
+can be approximated as
+
+\begin{equation}\label{eq:approximated_expectation}
+\begin{split}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] &\approx \hat{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] \\
+  &= \frac{1}{N} \sum^N_{i = 1} f\Big(\bm{x}^{(i)}_k\Big) \,.
+\end{split}
+\end{equation}
+
+%Figure \ref{fig:unscented_transform} illustrates Monte Carlo Sampling. The posterior mean and covariance is estimated by substituting $\bm{y}$ for $\bm{x}_k$ in Equation \ref{eq:approximated_expectation}. With $f(\bm{y}) = \bm{y}$ and $f(\bm{y}) = (\bm{y} - \hat{\bm{y}}) (\bm{y} - \hat{\bm{y}})^T$, respectively, this yields the sample mean
+%
+%\begin{equation}
+%  \hat{\bm{y}} = \hat{\mathbb{E}}_{p(\bm{y}\,|\,\bm{x})}[\bm{y}] = \frac{1}{N} \sum^N_{i = 1} \bm{y}^{(i)}
+%\end{equation}
+%
+%\noindent
+%and the sample covariance
+%
+%\begin{equation}
+%  \bm{P}_{\bm{y}} = \hat{\mathbb{E}}_{p(\bm{y}\,|\,\bm{x})}\Big[(\bm{y} - \hat{\bm{y}}) (\bm{y} - \hat{\bm{y}})^T\Big] = \sum^N_{i = 1} \big(\bm{y}^{(i)} - \hat{\bm{y}}\big) \big(\bm{y}^{(i)} - \hat{\bm{y}}\big)^T \,.
+%\end{equation}
+
+
+As opposed to most deterministic numerical methods, the estimation accuracy is independent of the dimensionality of the state space. According to the law of large numbers, for $N\to\infty$ the estimated expectation almost surely converges to the true expectation, 
+
+\begin{equation}
+  \hat{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] \xrightarrow{\mathrm{a.s.}} \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big], \quad \textrm{for}\: N\to\infty\,.
+\end{equation}
+
+
+\subsection{Sequential Importance Sampling}\label{sec:importance_sampling}
+
+Since it is rarely possible to sample directly from the posterior distribution, \emph{importance sampling} is used, which refers to sampling from an alternative distribution \cite{geweke1989bayesian}. This easy-to-sample importance sampling distribution is also called \emph{proposal distribution}. Expanding Equation \ref{eq:expectations} with an arbitrary proposal distribution $\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$ and applying Bayes' theorem yields
+
+\begin{equation}\label{eq:importance_sampling}
+\begin{split}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] &= \int f(\bm{x}_k) \frac{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}  \\
+  &\mathrel{\phantom{iiiiiiiiiii}} \cdot \: \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k \\
+  &= \int f(\bm{x}_k) \frac{p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1})}{p(\bm{Z}_{k}\,|\,\bm{U}_{k-1}) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})} \\
+  &\mathrel{\phantom{iiiiiiiiiii}} \cdot \: \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k \\
+  &= \int f(\bm{x}_k) w_k(\bm{x}_k) p(\bm{Z}_k\,|\,\bm{U}_{k-1})^{-1} \\
+  &\mathrel{\phantom{iiiiiiiiiii}} \cdot \: \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k\,,
+\end{split}
+\end{equation}
+
+\noindent
+with the \emph{importance weight}
+
+\begin{equation}\label{eq:importance_weight}
+  w_k(\bm{x}_k) = \frac{p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})} \,.
+\end{equation}
+
+\noindent
+The unknown normalising distribution $p(\bm{Z}_k\,|\,\bm{U}_{k-1})$ can be written as
+
+\begin{equation}
+  p(\bm{Z}_k\,|\,\bm{U}_{k-1}) = \int p(\bm{Z}_k\,|\,\bm{x}_{k}, \bm{U}_{k-1}) p(\bm{x}_{k}\,|\,\bm{U}_{k-1}) d\bm{x}_{k} \,.
+\end{equation}
+
+\noindent
+Multiplying the integrand with $\frac{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}$ and substituting with the left side of Equation \ref{eq:importance_weight}, we have
+
+\begin{equation}
+  p(\bm{Z}_k\,|\,\bm{U}_{k-1}) = \int w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})d\bm{x}_{k} \,.
+\end{equation}
+
+\noindent
+Plugging the result back into Equation \ref{eq:importance_sampling} yields
+
+\begin{equation}
+\begin{split}
+  \mathbb{E}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[f(\bm{x}_k)\big] &= \frac{\int f(\bm{x}_k) w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) d\bm{x}_k}{\int w_k(\bm{x}_k) \pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})d\bm{x}_{k}} \\
+  &= \frac{\mathbb{E}_{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[w_k(\bm{x}_k)f(\bm{x}_k)\big]}{\mathbb{E}_{\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[w_k(\bm{x}_k)\big]} \\
+  &\approx \frac{\frac{1}{N} \sum^N_{i = 1} w_k\Big(\hat{\bm{x}}^{(i)}_k\Big)f\Big(\hat{\bm{x}}^{(i)}_k\Big)}{\frac{1}{N} \sum^N_{i = 1} w_k\Big(\hat{\bm{x}}^{(i)}_k\Big)} \\
+  &= \frac{1}{N} \sum^N_{i = 1} \tilde{w}_k\Big(\hat{\bm{x}}^{(i)}_k\Big)f\Big(\hat{\bm{x}}^{(i)}_k\Big)
+  \,,
+\end{split}
+\end{equation}
+
+\noindent
+where $\hat{\bm{x}}^{(i)}_k$ denotes the $i$-th of $N$ samples drawn from $\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$ and the normalised importance weights $\tilde{w}_k\Big(\hat{\bm{x}}^{(i)}_k\Big)$ are given by 
+
+\begin{equation}
+  \tilde{w}_k\Big(\hat{\bm{x}}^{(i)}_k\Big) = \frac{w_k\Big(\hat{\bm{x}}^{(i)}_k\Big)}{\sum^N_{i = 1} w_k\Big(\hat{\bm{x}}^{(i)}_k\Big)} \,.
+\end{equation}
+
+
+It follows that any expectation of the form given by Equation \ref{eq:expectations} can be estimated using weighted samples $\hat{\bm{x}}^{(i)}_k$ drawn from the proposal distribution $\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$. As it involves a ratio of two other estimates, this estimate is biased. However, given that the support of the proposal distribution includes the support of the posterior distribution $p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})$, that is the following condition is satisfied: $\pi(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \neq 0$ for any $\bm{x}_k$ for which $p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \neq 0$, it is shown that this estimate is asymptotically unbiased \cite{doucet1998sequential}. Given samples drawn from the proposal distribution, the posterior distribution is approximated by the weighted point-mass estimate
+
+\begin{equation}\label{eq:weighted_empirical_distribution}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) \approx \sum^N_{i = 1} \tilde{w}_k\Big(\hat{\bm{x}}^{(i)}_k\Big) \delta\Big(\bm{x}_{k} - \hat{\bm{x}}^{(i)}_k \Big) \,.
+\end{equation}
+
+Under the premise of the state space assumptions mentioned in Section \ref{sec:bayesian_estimation}, that is Markovianess and observational independence given the state, as shown in \cite{doucet2001introduction}, a recursive estimate for the importance weights may be obtained as
+
+\begin{equation}\label{eq:recursive_weights}
+  \tilde{w}_k\Big(\hat{\bm{x}}^{(i)}_k\Big) = \tilde{w}_{k-1}\Big(\hat{\bm{x}}^{(i)}_{k-1} \Big) \frac{p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big) p\big(\hat{\bm{x}}^{(i)}_k\,|\,\hat{\bm{x}}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{\pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\hat{\bm{X}}^{(i)}_{k-1}, \bm{U}_{k-1}, \bm{Z}_{k}\big)} \,.
+\end{equation}
+
+\noindent
+This variant of importance sampling is called \emph{sequential importance sampling} (SIS), referring to its recursive nature. As it is clear that the weights $w_k\big(\hat{\bm{x}}^{(i)}_k\big)$ and normalised weights $\tilde{w}_k\big(\hat{\bm{x}}^{(i)}_k\big)$ are a function of the particles $\hat{\bm{x}}^{(i)}_k$, respectively, we will use a more succinct notation and from now on write $w^{(i)}_k$ and $\tilde{w}^{(i)}_k$ instead.
+
+
+\subsection{Sequential Importance Resampling}\label{sec:importance_resampling}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.80\textwidth]{Figures/resampling}} at (0, 0);
+    
+    %\node [] (a) at (0.3, -2.6) {$N$};
+        
+\end{tikzpicture}
+\caption[Resampling: replacing the weighted empirical distribution by an unweighted distribution.]{Resampling: replacing the weighted empirical distribution by an unweighted distribution \cite{garciabayes}. Before resampling, the size of the samples represents their respective importance weight. Samples with low weights are likely to be eliminated, whereas samples with higher weights are likely to be reproduced.}
+	\label{fig:resampling}
+\end{figure}
+
+
+A serious limitation of sequential importance sampling is that it degenerates with time. In fact, it is shown in \cite{kong1994sequential} that SIS is guaranteed to fail for large $k$, as the distribution of the importance weights becomes more and more skewed \cite{merwe2000scented}. After a few time steps, the majority of particles have a numerically insignificant importance weight, while the weight of one particle tends to one, which is effectively equal to removing the samples from the sample set. The consequence is that the posterior distribution is not adequately represented by the few remaining effective samples.
+
+An additional selection step called \emph{sequential importance resampling} (SIR), or simply \emph{resampling}, partially mitigates this problem. Introduced in \cite{gordon1993novel}, the rationale behind the resampling idea is to eliminate the particles with low importance weight and instead multiply particles having high weight. Therefore, the resampling procedure reflects the Darwinian idea of \emph{survival of the fittest} and is illustrated for one dimension in Figure \ref{fig:resampling}. 
+
+Formally, resampling is carried out by replacing the weighted empirical distribution in Equation \ref{eq:weighted_empirical_distribution} by an unweighted distribution
+
+\begin{equation}
+  p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}) = \frac{1}{N} \sum^N_{i = 1} N_k^{(i)}  \delta\Big(\bm{x}_{k} - \bm{x}^{(i)}_k \Big) \,,
+\end{equation}
+
+\noindent
+where $N_k^{(i)}$ is the number of offsprings from particle $\hat{\bm{x}}^{(i)}_k$, such that the number of particles remains constant,
+
+\begin{equation}
+  \sum^N_{i = 1} N_k^{(i)} = N  \,.
+\end{equation}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.80\textwidth]{Figures/weighted_mapping}} at (0, 0);
+    
+    \node [] (a) at (-4.0, 2.2) {CDF};
+    \node [] (a) at (-5, 1.8) {$1$};
+    \node [] (a) at (-5, -2.1) {$0$};
+    \node [] (a) at (-4, -0.2) {$\tilde{w}^{(j)}_{k}$};
+    \node [] (a) at (-2.51, 1.2) {$1$};
+    \node [] (a) at (-2.75, -2.6) {$j$};
+    \node [] (a) at (-4.4, -2.6) {$1$};
+    \node [] (a) at (0.3, -2.6) {$N$};
+    \node [] (a) at (4.2, -2.6) {$p(\cdot)$};
+    \node [] (a) at (5, 1.8) {$1$};
+    \node [] (a) at (5, -2.1) {$0$};
+        
+\end{tikzpicture}
+\caption[A simple resampling scheme: multinomial resampling.]{Multinomial resampling \cite{merwe2000scented}. Depicted is the projection of a random sample from the continuous uniform distribution on the interval $[0, 1]$ onto the range of the cumulative distribution function (CDF), which is plotted over the sample numbers $1, \dots, N$. The intersection with the CDF is projected on the abscissa to obtain the sample number $j$, which is then used to select a sample from $\big\{\hat{\bm{x}}^{(j)}_k\big\}_{j=1}^N$.}
+	\label{fig:weightes_measure_to_unweighted_measure}
+\end{figure}
+
+\subsubsection{Multinomial Resampling}
+
+Employing the most popular resampling scheme termed \emph{multinomial resampling}, which was introduced in \cite{gordon1993novel}, the surviving particles are obtained by drawing $N$ samples $\bm{x}^{(i)}_k$ from the set $\big\{\hat{\bm{x}}^{(j)}_k\big\}_{j=1}^N$, whilst samples are chosen with a probability equal to their normalised importance weight. This yields the resampled set
+
+\begin{equation}\label{eq:resampling}
+ \big\{\bm{x}^{(i)}_k\big\}_{i=1}^N,\:\:\, \text{such that} \:\:\:\operatorname{Pr}\big(\bm{x}^{(i)}_k = \hat{\bm{x}}^{(j)}_k\big) = \tilde{w}^{(j)}_k, \quad i, j \in \{1, \dots, N\}\,,
+ \end{equation}
+
+\noindent
+with equal weights, 
+
+\begin{equation}\label{eq:resampling_weights}
+  w^{(i)}_k = \frac{1}{N}, \quad i = 1, \dots, N \,.
+\end{equation}
+
+
+\noindent
+The mapping from a weighted random measure to an unweighted random measure using a uniform distribution is illustrated in Figure \ref{fig:weightes_measure_to_unweighted_measure}. First, the cumulative distribution function (CDF) of the set $\big\{\hat{\bm{x}}^{(j)}_k\big\}_{j=1}^N$ is constructed. Then, a number from the continuous uniform distribution on the interval $[0, 1]$ is sampled and projected on the range of the CDF. The intersection is projected on the sample number, which is used to select the $j$-th sample from $\big\{\hat{\bm{x}}^{(j)}_k\big\}_{j=1}^N$.
+
+
+\subsection{Importance of the Proposal Distribution}\label{sec:importance_proposal}
+
+For a finite set of samples, the importance sampling method performs poorly if only a few particles are placed in regions where the desired posterior is large \cite{chen2003bayesian}. This makes the choice of the proposal distribution a critical design issue for SIS algorithms \cite{merwe2000scented, daum2005nonlinear}.  
+
+An optimal proposal distribution may be defined as one that minimises the variance of the importance weights \cite{doucet2001particle}. Then, as shown analogously to the proof in \cite{5546308}, which does not consider a control input, the target distribution is given by
+
+\begin{equation}\label{eq:optimal_proposal}
+\begin{split}
+  \pi_{\mathrm{opt}}\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{U}_{k-1}, \bm{Z}_{k}\big) &= p\big(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}, \bm{z}_{k}\big) \\
+  &=  \frac{p\big(\bm{z}_k\,|\,\bm{x}_k\big) p\big(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{p\big(\bm{z}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)} \,.
+  \end{split}
+\end{equation}
+
+\noindent
+Plugging the result into Equation \ref{eq:recursive_weights} yields
+
+\begin{equation}\label{eq:recursive_weights_minvar}
+\begin{split}
+  \tilde{w}_k &= \tilde{w}_{k-1} p\big(\bm{z}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big) \\
+   &= \tilde{w}_{k-1} \int p\big(\bm{z}_k\,|\,\bm{x}_k\big) p\big(\bm{x}_k\,|\,\hat{\bm{x}}^{(i)}_{k-1}, \bm{u}_{k-1}\big) d\bm{x}_k \,.
+\end{split}
+\end{equation}
+
+\noindent
+However, this density suffers from the following two major drawbacks: it requires the ability to sample from $p\big(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}, \bm{z}_{k}\big)$ and to evaluate the integral in Equation \ref{eq:recursive_weights_minvar}, both of which may not be straightforward in practice \cite{gaussian_bayesian_tracking2002}. Therefore, it is desirable  to find an approximation of the optimal proposal distribution. In \cite{Salmond2006DRAFT}, \citeauthor{Salmond2006DRAFT} state the ``considerable scope for ingenuity in designing the importance density''. A popular method for devising a proposal distribution that approximates the optimal distribution given by Equation \ref{eq:optimal_proposal} is taking into account the latest measurement \cite{doucet1998sequential, pitt_auxiliary}, which we will elaborate on in detail in Section \ref{sec:unscented_particle}.
+
+
+
+\section{Particle Filters}
+
+In this section, we shall introduce a non-parametric filtering method known as the \emph{particle filter}. Relying in principle on the Monte Carlo method, particle filters can handle arbitrary multi-modal distributions. However, their computational cost is a monotonically increasing function of the estimation accuracy.
+
+
+\subsection{The Generic Particle Filter}\label{sec:particle}
+
+The generic particle filter is a Monte Carlo algorithm that matches the Bayesian framework. Starting the filter algorithm at time $k=0$, first, $N$ samples $\bm{x}^{(i)}_0$ from the initial state distribution $p(\bm{x}_0)$ are drawn,
+
+\begin{equation}\label{eq:draw_initial_particles}
+  \bm{x}^{(i)}_0 \sim p(\bm{x}_0), \quad i \in \{1, \dots, N\} \,,
+\end{equation}
+
+\noindent
+and weighted equally as
+
+\begin{equation}
+  w^{(i)}_0 = \frac{1}{N}, \quad i \in \{1, \dots, N\} \,.
+\end{equation}
+
+\noindent
+Then, the following steps are carried out recursively at every time step $k > 0$. We draw $N$ equally weighted samples $\hat{\bm{x}}^{(i)}_k$ from the proposal distribution $\pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)$. The set of particles and their respective weights is denoted as
+
+
+\begin{equation}
+  \Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \hat{\bm{x}}^{(i)}_k \sim \pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)\,.
+\end{equation}
+
+
+In the light of the measurement $\bm{z}_k$, the importance weights $w^{(i)}_k$ are computed for each particle according to Equation \ref{eq:recursive_weights},
+
+\begin{equation}\label{eq:weights_generic_particle}
+   w^{(i)}_k = w^{(i)}_{k-1} \frac{p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big) p\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{\pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)}, \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+\noindent
+Normalising yields
+
+\begin{equation}
+  \tilde{w}^{(i)}_k = w^{(i)}_{k} \Bigg[\sum^N_{j = 1} w^{(j)}_k\Bigg]^{-1}, \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+\noindent
+Now, the set of particles is resampled according to Equation \ref{eq:resampling} and the weights are set equally according to Equation \ref{eq:resampling_weights}.
+
+
+The output of the filter is given by a set of $N$ equally weighted particles $\bm{x}^{(i)}_k$ that can be used to approximate the posterior distribution, according to Equation \ref{eq:approximated_posterior}, and the expectations under it, according to Equation \ref{eq:approximated_expectation}. Often, the estimate of the conditional mean
+
+\begin{equation}\label{eq:empirical_mean}
+  \hat{\bm{x}}_k = \tilde{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[\bm{x}_k\big] = \frac{1}{N} \sum^N_{i = 1} \bm{x}^{(i)}_k \,,
+\end{equation}
+
+\noindent
+which represents the minimum mean-squared error estimate of the current state, and the covariance
+
+\begin{equation}\label{eq:empirical_cov}
+\begin{split}
+  \bm{P}_k &= \tilde{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\Big[\big(\bm{x}_k - \hat{\bm{x}}_{k}\big) \big(\bm{x}_k - \hat{\bm{x}}_{k}\big)^T\Big] \\
+  &= \sum^N_{i = 1} \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big) \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big)^T \,,
+\end{split}
+\end{equation}
+
+
+\noindent
+are the quantities of particular interest. The algorithm of the generic particle filter is depicted in Figure \ref{fig:particle_filter_cycle}, illustrating the importance sampling and resampling step.
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=11cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_0$ from the initial state distribution: \\[2mm]
+	$\Big\{\big(\bm{x}^{(i)}_{0}, N^{-1}\big)\Big\}_{i=1}^N, \quad \bm{x}^{(i)}_0 \sim p(\bm{x}_0)$};
+\node [block, align=center, below of=init, node distance=4.7cm] (predict) {\emph{Importance sampling step} \\[3mm] 
+	Draw $N$ samples $\hat{\bm{x}}^{(i)}_k$ from the proposal distribution: \\
+	$\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \hat{\bm{x}}^{(i)}_k \sim \pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)$ \\[2mm]
+	Evaluate importance weights: \\
+	$w^{(i)}_k = w^{(i)}_{k-1} \frac{p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big) p\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{\pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)}, \quad i \in \{1, \dots, N\}$ \\[2mm]
+	Normalise importance weights: \\
+	$\tilde{w}^{(i)}_k = w^{(i)}_{k} \Big[\sum^N_{j = 1} w^{(j)}_k\Big]^{-1}, \quad i \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=predict, node distance=4.6cm] (update) {\emph{Resampling step} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_{k}$ from the set $\Big\{\big(\hat{\bm{x}}^{(j)}_{k}, \tilde{w}^{(j)}_{k}\big)\Big\}_{j=1}^N$: \\[1mm]
+	$\Big\{\big(\bm{x}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \operatorname{Pr}\big(\bm{x}^{(i)}_k = \hat{\bm{x}}^{(j)}_k\big) = \tilde{w}^{(j)}_k, \quad i,j \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=update, node distance=3.5cm] (outputblock) {\emph{Recombine particles} \\[3mm] 
+	Compute conditional mean: \\
+	$\hat{\bm{x}}_k = \tilde{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[\bm{x}_k\big] = \frac{1}{N} \sum^N_{i = 1} \bm{x}^{(i)}_k$ \\[2mm]
+	Compute covariance: \\
+	$\bm{P}_k = \sum^N_{i = 1} \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big) \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big)^T$};
+
+\node [output, below of=outputblock, node distance=2.8cm, name=output] {Output};
+\node [output, below of=outputblock, node distance=2.2cm, name=help1] {};
+\node [output, right of=help1, node distance=6cm, name=help2] {};
+\node [output, below of=init, node distance=1.6cm, name=help4] {};
+\node [output, right of=help4, node distance=6cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- (outputblock);
+\draw [draw,-stealth, thick, align=left] (outputblock) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\caption[Operation cycle of the generic particle filter.]{Operation cycle of the generic particle filter, illustrating the importance sampling and resampling step. Finally, the particles are recombined to obtain the minimum mean-squared error estimate and the corresponding covariance.} \label{fig:particle_filter_cycle}
+\end{figure}
+
+
+
+\subsection{The Bootstrap Filter}\label{sec:bootstrap_filter}
+
+Although many authors have recognised the importance of the proposal distribution for a successful application of SIS \cite{doucet2000sequential, liu1998sequential, lenser2000sensor}, the transition prior probability distribution  $p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$ is often used as importance function \cite{avitzour1995stochastic, gordon1993novel, beadle1997fast, isard1996contour, kitagawa1996monte}. Filters using the transition prior as proposal distribution are commonly known as \emph{bootstrap filter}. The transition prior is easy to sample from and, as a result of it not incorporating the most recent observation, it is usually easier to implement \cite{doucet1998sequential, liu1998sequential, berzuini1997dynamic}. In the case of an additive Gaussian process noise model, the transition prior is simply
+
+\begin{equation}\label{eq:weights_recursive_simplified}
+  p(\bm{x}_k\,|\,\bm{x}_{k-1}, \bm{u}_{k-1}) = \mathcal{N}\big(\bm{\phi}_{k-1}(\bm{x}_{k-1}, \bm{u}_{k-1}, 0), \bm{Q}_{k-1}\big)\,.
+\end{equation}
+
+
+In the importance sampling step of the bootstrap filter, each of the particles is propagated through the system model according to Equation \ref{eq:generic-state_dynamics}, 
+
+\begin{equation}\label{eq:propagate_particles}
+  \hat{\bm{x}}^{(i)}_k = \bm{\phi}_{k-1}\big(\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}, \bm{w}^{(i)}_{k-1}\big), \quad k > 0,  \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+\noindent
+where $\bm{w}^{(i)}_{k-1}$ represents a sample drawn from the system noise distribution. Adding this noise sample creates variety in the set of hypotheses $\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N$. Note that this step is equivalent to sampling from the prior distribution, as
+
+\begin{equation}
+  \hat{\bm{x}}^{(i)}_k \sim p\big(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big), \quad k > 0,  \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+
+Now, in the light of the measurement $\bm{z}_k$, the importance weights $w^{(i)}_k$ are computed for each particle. When using the transition prior as proposal distribution, with
+
+\begin{equation}
+  \pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big) = p\big(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)\,,
+\end{equation}
+
+\noindent
+Equation \ref{eq:weights_generic_particle} simplifies to
+
+\begin{equation}\label{eq:recursive_weights_transition_prior}
+  w^{(i)}_k = w^{(i)}_{k-1} p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big), \quad k > 0,  \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+
+\noindent
+If resampling is carried out every time step, the propagated samples have uniform weights and Equation \ref{eq:weights_recursive_simplified} reduces to 
+
+\begin{equation}
+  w^{(i)}_k = p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big), \quad k > 0,  \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+
+\noindent
+The algorithm of the bootstrap filter is depicted in Figure \ref{fig:bootstrap_filter_cycle}, illustrating the importance sampling and resampling step. A graphical representation of the evolution of the empirical probability distributions estimated by the bootstrap filter is depicted in Figure \ref{fig:bootstrap}.
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=11cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_0$ from the initial state distribution: \\[2mm]
+	$\Big\{\big(\bm{x}^{(i)}_{0}, N^{-1}\big)\Big\}_{i=1}^N, \quad \bm{x}^{(i)}_0 \sim p(\bm{x}_0)$};
+\node [block, align=center, below of=init, node distance=4.7cm] (predict) {\emph{Importance sampling step} \\[3mm] 
+	Draw $N$ samples $\hat{\bm{x}}^{(i)}_k$ from the proposal distribution: \\
+	$\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \hat{\bm{x}}^{(i)}_k \sim p(\bm{x}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}))$ \\[2mm]
+	Evaluate importance weights: \\
+	$w^{(i)}_k = p(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k), \quad i \in \{1, \dots, N\}$ \\[2mm]
+	Normalise importance weights: \\
+	$\tilde{w}^{(i)}_k = w^{(i)}_{k} \Big[\sum^N_{j = 1} w^{(j)}_k\Big]^{-1}, \quad i \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=predict, node distance=4.4cm] (update) {\emph{Resampling step} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_{k}$ from the set $\Big\{\big(\hat{\bm{x}}^{(j)}_{k}, \tilde{w}^{(j)}_{k}\big)\Big\}_{j=1}^N$: \\[1mm]
+	$\Big\{\big(\bm{x}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \operatorname{Pr}\big(\bm{x}^{(i)}_k = \hat{\bm{x}}^{(j)}_k\big) = \tilde{w}^{(j)}_k, \quad i,j \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=update, node distance=3.6cm] (outputblock) {\emph{Recombine particles} \\[3mm] 
+	Compute conditional mean: \\
+	$\hat{\bm{x}}_k = \tilde{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[\bm{x}_k\big] = \frac{1}{N} \sum^N_{i = 1} \bm{x}^{(i)}_k$ \\[2mm]
+	Compute covariance: \\
+	$\bm{P}_k = \sum^N_{i = 1} \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big) \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big)^T$};
+
+\node [output, below of=outputblock, node distance=2.8cm, name=output] {Output};
+\node [output, below of=outputblock, node distance=2.2cm, name=help1] {};
+\node [output, right of=help1, node distance=6cm, name=help2] {};
+\node [output, below of=init, node distance=1.7cm, name=help4] {};
+\node [output, right of=help4, node distance=6cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- (outputblock);
+\draw [draw,-stealth, thick, align=left] (outputblock) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3) -- (help4);
+\end{tikzpicture} 
+\caption[Operation cycle of the bootstrap filter.]{Operation cycle of the bootstrap filter, illustrating the importance sampling and resampling step. Finally, the particles are recombined to obtain the minimum mean-squared error estimate and the corresponding covariance.} 
+\label{fig:bootstrap_filter_cycle}
+\end{figure}
+
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.88\textwidth]{Figures/particle_filter}} at (0, 0);
+    
+    \node [] (a) at (-0.5, 4.6) {$N$ particles};
+    
+    \node [align=left, right] (a) at (-5.7, 1.1) {Weight};
+    \node [align=left, right] (a) at (-5.7, 0.2) {Resample};
+    \node [align=left, right] (a) at (-5.7, -1.1) {Propagate \\ particles};
+    \node [align=left, right] (a) at (-5.7, -4.1) {Weight};
+    
+    \node [align=left, right] (a) at (2.6, 4.15) {$\Big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, N^{-1}\big)\Big\}_{i=1}^N$};
+    \node [align=left, right] (a) at (2.6, 3) {Likelihood \\ function $p(\bm{z}_k\,|\,\bm{x}_k)$};
+    \node [align=left, right] (a) at (2.6, 1.25) {$\Big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, \tilde{w}^{(i)}_{k-1}\big)\Big\}_{i=1}^N$};
+    \node [align=left, right] (a) at (2.6, 0.2) {$\Big\{\big(\bm{x}^{(i)}_{k-1}, N^{-1}\big)\Big\}_{i=1}^N$};
+    \node [align=left, right] (a) at (2.6, -1.1) {$\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N$};
+    \node [align=left, right] (a) at (2.6, -4) {$\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, \tilde{w}^{(i)}_{k}\big)\Big\}_{i=1}^N$};
+    
+\end{tikzpicture}
+\caption[Evolution of the empirical probability distributions estimated by the bootstrap filter.]{Evolution of the empirical probability distributions estimated by the bootstrap filter. The filter starts at time $k-1$ with the unweighted particles $\big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, N^{-1}\big)\big\}_{i=1}^N$, which provide an approximation of $p(\bm{x}_{k-1}\,|\,\bm{x}^{(i)}_{k-2}, \bm{u}_{k-2})$. Computing the importance weights yields an approximation of $p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-1})$ given by the set $\big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, \tilde{w}^{(i)}_{k-1}\big)\big\}_{i=1}^N$. In the resampling step, the fittest particles are reproduced to obtain $\big\{\big(\bm{x}^{(i)}_{k-1}, N^{-1}\big)\big\}_{i=1}^N$, which again approximates $p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-1})$. Finally, closing the filter loop, the prediction step produces variety, resulting in $\big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\big\}_{i=1}^N$, an approximation of $p(\bm{x}_{k}\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1})$ \cite{merwe2000scented}.}
+	\label{fig:bootstrap}
+\end{figure}
+
+%\begin{figure}[t]
+%\centering
+%\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+%    \pgftext{\includegraphics[width=0.88\textwidth]{Figures/particle_filter}} at (0, 0);
+%    
+%    \node [] (a) at (-0.5, 4.6) {$N$ particles};
+%    
+%    \node [align=left, right] (a) at (-5.7, 1.1) {Weight};
+%    \node [align=left, right] (a) at (-5.7, 0.2) {Resample};
+%    \node [align=left, right] (a) at (-5.7, -1.1) {Draw particles \\ from proposal \\ distribution};
+%    \node [align=left, right] (a) at (-5.7, -4.1) {Weight};
+%    
+%    \node [align=left, right] (a) at (2.6, 4.15) {$p(\bm{x}_{k-1}\,|\,\bm{x}_{k-2}, \bm{u}_{k-2})$};
+%    \node [align=left, right] (a) at (2.6, 3) {Likelihood \\ function $p(\bm{z}_k\,|\,\bm{x}_k)$};
+%    \node [align=left, right] (a) at (2.6, 1.25) {$p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-2})$};
+%    \node [align=left, right] (a) at (2.6, 0.2) {$p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-2})$};
+%    \node [align=left, right] (a) at (2.6, -1.1) {$p(\bm{x}_{k}\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$};
+%    \node [align=left, right] (a) at (2.6, -4) {$p(\bm{x}_{k}\,|\,\bm{Y}_{k}, \bm{U}_{k-1})$};
+%    
+%\end{tikzpicture}
+%\caption{Bootstrap filter starting at time $k-1$ with the unweighted particles $\Big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, N^{-1}\big)\Big\}_{i=1}^N$, which provide an approximation of $p(\bm{x}_{k-1}\,|\,\bm{x}_{k-2}, \bm{u}_{k-2})$. Computing the importance weights results in $\Big\{\big(\hat{\bm{x}}^{(i)}_{k-1}, \tilde{w}^{(i)}_{k-1}\big)\Big\}_{i=1}^N$ yielding an approximation of $p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-2})$. Subsequently, in the resampling step the fittest particles are reproduced to obtain $\Big\{\big(\bm{x}^{(i)}_{k-1}, N^{-1}\big)\Big\}_{i=1}^N$, which again approximates $p(\bm{x}_{k-1}\,|\,\bm{Y}_{k-1}, \bm{U}_{k-2})$. Finally, the prediction step produces variety, resulting in $\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N$, which approximates $p(\bm{x}_{k}\,|\,\bm{x}_{k-1}, \bm{u}_{k-1})$  \cite{merwe2000scented}.}
+%	\label{fig:resampling_distributions}
+%\end{figure}
+
+
+
+
+\subsection{The Unscented Particle Filter}\label{sec:unscented_particle}
+
+\noindent
+\citeauthor{daum2005nonlinear} pointed out in \cite{daum2005nonlinear} that in most of the successful implementations of particle filters the proposal distribution is obtained using an extended Kalman filter or an unscented Kalman filter. Both filters compute recursive Gaussian approximations of the posterior filtering distribution,
+
+\begin{equation}
+  p\big(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}\big) \approx p_{\mathcal{N}}\big(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1}\big) = \mathcal{N}\big(\hat{\bm{x}}_{k},\bm{P}_k\big)\,.
+\end{equation}
+
+\noindent
+ incorporating the latest measurement at each time step. Within the particle filter framework, the EKF or UKF can be used to propagate a Gaussian proposal distribution for each particle, 
+
+\begin{equation}
+  \pi\big(\bm{x}_{k}\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big) = \mathcal{N}\big(\bar{\bm{x}}^{(i)}_k,\bm{P}^{(i)}_k\big), \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+\noindent
+The $i$-th particle at time step $k$ is then sampled from this distribution,
+
+\begin{equation}\label{eq:sample_proposal}
+  \hat{\bm{x}}^{(i)}_k \sim \pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big), \quad k > 0,  \quad i \in \{1, \dots, N\}\,.
+\end{equation}
+
+
+Although the individual proposal distributions for each particle are Gaussian, in general, the form of the overall proposal distribution $\pi(\bm{x}_{k}\,|\,\bm{X}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1})$ will not be Gaussian. Though, the peak of the proposal distribution is moved towards the peak of the likelihood function, therefore moving particles to regions of high likelihood, as illustrated in Figure \ref{fig:proposal_distribution}. Scenario (a) depicts little overlap of the proposal distribution and the likelihood function, which may be the case when the available model is not sufficiently accurate. Scenario (b) depicts peaked likelihood, which represents very accurate measurements.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[]
+   \centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.88\textwidth]{Figures/little_overlap}} at (0, 0);
+    
+    \node [align=left, right] (a) at (-5, 1) {Proposal \\ distribution};
+    \node [align=left, right] (a) at (3, 1) {Likelihood \\ function};
+    \node [align=left, right] (a) at (-3, -1.5) {Particles};
+\end{tikzpicture}
+\end{subfigure}
+
+\begin{subfigure}[]
+   \centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.88\textwidth]{Figures/peaked_likelihood}} at (0, 0);
+\end{tikzpicture}
+\end{subfigure}
+
+\caption[The two scenarios in which a parametric filter such as the EKF or UKF may help generating better proposal distributions by moving particles to regions of high likelihood.]{The two scenarios in which a parametric filter such as the EKF or UKF may help generating better proposal distributions by moving particles to regions of high likelihood: (a) when there is little overlap of proposal distribution and likelihood function, that is when the peak of the likelihood happens to lie in one of the tails of the proposal distribution or (b) when the likelihood function is very narrow, which is the case for very accurate measurements.}
+\label{fig:proposal_distribution}
+\end{figure}
+
+
+
+\citeauthor{van2001unscented} \cite{van2001unscented} proposed to use an unscented Kalman filter in order to incorporate the latest measurement and thus to generate better proposal distributions. Based on the ability of the UKF to more accurately propagate the mean and covariance of the state distribution, when compared to the EKF, the result is a bigger support overlap with the true posterior distribution. The resulting filter is referred to as the \emph{unscented particle filter}.
+
+
+Figure \ref{fig:unscented_particle_filter_cycle} depicts the entire unscented particle filter algorithm, including the calculation of sigma points for each particle, the time and measurement update step, as well as the importance sampling and resampling step. Note that we denote the mean of the Gaussian proposal distribution of the $i$-th particle with $\bar{\bm{x}}^{(i)}_k$, being consistent with former notation of the mean. For the $i$-th hypothesis $\hat{\bm{x}}^{(i)}$ of the state we continue to use a hat.
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=10.9cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [block, align=center] (init) {\emph{Initialisation} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_0$ from the initial state distribution: \\[2mm]
+	$\Big\{\big(\bm{x}^{(i)}_{0}, N^{-1}\big)\Big\}_{i=1}^N, \quad \bm{x}^{(i)}_0 \sim p(\bm{x}_0)\,,$ \\[2mm]
+	$\bar{\bm{x}}_0^{(i)} = \mathbb{E}\Big[\bm{x}_0^{(i)}\Big], \quad \bar{\bm{x}}^{(i)a}_0 = \bigg[\bar{\bm{x}}_0^{(i)T}, \mathbb{E}\Big[{\bm{w}_0}^T\Big], \mathbb{E}\Big[{\bm{v}_{0}}^T\Big] \bigg]^T\,,$ \\[2mm]
+	$\bm{P}^{(i)}_{0} = \mathbb{E}\Big[\big(\bm{x}^{(i)}_{0} - \bar{\bm{x}}^{(i)}_{0}\big) \big(\bm{x}^{(i)}_{0} - \bar{\bm{x}}^{(i)}_{0}\big)^T\Big]\,,$ \\[2mm]
+	$\bm{P}^{(i)a}_{0} = \mathbb{E}\Big[\big(\bm{x}^{(i)a}_{0} - \bar{\bm{x}}^{(i)a}_{0}\big) \big(\bm{x}^{(i)a}_{0} - \bar{\bm{x}}^{(i)a}_{0}\big)^T\Big] = \begin{bsmallmatrix}
+  \bm{P}^{(i)}_0 & \bm{0} & \bm{0} \\
+  \bm{0} & \bm{Q}_0 & \bm{0} \\
+  \bm{0} & \bm{0} & \bm{R}_0 \\
+\end{bsmallmatrix}$};
+\node [block, align=center, below of=init, node distance=4.9cm] (sigma) {\emph{Calculation of sigma points} \\[3mm] 
+	$\bm{\mathcal{X}}^{(i)a}_{k-1} = \Big\{\bar{\bm{x}}^{(i)a}_{k-1}, \quad \bar{\bm{x}}^{(i)a}_{k-1} + \gamma_a \sqrt{\bm{P}^{(i)a}_{k-1}}, \quad \bar{\bm{x}}^{(i)a}_{k-1} - \gamma_a \sqrt{\bm{P}^{(i)a}_{k-1}}\Big\}$};
+\node [block, align=center, below of=sigma, node distance=4.7cm] (predict) {\emph{Time update} \\[3mm] 
+	Propagate sigma points: \\ 
+	$\bm{\mathcal{X}}^{(i)\bm{x}}_{k|k-1} = \bm{\phi}_{k-1}\big(\bm{\mathcal{X}}^{(i)\bm{x}}_{k-1}, \bm{u}_{k-1}, \bm{\mathcal{X}}^{(i)\bm{w}}_{k-1}\big)$ \\[2mm]
+	Compute a priori state estimate: \\ 
+	$\bar{\bm{x}}^{(i)}_{k|k-1} = \sum^{2l}_{j = 0} W_j^{(m)} \mathcal{X}^{(i)\bm{x}}_{j, k\,|\,k-1}$ \\[2mm]
+	Compute a priori error covariance: \\ 
+	$\bm{P}^{(i)}_{k|k-1} = \sum^{2l}_{j = 0} W_j^{(c)} \big(\mathcal{X}^{(i)\bm{x}}_{j, k\,|\,k-1} -\bar{\bm{x}}^{(i)}_{k|k-1}\big)\big(\mathcal{X}^{(i)\bm{x}}_{j, k\,|\,k-1}-\bar{\bm{x}}^{(i)}_{k|k-1}\big)^T$ \\[2mm]
+	Predict measurement: \\ 
+	$\bm{\mathcal{Z}}^{(i)}_{k|k-1} = \bm{h}_{k}\big(\bm{\mathcal{X}}^{(i)\bm{x}}_{k|k-1}, \bm{\mathcal{X}}^{(i)\bm{v}}_{k|k-1}\big)$ \\[1mm]
+	$\bar{\bm{z}}^{(i)}_{k|k-1} = \sum^{2l}_{j = 0} W_j^{(m)} \mathcal{Z}^{(i)}_{j, k\,|\,k-1}$};
+\node [block, align=center, below of=predict, node distance=7.3cm] (update) {\emph{Measurement update} \\[3mm] 
+	Compute innovation and cross covariance matrices: \\ 
+	$\bm{P}^{(i)}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} = \sum^{2l}_{j = 0} W_j^{(c)} \big(\mathcal{Z}^{(i)}_{j, k\,|\,k-1} -\bar{\bm{z}}^{(i)}_{k|k-1}\big)\big(\mathcal{Z}^{(i)}_{j, k\,|\,k-1}-\bar{\bm{z}}^{(i)}_{k|k-1}\big)^T$ \\[2mm]
+	$\bm{P}^{(i)}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k} = \sum^{2l}_{j = 0} W_j^{(c)} \big(\mathcal{X}^{(i)\bm{x}}_{j, k\,|\,k-1} -\bar{\bm{x}}^{(i)}_{k|k-1}\big)\big(\mathcal{Z}^{(i)}_{j, k\,|\,k-1}-\bar{\bm{z}}^{(i)}_{k|k-1}\big)^T$ \\[2mm]
+	Compute Kalman gain: \\
+	$\mathcal{K}^{(i)}_k = \bm{P}^{(i)}_{\tilde{\bm{x}}_k \tilde{\bm{z}}_k}{\bm{P}^{(i)}_{\bm{z}_k\bm{z}_k}}^{-1}$ \\[2mm]
+	Compute a posteriori mean: \\ $ \bar{\bm{x}}^{(i)}_k = \bar{\bm{x}}^{(i)}_{k|k-1} + \mathcal{K}^{(i)}_k\big(\bm{z}_k - \bar{\bm{z}}^{(i)}_{k|k-1}\big)$ \\[2mm]
+	Update error covariance: \\ $\bm{P}^{(i)}_k = \bm{P}^{(i)}_{k|k-1} - \mathcal{K}^{(i)}_k \bm{P}^{(i)}_{\tilde{\bm{z}}_k \tilde{\bm{z}}_k} {\mathcal{K}^{(i)}_k}^T$};
+
+\node [output, below of=update, node distance=4.2cm, name=output] {};
+\node [output, right of=output, node distance=5.9cm, name=help2] {};
+\node [output, below of=init, node distance=3.5cm, name=help4] {};
+\node [output, right of=help4, node distance=5.9cm, name=help3] {};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (sigma);
+\draw [draw,-stealth, thick, align=left] (sigma) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- node [label={left:$\vdots$}, name=dots]{} (output);
+\node [right of=dots, node distance=5.6cm] {$\vdots$};
+\draw [draw,-stealth, thick] (help2) -- (help3) -- (help4);
+\end{tikzpicture}
+\end{figure}
+
+
+
+\tikzstyle{block} = [draw, rectangle, thick, 
+    minimum height=1.5cm, minimum width=11cm]
+\tikzstyle{output} = [coordinate]
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, rounded corners=1pt, node distance=5cm,>=latex']
+    
+\node [] (init) {$\vdots$};
+\node [block, align=center, below of=init, node distance=4.3cm] (predict) {\emph{Importance sampling step} \\[3mm] 
+	Draw $N$ samples $\hat{\bm{x}}^{(i)}_k$ from the proposal distribution: \\
+	$\Big\{\big(\hat{\bm{x}}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N,$  \\[2mm]
+	$\hat{\bm{x}}^{(i)}_k \sim \pi\big(\bm{x}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big) = \mathcal{N}(\bar{\bm{x}}^{(i)}_{k},\bm{P}^{(i)}_k)$ \\[2mm]
+	Evaluate importance weights: \\
+	$w^{(i)}_k = w^{(i)}_{k-1} \frac{p\big(\bm{z}_k\,|\,\hat{\bm{x}}^{(i)}_k\big) p\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{x}^{(i)}_{k-1}, \bm{u}_{k-1}\big)}{\pi\big(\hat{\bm{x}}^{(i)}_k\,|\,\bm{X}^{(i)}_{k-1}, \bm{Z}_{k}, \bm{U}_{k-1}\big)}, \quad i \in \{1, \dots, N\}$ \\[2mm]
+	Normalise importance weights: \\
+	$\tilde{w}^{(i)}_k = w^{(i)}_{k} \Big[\sum^N_{j = 1} w^{(j)}_k\Big]^{-1}, \quad i \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=predict, node distance=5cm] (update) {\emph{Resampling step} \\[3mm] 
+	Draw $N$ samples $\bm{x}^{(i)}_{k}$ from the set $\Big\{\big(\hat{\bm{x}}^{(j)}_{k}, \tilde{w}^{(j)}_{k}\big)\Big\}_{j=1}^N$: \\[1mm]
+	$\Big\{\big(\bm{x}^{(i)}_{k}, N^{-1}\big)\Big\}_{i=1}^N, \quad \operatorname{Pr}\big(\bm{x}^{(i)}_k = \hat{\bm{x}}^{(j)}_k\big) = \tilde{w}^{(j)}_k, \quad j \in \{1, \dots, N\}$};
+	\node [block, align=center, below of=update, node distance=3.5cm] (outputblock) {\emph{Recombine particles} \\[3mm] 
+	Compute conditional mean: \\
+	$\hat{\bm{x}}_k = \tilde{\mathbb{E}}_{p(\bm{x}_k\,|\,\bm{Z}_{k}, \bm{U}_{k-1})}\big[\bm{x}_k\big] = \frac{1}{N} \sum^N_{i = 1} \bm{x}^{(i)}_k$ \\[2mm]
+	Compute covariance: \\
+	$\bm{P}_k = \sum^N_{i = 1} \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big) \big(\bm{x}^{(i)}_k - \hat{\bm{x}}_{k}\big)^T$};
+
+\node [output, below of=outputblock, node distance=2.8cm, name=output] {Output};
+\node [output, below of=outputblock, node distance=2.2cm, name=help1] {};
+\node [output, right of=help1, node distance=6.1cm, name=help2] {};
+\node [above of=help2, node distance=15cm, name=help3] {$\vdots$};
+
+\draw [draw,-stealth, thick, align=left] (init) -- (predict);
+\draw [draw,-stealth, thick, align=left] (predict) -- (update);
+\draw [draw,-stealth, thick, align=left] (update) -- (outputblock);
+\draw [draw,-stealth, thick, align=left] (outputblock) -- node [label={left:Output}]{} (output);
+\draw [draw,-stealth, thick] (help1) -- (help2) -- (help3);
+\end{tikzpicture}
+\caption[Operation cycle of the unscented particle filter.]{Operation cycle of the unscented particle filter, illustrating the calculation of sigma points for each particle, the time and measurement update step, as well as the importance sampling and resampling step. Finally, the particles are recombined to obtain the minimum mean-squared error estimate and the corresponding covariance.} \label{fig:unscented_particle_filter_cycle}
+\end{figure}
+
+
+
+\section{Interval Analysis}
+
+Built on the foundation of set theory, \emph{interval analysis} encompasses numerical methods that yield reliable results. Originating back to Moore's doctorate on the use of intervals to analyse and control numerical errors in digital computers in 1962, interval computation has come a long way and has been subject to extensive research since.  As opposed to the probabilistic methods presented above, which provide a point estimate associated with a given uncertainty in the form of a probability distribution, interval computations provide a box guaranteed to contain the solution, given that the problem is well modelled and the assumptions are sufficiently conservative. However, this guarantee comes with the trade-off that any point in the confined solution space is assumed to be equally likely. 
+
+
+As we shall see below, self-localisation can be modelled as an optimisation problem. In \cite{Rokne2001}, \citeauthor{Rokne2001} states the following advantages of interval methods to global optimisation problems. They
+
+\begin{itemize}
+	\item do not rely on starting points,
+	\item can prove existence, absence, and uniqueness of solutions,
+	\item can easily accommodate external constraints,
+	\item and are reliable in that they never discard a feasible solution.
+\end{itemize}
+
+\noindent
+An in-depth presentation of the following basic concepts can be found in \cite{jaulin2001applied}.
+
+
+\subsection{Basic Concepts}
+\label{sec: interval_basic_concepts}
+
+Let $[x]$ denote a \emph{closed interval}, defined as a closed subset of the real numbers given by
+
+\begin{equation}
+  [x] = \big[\underline{x}, \overline{x}\big] = \big\{x \in \mathbb{R} \,\,|\,\, \underline{x} \leq x \leq \overline{x}\big\}\,,
+\end{equation}
+
+\noindent
+ where $\underline{x}$ and $\overline{x}$ are called the \emph{lower bound} and the \emph{upper bound} of the interval, respectively. An interval $[x]$ can be assigned a \emph{width} $\operatorname{w}\big([x]\big)$, a \emph{midpoint} $\operatorname{mid}\big([x]\big)$, and an \emph{absolute value} $\big|[x]\big|$, given by
+
+\begin{align}
+\operatorname{w}\big([x]\big) &= \overline{x} - \underline{x}\,, \\
+\operatorname{mid}\big([x]\big) &= \frac{\underline{x} + \overline{x}}{2}\,, \\
+\big|[x]\big| &= \max\big(|\underline{x}|, |\overline{x}|\big) \,,
+\end{align}
+
+
+\noindent
+respectively. We denote the set of closed intervals with endpoints in the set of real numbers augmented by plus and minus infinity with
+ 
+ \begin{equation}
+ [\mathbb{R}] = \Big\{\big[\underline{x}, \overline{x}\big] \,|\: \underline{x}, \overline{x} \in \mathbb{R} \cup \{-\infty, \infty\}, \quad \underline{x} \leq \overline{x}\Big\} \cup \emptyset \,.
+ \end{equation} 
+ 
+ \noindent
+Note that we include the empty set, in order to form a closed interval system, that is, a system in which there are no undefined operator-operand or function-argument combinations \cite{hansen2003global}.
+
+The \emph{intersection} of two intervals $[x]$ and $[y] \in [\mathbb{R}]$ is defined as the interval
+
+ \begin{equation}
+ \begin{split}
+  [x] \cap [y] &= \big\{ z \in \mathbb{R}\,\,|\,\, z \in [x] \:\mbox{and}\: z \in [y] \big\} \\
+  &= \begin{cases}
+  	\big[\max(\underline{x}, \underline{y}), \min(\overline{x}, \overline{y})\big] & \quad \mathrm{if}\:\max(\underline{x}, \underline{y}) \leq \min(\overline{x}, \overline{y}) \\
+  	\emptyset & \quad \mathrm{otherwise}
+  \end{cases}\,.
+\end{split}
+\end{equation}
+
+\noindent
+While the intersection is always an interval, this is not true for the \emph{union} of $[x]$ and $[y]$, given by
+
+ \begin{equation}
+  [x] \cup [y] = \big\{ z \in \mathbb{R}\,\,|\,\, z \in [x] \:\mbox{or}\: z \in [y] \big\} \,.
+  \end{equation}
+
+\noindent
+To make the set of intervals closed with respect to the union, we define the \emph{interval hull} of a subset $\mathbb{X} \in \mathbb{R}$ as the smallest interval $[\mathbb{X}]$ that contains it. Now, we can define the \emph{interval union} of $[x]$ and $[y]$ as the interval hull of the union $[x] \cup [y]$,
+
+ \begin{equation}
+  \begin{split}
+  [x] \sqcup [y] &= \big[[x] \cup [y]\big] \\
+  &= \big[\min(\underline{x}, \underline{y}), \max(\overline{x}, \overline{y})\big]\,.
+  \end{split}
+  \end{equation}
+
+Multiplication of a real number $\alpha$ with an interval $[x]$ is defined as
+
+ \begin{equation}
+ \begin{split}
+  \alpha[x] &= \big\{ \alpha x \,\,|\,\, x \in [x]\big\} \\
+  &= \begin{cases}
+  	\big[\alpha\underline{x}, \alpha\overline{x}\big] & \quad \mathrm{if}\:\alpha \geq 0 \\
+  	\big[\alpha\overline{x}, \alpha\underline{x}\big] & \quad \mathrm{if}\:\alpha < 0
+  \end{cases}\,.
+\end{split}
+\end{equation}
+
+\noindent
+An inner binary operation $\circ$ on the real intervals $[x], [y] \in [\mathbb{R}]$ is defined by
+ 
+ \begin{equation}
+  [x] {\,\circ\,} [y] = \big\{ x {\,\circ\,} y \in \mathbb{R}\,\,|\,\, x \in [x] \,\mbox{and}\, y \in [y] \big\}\,.
+\end{equation}
+
+\noindent
+Hence, the four basic arithmetic operations on intervals are given by
+
+\begin{align}
+	[x] + [y] &= \Big[\underline{x} + \underline{y}, \overline{x} + \overline{y}\Big] \\
+	[x] - [y] &= \Big[\underline{x} - \overline{y}, \overline{x} - \underline{y}\Big]\\
+	\begin{split}
+[x] \cdot [y] &= \Big[ \min\big(\underline{x} {\cdot} \underline{y}, \underline{x} \cdot \overline{y}, \overline{x} \cdot \underline{y}, \overline{x} \cdot \overline{y}\big), \\
+&\mathrel{\phantom{=[}}\max\big(\underline{x} \cdot \underline{y}, \underline{x} \cdot \overline{y}, \overline{x} \cdot \underline{y}, \overline{x} \cdot \overline{y}\big) \Big]
+\end{split} \\
+\begin{split}
+\frac{[x]}{[y]} &= \bigg[ \min\Big(\frac{\underline{x}}{\underline{y}}, \frac{\underline{x}}{\overline{y}}, \frac{\overline{x}}{\underline{y}}, \frac{\overline{x}}{\overline{y}}\Big), \\
+&\mathrel{\phantom{=[}}\max\Big(\frac{\underline{x}}{\underline{y}}, \frac{\underline{x}}{\overline{y}}, \frac{\overline{x}}{\underline{y}}, \frac{\overline{x}}{\overline{y}}\Big) \bigg], \quad 0 \notin [y]
+\end{split}
+\end{align}
+
+\noindent
+These definitions are motivated by the following argument: Given two intervals $[x]$ and $[y]$ and two exact values $x \in [x]$ and $y \in [y]$, it is guaranteed that $x \circ y \in \big([x] \circ [y]\big)$, even though the exact values of $x$ and $y$ may not be known \cite{Rokne2001}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.50\textwidth]{Figures/interval}} at (0, 0);
+    
+    \node [] (a) at (0.36, 1) {$[\bm{x}]$};
+    \node [] (a) at (0.36, -3.6) {$[x_1]$};
+     \node [] (a) at (0.36, -0.4) {$\operatorname{mid}\big([\bm{x}]\big)$};
+    \node [] (a) at (-3.4, 0.1) {$[x_2]$};
+    \node [] (a) at (-2, 0.1) {$\big|\big|[\bm{x}]\big|\big|$};
+    \node [] (a) at (2.8, 0.1) {$\operatorname{w}\big([\bm{x}]\big)$};
+        
+\end{tikzpicture}
+\caption[The projection of an interval vector onto its axes, its width, norm, and midpoint.]{The projection of an interval vector $[\bm{x}] = \big[[x_1], [x_2]\big] \in [\mathbb{R}]^2$ onto the two axes as well as its width $\operatorname{w}\big([\bm{x}]\big)$, norm $\big|\big|[\bm{x}]\big|\big|$, and midpoint $\operatorname{mid}\big([\bm{x}]\big)$, \cite{moore2009introduction}.}
+	\label{fig:interval_analysis}
+\end{figure}
+ 
+A \emph{real interval vector} $[\bm{x}] = \big([x_1], [x_2], \dots, [x_n]\big)^T \in [\mathbb{R}]^n$, also called a \emph{box}, is defined as the Cartesian product of $n$ real intervals, 
+ 
+ \begin{equation}
+  [\bm{x}] = [x_1] \times [x_2] \times \dots \times [x_n]\,,
+\end{equation}
+
+\noindent
+where the $i$-th interval component $[x_i]$ represents the projection of $[\bm{x}]$ onto the $i$-th axis. We define multiplication of an interval vector with a real number and the addition and multiplication of two interval vectors as follows:
+
+\begin{align}
+\alpha[\bm{x}] &= \big(\alpha [x_1], \dots, \alpha [x_n]\big)\,, \\
+[\bm{x}] + [\bm{y}] &= \big([x_1] + [y_1], \dots, [x_n] + [y_n]\big)\,, \\
+[\bm{x}]^T \cdot [\bm{y}] &= [x_1] \cdot [y_1] + \cdots + [x_n] \cdot [y_n] \,.
+\end{align}
+
+\noindent
+Likewise, the width and the midpoint can be extended naturally to interval vectors as follows:
+
+
+\begin{align}
+\operatorname{w}\big([\bm{x}]\big) &= \underset{1 \leq i \leq n}{\max}\Big(\operatorname{w}\big([x_i]\big)\Big) \\
+\operatorname{mid}\big([\bm{x}]\big) &= \bigg[\operatorname{mid}\big([x_1]\big), \dots , \operatorname{mid}\big[x_n]\big)\bigg]^T\,.
+\end{align}
+
+\noindent
+A box can be assigned a norm $\big|\big|[\bm{x}]\big|\big|$, which represents a generalisation of the absolute value, given by
+
+\begin{equation}
+\big|\big|[\bm{x}]\big|\big| = \underset{1 \leq i \leq n}{\max}\Big(\big|[x_i]\big|\Big)\,.
+\end{equation}
+
+
+
+\noindent
+The projection of an interval vector $[\bm{x}]$ onto the $i$-th axis as well as its width, norm, and midpoint is depicted in Figure \ref{fig:interval_analysis} for $n = 2$.
+
+
+
+Let $\bm{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$, $[\bm{x}] \in [\mathbb{R}]^n$, and $\bm{f}\big([\bm{x}]\big)$ the image of $[\bm{x}]$ under $\bm{f}$, given by
+
+\begin{equation}
+\bm{f}\big([\bm{x}]\big) = \big\{f(\bm{x}) \,|\, \bm{x} \in [\bm{x}]\big\} \,.
+\end{equation}
+
+\noindent
+An interval function $[\bm{f}]: [\mathbb{R}]^n \rightarrow [\mathbb{R}]^m$ is called \emph{inclusion function} of $\bm{f}$ if
+ 
+ \begin{equation}
+  \bm{f}\big([\bm{x}]\big) \subseteq [\bm{f}]\big([\bm{x}]\big), \quad \forall [\bm{x}] \in [\mathbb{R}]^n\,.
+\end{equation}
+
+\noindent
+The simplest way of obtaining an inclusion function $[\bm{f}]$ of a given function $\bm{f}$ is to replace each real variable by their \emph{natural interval extension}. The resulting function is called the \emph{natural inclusion function}. If $[\bm{f}]$ is the inclusion function that determines the smallest possible box comprising $\bm{f}\big([\bm{x}]\big)$ it is called \emph{minimal} and denoted by $[\bm{f}]^{\ast} \big([\bm{x}]\big)$. Figure \ref{fig:inclusion_functions} depicts the image of a box $[\bm{x}]$ under $\bm{f}$ and two of its possible inclusion functions, one of them the minimal inclusion function $[\bm{f}]^{*}\big([\bm{x}]\big)$.
+
+Since the minimal inclusion function is usually not available a so-called contractor can be used to minimise a known inclusion function instead. Before we elaborate on contractors in Section \ref{sec:contractors}, we will introduce a generic description of problems involving constraints in the next section.
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=1.0, auto, thick, node distance=3cm,>=latex']
+    \pgftext{\includegraphics[width=0.98\textwidth]{Figures/inclusion}} at (0, 0);
+    
+    \node [] (a) at (0.36, 1.3) {$[\bm{f}]^{*}([\bm{x}])$};
+     \node [] (a) at (0.36, 0.4) {$\bm{f}([\bm{x}])$};
+     \node [] (a) at (0.36, -0.33) {$[\bm{f}]([\bm{x}])$};
+    \node [] (a) at (-3.6, 0.15) {$[\bm{x}]$};
+    
+    \node [align=center] (a) at (-1.9, -1.52) {$x_1$};
+    \node [align=center] (a) at (-2.4, -1.5) {$\overline{x}_1$};
+    \node [align=center] (a) at (-4.5, -1.5) {$\underline{x}_1$};
+    
+    \node [] (a) at (5.5, -1.5) {$y_1$};
+    
+    \node [] (a) at (-5.8, 1.3) {$x_2$};
+    \node [] (a) at (1.6, 1.3) {$y_2$};
+    \node [] (a) at (-5.8, 0.8) {$\overline{x}_2$};
+    \node [] (a) at (-5.8, -0.35) {$\underline{x}_2$};
+        
+\end{tikzpicture}
+\caption[Image of an interval box and two inclusion functions.]{Image $\bm{f}\big([\bm{x}]\big)$ of a box $[\bm{x}] \in [\mathbb{R}]^2$ under $\bm{f}: \mathbb{R}^2 \rightarrow \mathbb{R}^2$ and two inclusion functions $[\bm{f}]\big([\bm{x}]\big)$ and $[\bm{f}]^{*}\big([\bm{x}]\big)$. The interval function $[\bm{f}]^{*}$ is the minimal inclusion function \cite{jaulin2001applied}.}
+	\label{fig:inclusion_functions}
+\end{figure}
+
+
+\subsection{Constraint Satisfaction Problems}\label{sec:csp}
+
+Utilising the notion of constraints is a formal and declarative way of describing certain problems, abstracting from a domain-specific description in order to allow the solution of the problem with efficient, generic solution methods. Formally, a \emph{constraint satisfaction problem} (CSP) is defined as a triple $(\mathbb{X}, \mathbb{D}, \mathbb{C})$, where $\mathbb{X} = \{x_{1}, \dots ,x_{n}\}$ is a finite set of variables with their associated non-empty domains $\mathbb{D} = \{D_{1}, \dots ,D_{n}\}$, so that $x_i \in D_i$, and $\mathbb{C} = \{C_{1}, \dots ,C_{m}\}$ is a finite set of constraints. Each of the constraints $C_j \in \mathbb{C}$ in turn is a pair $(\mathbb{T}_j, R_j)$, where $\mathbb{T}_j = \{x_{j,1}, \dots, x_{j,k}\} \subseteq \mathbb{X}$ is a subset of the variables and $R_j$ is a $k$-ary relation on the corresponding subset of domains $\mathbb{D}_j = \{D_{j1}, \dots, D_{jk}\} \subseteq \mathbb{D}$, reducing possible combinations of the values of variables to a subset of $D_{j1} \times \dots \times D_{jk}$.
+
+If the domains $D_{i}$ are real intervals $[x_i]$ and the constraints have the form of equalities or inequalities, so that the relation $R_j$ is either of the form
+
+\begin{equation}\label{eq:individual_constraints}
+  f_j(x_{1}, \dots ,x_{k}) = 0, \quad j \in \{1, \dots ,m\}\,,
+\end{equation}
+
+\noindent
+or of the form
+
+\begin{equation}
+  f_j(x_{1}, \dots ,x_{k}) \leq 0, \quad j \in \{1, \dots ,m\}\,,
+\end{equation}
+
+\noindent
+we call this a \emph{numerical constraint satisfaction problem} (NCSP). In the latter case we can introduce a slack variable $x_{sj} \geq 0$ to cast the inequality constraint to an equality constraint as follows:
+
+\begin{equation}
+  f_j(x_{1}, \dots ,x_{k}) + x_{sj} = 0, \quad j \in \{1, \dots ,m\}\,.
+\end{equation}
+
+Now, we combine the $n$ scalar variables to form a real vector $\bm{x} = (x_{1}, \dots ,x_{n})^T \in \mathbb{R}^n$ with its domain $[\bm{x}_0] = \big([x_{1}], \dots ,[x_{n}]\big)^T \in [\mathbb{R}]^n$. Let $\bm{f}: \mathbb{R}^n \rightarrow \mathbb{R}^m$ denote a function whose coordinate functions are given by the $f_j$s. Then, Equation \ref{eq:individual_constraints} can be written as $\bm{f}(\bm{x}) = 0$, which corresponds to the constraint satisfaction problem $\mathcal{H}$, formulated as
+
+\begin{equation}\label{eq:constraint_satisfaction_problem}
+  \mathcal{H}: \big(\bm{f}(\bm{x}) = 0, \bm{x} \in [\bm{x}_0]\big)\,,
+\end{equation}
+
+\noindent
+with its \emph{solution set} given by
+
+\begin{equation}\label{eq:solution_set}
+  \mathbb{S} = \big\{\bm{x} \in [\bm{x}_0] \,\,|\,\, \bm{f}(\bm{x}) = 0\big\}\,.
+\end{equation}
+
+\noindent
+We say a point $\bm{x}$ is \emph{feasible} if $\bm{x} \in \mathbb{S}$. Then, $\bm{x}$ is said to solve the constraint satisfaction problem. Otherwise $\bm{x}$ is \emph{infeasible}.
+
+As characterising the solution set is NP-hard in general \cite{jaulin2001applied}, so-called \emph{consistency techniques} finding outer approximations of $\mathbb{S}$, whilst keeping complexity polynomial in time, have been used \cite{744754, Sam-Haroud1996, Sam:31901}. One such consistency technique is \emph{contracting} $\mathcal{H}$, which means replacing $[\bm{x}]$ by a smaller box $[\bm{x}]'$, such that no feasible solution is discarded:
+
+\begin{equation}
+  \mathbb{S} \subseteq [\bm{x}]' \subset [\bm{x}]\,.
+\end{equation}
+
+\noindent
+If $[\bm{x}]$ is replaced by the smallest possible box $[\bm{x}]'$ that contains $\mathbb{S}$ this is called the optimal contraction of $\mathcal{H}$. 
+
+
+\subsection{Contractors}\label{sec:contractors}
+
+Given the numerical constraint satisfaction problem $\mathcal{H}$, a \emph{contractor} $\mathcal{C}: [\mathbb{R}]^n \rightarrow [\mathbb{R}]^n$ is an operator that contracts the box $[\bm{x}] \in [\mathbb{R}]^n$ by eliminating values inconsistent with the constraints $C_i$. It does so without bisecting $[\bm{x}]$, so as to keep complexity polynomial. Explicitly, a contractor satisfies the two following properties:
+
+ \begin{align}
+  \mathrm{Contractance} &\quad \mathcal{C}\big([\bm{x}]\big) \subseteq [\bm{x}], \quad \forall [\bm{x}] \in [\mathbb{R}]^n\,, \\
+  \mathrm{Completeness} &\quad \mathcal{C}\big([\bm{x}]\big) \cap \mathbb{S} = [\bm{x}] \cap \mathbb{S}, \quad \forall [\bm{x}] \in [\mathbb{R}]^n\,.
+\end{align}
+
+
+A simple contractor demanding little computational resources is the forward-backward contractor \cite{rossi2006handbook}, denoted by $\mathcal{C}_{\uparrow \downarrow}$. The underlying \texttt{HC4} algorithm \cite{Benhamou99revisinghull} uses a tree representation of each of the individual constraints $C_i$, where leaves correspond to variables or constants, internal nodes correspond to unary or binary primitive operators, and the root node contains the $k$-ary relation symbol.
+
+\tikzstyle{vertex}=[draw,circle,minimum size=20pt,inner sep=0pt]
+\tikzstyle{var}=[draw,fill=black!15,circle,minimum size=20pt,inner sep=0pt]
+
+\begin{figure}[]
+\centering
+\begin{tikzpicture}[thick,level/.style={sibling distance=62mm/#1}, level 3/.style={sibling distance=28mm}]
+\node [vertex] (r){$=$}
+  child {
+    node [vertex] (a) {$\times$}
+    child {node [vertex] (b) {$2$}}
+    child {node [var] (c) {$x$}}
+  }
+  child {
+    node [vertex] (d) {$-$}
+    child {node [var] (e) {$z$}}
+    child {
+      node [vertex] (f) {$\widehat{}$}
+      child {node [var] (g) {$y$}}
+      child {node [vertex] (h) {$2$}}
+    }
+  };
+
+\node[right=0pt of r] (ri) {$[0, 16]$};
+\node[right=0pt of b] (bi) {$[2]$};
+\node[right=0pt of c] (ci) {$[0, 20]$};
+\node[right=0pt of a] (ai) {$[0, 40]$};
+\node[left=0pt of a] (ain) {$[a]$};
+
+\node[right=0pt of d] (di) {$[-100, 16]$};
+\node[left=0pt of d] (dn) {$[c]$};
+\node[right=0pt of e] (ei) {$[0, 16]$};
+\node[right=0pt of f] (fi) {$[0, 100]$};
+\node[left=0pt of f] (fn)  {$[b]$};
+\node[right=0pt of g] (gi) {$[-10, 10]$};
+\node[right=0pt of h] (hi) {$[2]$};
+    
+\draw[->, dotted, red] (bi) -- (ai);
+\draw[->, dotted, red] (ci) -- (ai);
+
+\draw[->, dotted, red] (hi) -- (fi);
+\draw[->, dotted, red] (gi) -- (fi);
+
+\draw[->, dotted, red] (ei) -- (di);
+\draw[->, dotted, red] (fi) -- (di);
+
+\end{tikzpicture}
+\caption[Algorithm \texttt{HC4}: annotated tree for the forward phase.]{Algorithm \texttt{HC4}: annotated tree for the forward evaluation in the constraint $2 x = z - y^2$ and the domains $[x] = [0, 20], [y] = [0, 16]$, and $[z] = [-10, 10]$.}
+	\label{fig:hc4treeForward}
+\end{figure}
+
+
+After the construction of an expression tree from a single constraint of the given NCSP, the tree is traversed from the leaves to the root and the subexpression at each node is evaluated using its natural interval extension. In this \emph{forward phase} the domains of the variables are used to obtain interval values for the intermediate nodes of the tree, as is depicted in Figure \ref{fig:hc4treeForward} for the variables $x, y$, and $z$, an exemplary constraint $2 x = z - y^2$, and the domains $[x] = [0, 20], [y] = [0, 16]$, and $[z] = [-10, 10]$. Adopting this example, as shown in \cite{jaulin2012introbotics}, the operations carried out in the forward phase are the following:
+
+
+\begin{alignat*}{5}
+	1 & \quad  & [a] &:= 2 [x]              && [0, 40]    \\
+	2 &        & [b] &:= [y]^2		   	    && [0, 100]   \\
+	3 &        & [c] &:= [z] - [b]          && [-100, 16] \\
+	4 &        & [r] &:= [a] - [c] \qquad   && [0, 16]
+	\end{alignat*}
+	
+	
+\noindent
+The three intermediate nodes are denoted with $a, b$ and $c$, respectively, the root node with $r$, and $:=$ denotes an assignment of the value of the right hand side expression to the interval variable on the left. The intervals in the last column are the values assigned for the above example.
+
+In the \emph{backward phase}, these intervals are then contracted, applying in every node a narrowing operator by isolating the nodes and using inverse operations, yielding reduced domains of the variables \cite{garajova2016solving}. The operations carried out in the backward propagation are the following:
+
+	\begin{alignat*}{6}
+	5 &  \quad & [a] &:= [r] \cap [a] 	     		  && [0, 16]  \quad && \mathrm{//\:see\:Step} \: 4 \\
+	6 &        & [c] &:= [r] \cap [c] 	     		  && [0, 16]  \quad && \mathrm{//\:see\:Step} \: 4 \\
+	7 & 	   & [z] &:= \big([c] + [b]\big) \cap [z] && [0, 16]  \quad && \mathrm{//\:see\:Step} \: 3 \\
+	8 &        & [b] &:= \big([z] - [c]\big) \cap [b] \qquad && [0, 16]   \quad && \mathrm{//\:see\:Step} \: 3 \\
+	9 &       & [y] &:= \sqrt{[b]} \cap [y]   && [-4, 4] \quad && \mathrm{//\:see\:Step} \: 2 \\
+	10 &        & [x] &:= \big([a] / 2\big) \cap [x]   && [0, 8]   \quad && \mathrm{//\:see\:Step} \: 1     
+	\end{alignat*}
+
+
+\noindent
+These operations have been derived by isolating each variable on the right hand side of the equations in Step 1 to 4. Steps 5 and 6 result from the interval equality represented by the root node. In \texttt{HC4}, the application of cascading projections of primitive constraints is implemented by \texttt{HC4Revise}, while the manual isolation in Steps 5 to 10 of this example is only carried out for demonstration purposes. After the two phases have been carried out, each node but the root node contains two interval attributes as depicted in Figure \ref{fig:hc4treeBackward}. If $[r]$ as computed in Step 4 turns out to be empty, then the NCSP has no solution. 
+
+\begin{figure}[]
+\centering
+\begin{tikzpicture}[thick,level/.style={sibling distance=62mm/#1}, level 3/.style={sibling distance=28mm}]
+\node [vertex] (r){$=$}
+  child {
+    node [vertex] (a) {$\times$}
+    child {node [vertex] (b) {$2$}}
+    child {node [var] (c) {$x$}}
+  }
+  child {
+    node [vertex] (d) {$-$}
+    child {node [var] (e) {$z$}}
+    child {
+      node [vertex] (f) {$\widehat{}$}
+      child {node [var] (g) {$y$}}
+      child {node [vertex] (h) {$2$}}
+    }
+  };
+ 
+ \node[right=0pt of r] (ri) {$[0, 16]$};
+\node[right=0pt of b] (bi)  {$[2]$};
+\node[right=0pt of c] (ci)  {$[0, 20]$};
+\node[left=0pt of c]  (cin) {$\bm{[0, 8]}$};
+\node[right=0pt of a] (ai)  {$[0, 40]$};
+\node[left=0pt of a]  (ain) {$\bm{[0, 16]}$};
+
+\node[right=0pt of d] (di)  {$[-100, 16]$};
+\node[left=0pt of d]  (din) {$\bm{[0, 16]}$};
+
+\node[right=0pt of e] (ei) {$[0, 16]$};
+\node[left=0pt of e] (ein) {$\bm{[0, 16]}$};
+
+\node[right=0pt of f] (fi) {$[0, 100]$};
+\node[left=0pt of f] (fin) {$\bm{[0, 16]}$};
+
+\node[right=0pt of g] (gi) {$[-10, 10]$};
+\node[left=0pt of g] (gin) {$\bm{[-4, 4]}$};
+
+\node[right=0pt of h] (hi) {$[2]$};
+    
+\draw[->, dotted, blue] (ain) -- (cin);
+\draw[->, dotted, blue] (din) -- (ein);
+\draw[->, dotted, blue] (din) -- (fin);
+\draw[->, dotted, blue] (fin) -- (gin);
+
+
+\draw[->, dotted, blue] (di) to[out=north, in=north] (ain);
+\draw[->, dotted, blue] (ai) to[out=north east, in=north west] (din);
+
+\end{tikzpicture}
+\caption[Algorithm \texttt{HC4}: annotated tree for the backward phase.]{Algorithm \texttt{HC4}: annotated tree for the backward propagation in the constraint $2 x = z - y^2$ and the domains $[x] = [0, 20], [y] = [0, 16]$, and $[z] = [-10, 10]$. The results of the backward phase are depicted in bold typeface. }
+\label{fig:hc4treeBackward}
+\end{figure}
+
+
+
+
+\subsection{Set Inversion Problems}\label{sec:sip}
+
+
+Allowing only domains represented by bounded real intervals, the NCSP reduces to a \emph{set inversion problem}, which is characterised by finding the preimage $\mathbb{S}$ of a set $\mathbb{Y} \subset \mathbb{R}^p$ under the possibly non-linear function $\bm{f}: \mathbb{R}^n \rightarrow \mathbb{R}^p$, defined as
+
+\begin{equation}
+\mathbb{S} =\bm{f}^{-1}\big(\mathbb{Y}\big) = \big\{ \bm{x} \in \mathbb{R}^n\,|\,f(\bm{x}) \in \mathbb{Y} \big\}\,.
+\end{equation}
+
+\noindent
+For any bounded set $\mathbb{Y}$ and an inclusion function $[\bm{f}]: [\mathbb{R}]^n \rightarrow [\mathbb{R}]^p$ of $\bm{f}$ two regular subpavings $\underline{\mathbb{S}}$ and $\overline{\mathbb{S}}$, such that
+
+\begin{equation}
+\underline{\mathbb{S}} \subseteq \mathbb{S} \subseteq \overline{\mathbb{S}}, \quad \mathrm{with}\: \overline{\mathbb{S}} = \underline{\mathbb{S}} \cup \Delta\mathbb{S} \,,
+\end{equation} %\mathbb{S}
+
+\noindent
+may be obtained using a set inversion algorithm. A \emph{subpaving} of a subset $\mathbb{S} \subset \mathbb{R}^n$ is a union of non-overlapping subboxes $[\bm{x}_j]$ with non-zero width. Two boxes in the same subpaving may have a non-empty intersection if they have a boundary in common, but their interiors must have an empty intersection. A subpaving is called \emph{regular} when it may be obtained from the initial search box $[\bm{x}_0]$ by a finite succession of bisections and selections. 
+
+
+\subsection{Set Inverter via Interval Analysis}\label{sec:sivia}
+
+A popular set inversion algorithm is the vectorisable \cite{herrero:hal-00746047} non-linear bounded-error estimator \texttt{SIVIA} (Set Inverter via Interval Analysis) introduced by Jaulin and Walter in \cite{jaulin1993set}. Its main idea may be summarised as bisecting and testing the search space, narrowing down the set of feasible solutions.
+
+Given a list $\mathcal{L} = \big\{[\bm{x}_0]\big\}$ of boxes containing the initial search box $[\bm{x}_0]$ to which $\overline{\mathbb{S}}$ is guaranteed to belong, the \texttt{SIVIA} algorithm may encounter the following four cases:
+
+\begin{itemize}
+\item  If $[\bm{f}]\big([\bm{x}]\big)$ does not intersect with $\mathbb{Y}$, $[\bm{x}]$ is discarded as it does not belong to the solution set $\mathbb{S}$. This follows from the inclusion test
+\begin{equation}
+[\bm{f}]\big([\bm{x}]\big) \cap \mathbb{Y} = \emptyset \implies [\bm{x}] \cap \mathbb{S} = \emptyset \,.
+\end{equation}
+
+\item  If $[\bm{f}]\big([\bm{x}]\big)$ is contained in $\mathbb{Y}$, then $[\bm{x}]$ belongs to the solution set and is assigned to the inner approximation $\underline{\mathbb{S}}$. This follows from the inclusion test 
+\begin{equation}
+[\bm{f}]\big([\bm{x}]\big) \subset \mathbb{Y} \implies [\bm{x}] \subset \mathbb{S} \,.
+\end{equation}
+
+\item If $[\bm{f}]\big([\bm{x}]\big)$ intersects with $\mathbb{Y}$, but is not contained in $\mathbb{Y}$, $[\bm{x}]$ is bisected, given its width is bigger than a predefined limit $\epsilon$, and the recursion is entered by adding it to $\mathcal{L}$.
+
+\item If the width of $[\bm{x}]$ is not bigger than $\epsilon$, $[\bm{x}]$ is stored in $\Delta\mathbb{S}$ and therefore belongs to the outer approximation $\overline{\mathbb{S}}$.
+\end{itemize}
+
+
+
+\begin{figure}
+	\centering
+	\setlength\figureheight{0.4\textwidth} 	
+	\setlength\figurewidth{0.9\textwidth}		
+	\tikzsetnextfilename{sivia}		
+	\input{Tikz/sivia.tikz}			
+	\caption[A result of the \texttt{SIVIA} algorithm.]{The result of the \texttt{SIVIA} algorithm for $\epsilon = 0.25$ and the solution set given by Equation \ref{eq:solution_set_example}. The inner approximation $\underline{\mathbb{S}}$ is depicted in red and $\Delta\mathbb{S}$ is depicted in yellow, while the blue line bounds the true solution set. The complement of the outer approximation $\overline{\mathbb{S}} = \underline{\mathbb{S}} \cup \Delta\mathbb{S}$, which is depicted in white, does not contain any solutions.}		
+	\label{fig:sivia}			
+\end{figure}
+
+\noindent
+These steps are carried out while $\mathcal{L}$ is non-empty. The parameter $\epsilon > 0$ determines the maximum width of the boxes in  $\Delta\mathbb{S}$ and thus the precision of the result. Algorithm \ref{alg: sivia} presents the Set Inverter via Interval Analysis. Figure \ref{fig:sivia} depicts the result of the \texttt{SIVIA} algorithm for $\epsilon = 0.25$ and the solution set 
+
+\begin{equation}\label{eq:solution_set_example}
+\begin{split}
+\mathbb{S} = \big\{ (x_1, x_2) \in \mathbb{R}^2\,|\,&x_1^2 + x_2^2 + 2 \sin(x_1) \geq 9, \\
+&x_1^2 + x_2^2 - 2 \sin(x_1) \leq 16, x_2 \geq 0 \big\}\,.
+\end{split}
+\end{equation}
+
+\noindent
+The figure was generated using the toolbox developed in \cite{garajova2016solving}.
+
+
+\begin{algorithm*}[h]
+\caption[Set Inverter via Interval Analysis (\texttt{SIVIA})]{\texttt{SIVIA} (Set Inverter via Interval Analysis) \cite{jaulin2001applied}}
+\label{alg: sivia}
+\begin{algorithmic}[1]
+\Require $[\bm{x}_0] \in [\mathbb{R}]^n, \quad \mathbb{Y} \in \mathbb{R}^p, \quad [\bm{f}]: [\mathbb{R}]^n \rightarrow [\mathbb{R}]^p, \quad \epsilon > 0$
+\Ensure $\underline{\mathbb{S}}, \overline{\mathbb{S}}$ such that $\underline{\mathbb{S}} \subseteq \mathbb{S} \subseteq \overline{\mathbb{S}}$, with $\overline{\mathbb{S}} = \underline{\mathbb{S}} \cup \Delta\mathbb{S}$ and $\operatorname{w}\big([\bm{x}]\big) \leq \epsilon \quad \forall\: [\bm{x}] \in \Delta\mathbb{S}$
+\Statex
+\Function{SIVIA}{$[\bm{x}_0], \mathbb{Y}, [\bm{f}], \epsilon$}
+\State $\mathcal{L} \gets \big\{[\bm{x}_0]\big\}$
+\State $\underline{\mathbb{S}} \gets \overline{\mathbb{S}} \gets \Delta\mathbb{S} \gets \emptyset$
+\While{$\mathcal{L} \neq \emptyset$}
+\State $[\bm{x}] \gets$ \Call{pop}{$\mathcal{L}$} \Comment{retrieve and remove a box from the list}
+\If{$\bm{f}\big([\bm{x}]\big) \cap \mathbb{Y} = \emptyset$} \Comment{$[\bm{x}]$ does not belong to $\mathbb{S}$}
+    \State discard $[\bm{x}]$ 
+\ElsIf{$\bm{f}\big([\bm{x}]\big) \subset \mathbb{Y}$} \Comment{$[\bm{x}]$ belongs to $\mathbb{S}$}
+	\State $\underline{\mathbb{S}} \gets \underline{\mathbb{S}} \cup [\bm{x}]$ 
+\ElsIf{$\operatorname{w}\big([\bm{x}]\big) \leq \epsilon$} \Comment{$[\bm{x}]$ belongs to $\Delta\mathbb{S}$}
+	\State $\Delta\mathbb{S} \gets \Delta\mathbb{S} \cup [\bm{x}]$ 
+\Else   \Comment{cannot be decided}
+\State  bisect $[\bm{x}]$ into $[\bm{x}_1]$ and $[\bm{x}_2]$
+\State \Call{push}{$\mathcal{L}, [\bm{x}_1]$}\Comment{add box to the list}
+\State \Call{push}{$\mathcal{L}, [\bm{x}_2]$}
+ \EndIf
+\EndWhile
+\State $\overline{\mathbb{S}} \gets \underline{\mathbb{S}} \cup \Delta\mathbb{S}$
+\State \Return $(\underline{\mathbb{S}}, \overline{\mathbb{S}})$ \Comment{return inner and outer approximation}
+\EndFunction
+\end{algorithmic}
+\end{algorithm*}
+
+
+
+
+With sufficient computational resources, inner and outer interval approximations of the solution set can be made arbitrarily precise and can therefore provide a good estimate of the real shape of the set \cite{garajova2016solving}. However, subpavings are adapted to low-dimensional problems, since they form an expensive representation of sets in terms of memory space. Both contractors and \texttt{SIVIA} can be combined in order to improve the performance of the latter. Reducing the initial search box for the \texttt{SIVIA} algorithm by contracting it first can lower the number of bisections and may therefore lead to reduced computational cost.
+
+
+
+
+
+
