@@ -1,25 +1,29 @@
 %% Clear memory and console, close all figures, load data and parameters
 
 clear, clc, close all
-cd '/Users/rob/Documents/Master Thesis/Code'
+cd '/Users/rob/Documents/Archive/Studies/Master Thesis/Code'
 
-paramScript = 'param9Landmarks';    % Specify parameterisation script
+addpath(genpath('Functions'));
+addpath(genpath('Toolboxes'));
+addpath(genpath('../Preprocessed Data'));
 
-PF                    = false;       % Particle filter estimation
-UPF                   = false;       % Unscented particle filter estimation
+paramScript = 'param2Landmarks';    % Specify parameterisation script
+
+PF                    = true;       % Particle filter estimation
+UPF                   = true;       % Unscented particle filter estimation
 PFC                   = true;       % Particle filter estimation with contractor
-UPFC                  = false;       % Unscented particle filter estimation with contractor
+UPFC                  = true;       % Unscented particle filter estimation with contractor
 PFS                   = true;       % Particle filter estimation with SIVIA
 UPFS                  = true;       % Unscented particle filter estimation with SIVIA
 
-kidnapRobot           = false;       % Kidnap robot
-nRuns                 = 100;        % Number of runs
+kidnapRobot           = true;       % Kidnap robot
+nRuns                 = 2;        % Number of runs
 
-plotEstimatesLive     = true;      % Plot 3D trajectory, particles, boxes, and estimation results live
-plotResizeLive        = true;      % Resize the figure automatically, zooming into the latest object plotted
-plotFullscreen        = true;      % Make figure full-screen
+plotEstimatesLive     = false;      % Plot 3D trajectory, particles, boxes, and estimation results live
+plotResizeLive        = false;      % Resize the figure automatically, zooming into the latest object plotted
+plotFullscreen        = false;      % Make figure full-screen
 plotFirstNSeconds     = 40;         % Plot the first n seconds after start or kidnapping at higher time resolution
-pauseTime             = 5;          % Time between two consecutive updates of live plots in seconds
+pauseTime             = 2;          % Time between two consecutive updates of live plots in seconds
 
 %% Initialise state estimation and error vectors
 
@@ -61,12 +65,12 @@ varUPFC          = zeros(nRuns, nSamples);     % Matrix of particle varinaces of
 varPFS           = zeros(nRuns, nSamples);     % Matrix of particle variances of the PFS
 varUPFS          = zeros(nRuns, nSamples);     % Matrix of particle varinaces of the UPFS
 
-errorsPF         = zeros(nRuns, nSamples);     % Matric of errors of PF
-errorsUPF        = zeros(nRuns, nSamples);     % Matric of errors of UPF
-errorsPFC        = zeros(nRuns, nSamples);     % Matric of errors of PFC
-errorsUPFC       = zeros(nRuns, nSamples);     % Matric of errors of UPFC
-errorsPFS        = zeros(nRuns, nSamples);     % Matric of errors of PFS
-errorsUPFS       = zeros(nRuns, nSamples);     % Matric of errors of UPFS
+errorsPF         = zeros(nRuns, nSamples);     % Matrix of errors of PF
+errorsUPF        = zeros(nRuns, nSamples);     % Matrix of errors of UPF
+errorsPFC        = zeros(nRuns, nSamples);     % Matrix of errors of PFC
+errorsUPFC       = zeros(nRuns, nSamples);     % Matrix of errors of UPFC
+errorsPFS        = zeros(nRuns, nSamples);     % Matrix of errors of PFS
+errorsUPFS       = zeros(nRuns, nSamples);     % Matrix of errors of UPFS
 
 rmsErrorsPF      = zeros(nRuns, 1);            % Root mean-square errors of PF
 rmsErrorsUPF     = zeros(nRuns, 1);            % Root mean-square errors of UPF
@@ -85,12 +89,12 @@ nRestartsUPFC    = zeros(nRuns, nSamples);     % Number of restarts of UPFC due 
 nRestartsPFS     = zeros(nRuns, nSamples);     % Number of restarts of PFS due to localisation failure
 nRestartsUPFS    = zeros(nRuns, nSamples);     % Number of restarts of UPFS due to localisation failure
 
-timesPF           = zeros(nRuns, 1);            % Time duration of estimation PF
-timesUPF          = zeros(nRuns, 1);            % Time duration of estimation UPF
-timesPFC          = zeros(nRuns, 1);            % Time duration of estimation PFC
-timesUPFC         = zeros(nRuns, 1);            % Time duration of estimation UPFC
-timesPFS          = zeros(nRuns, 1);            % Time duration of estimation PFS
-timesUPFS         = zeros(nRuns, 1);            % Time duration of estimation UPFS
+timesPF          = zeros(nRuns, 1);            % Time duration of estimation PF
+timesUPF         = zeros(nRuns, 1);            % Time duration of estimation UPF
+timesPFC         = zeros(nRuns, 1);            % Time duration of estimation PFC
+timesUPFC        = zeros(nRuns, 1);            % Time duration of estimation UPFC
+timesPFS         = zeros(nRuns, 1);            % Time duration of estimation PFS
+timesUPFS        = zeros(nRuns, 1);            % Time duration of estimation UPFS
 
 % Compute enclosing of the initial search space
 limits = scaleInitSearchSpace * [lowerLimits; upperLimits];  % Scale initial search space
@@ -131,7 +135,7 @@ pf.position              = position;
 pf.nParticles            = nParticlesPF;                                            % Number of particles
 pf.likelihoodPDF         = likelihoodPDF(diag(sigmaLikelihoodPF.^2 * ones(1, nz))); % p(y[k] | x[k])
 pf.genSysNoise           = genSysNoise(diag(sigmaSysNoisePF.^2));                   % Noise generator function
-pf.constraintFiltering   = false;
+pf.constraintFiltering   = 'none';
 pf.boundedErrorEst       = 'none';
 
 % Particle filter with contractor
@@ -139,7 +143,7 @@ pfc                      = pf;
 pfc.nParticles           = nParticlesPFC;                                            % Number of particles
 pfc.likelihoodPDF        = likelihoodPDF(diag(sigmaLikelihoodPFC.^2 * ones(1, nz))); % p(y[k] | x[k])
 pfc.genSysNoise          = genSysNoise(diag(sigmaSysNoisePFC.^2));                   % Noise generator function
-pfc.constraintFiltering  = true;
+pfc.constraintFiltering  = 'on-demand'
 pfc.boundedErrorAlg      = 'contr';
 pfc.boundedErrorProp     = contr;
 
@@ -148,9 +152,10 @@ pfs                      = pf;
 pfs.nParticles           = nParticlesPFS;                                            % Number of particles
 pfs.likelihoodPDF        = likelihoodPDF(diag(sigmaLikelihoodPFS.^2 * ones(1, nz))); % p(y[k] | x[k])
 pfs.genSysNoise          = genSysNoise(diag(sigmaSysNoisePFS.^2));                   % Noise generator function
-pfs.constraintFiltering  = true;
+pfs.constraintFiltering  = 'on-demand'
 pfs.boundedErrorAlg      = 'sivia';
 pfs.boundedErrorProp     = siv;
+
 
 %% Initialise unscented particle filter structures
 
@@ -197,11 +202,11 @@ upfs.boundedErrorProp    = siv;
 %% Log values of interest
 
 logFileName = datestr(now, 'yyyy-mm-dd-HH-MM-SS');
-logFilePath = ['/Users/rob/Documents/Master Thesis/Results/', logFileName, '/'];
+logFilePath = ['/Users/rob/Documents/Archive/Studies/Master Thesis/Results/', logFileName, '/'];
 mkdir(logFilePath);
 
 % Save current data set for repetition of experiments
-copyfile(['/Users/rob/Documents/Master Thesis/Preprocessed data/', fileName, '.mat'], ...
+copyfile(['/Users/rob/Documents/Archive/Studies/Master Thesis/Preprocessed data/', fileName, '.mat'], ...
     [logFilePath, 'Data_', fileName, '.mat']);
 fileName    = strrep(fileName, '_' , ' ');
 diary([logFilePath, logFileName, '.log']);
@@ -479,7 +484,7 @@ for runIndex = 1:nRuns
             nZeroWeightsPFS(runIndex, :); nZeroWeightsUPFS(runIndex, :)], ["PFC", "UPFC", "PFS", "UPFS"], ...
             ['Number of particle weights set to zero by constraints -- run no. ', num2str(runIndex)]);
     end
-    
+   %%
     plotErrors(t, [ ...
         errorsPF(runIndex, :); errorsUPF(runIndex, :); ...
         errorsPFC(runIndex, :); errorsUPFC(runIndex, :); ...
@@ -507,12 +512,12 @@ meanErrorsUPFC        = mean(errorsUPFC, 1);
 meanErrorsPFS         = mean(errorsPFS, 1);
 meanErrorsUPFS        = mean(errorsUPFS, 1);
 
-meanRmsErrorPF       = mean(rmsErrorsPF, 1);
-meanRmsErrorUPF      = mean(rmsErrorsUPF, 1);
-meanRmsErrorPFC      = mean(rmsErrorsPFC, 1);
-meanRmsErrorUPFC     = mean(rmsErrorsUPFC, 1);
-meanRmsErrorPFS      = mean(rmsErrorsPFS, 1);
-meanRmsErrorUPFS     = mean(rmsErrorsUPFS, 1);
+meanRmsErrorPF        = mean(rmsErrorsPF, 1);
+meanRmsErrorUPF       = mean(rmsErrorsUPF, 1);
+meanRmsErrorPFC       = mean(rmsErrorsPFC, 1);
+meanRmsErrorUPFC      = mean(rmsErrorsUPFC, 1);
+meanRmsErrorPFS       = mean(rmsErrorsPFS, 1);
+meanRmsErrorUPFS      = mean(rmsErrorsUPFS, 1);
 
 meanVarPF             = mean(varPF, 1);
 meanVarUPF            = mean(varUPF, 1);
@@ -549,6 +554,25 @@ convTimeUPFC          = t(find(meanErrorsUPFC < convThreshold, 1))  - samplePeri
 convTimePFS           = t(find(meanErrorsPFS  < convThreshold, 1))  - samplePeriod;
 convTimeUPFS          = t(find(meanErrorsUPFS < convThreshold, 1))  - samplePeriod;
 
+if isempty(convTimePF)
+    convTimePF = nSamples; 
+end
+if isempty(convTimeUPF)
+    convTimeUPF = nSamples; 
+end
+if isempty(convTimePFC)
+    convTimePFC = nSamples; 
+end
+if isempty(convTimeUPFC)
+    convTimeUPFC = nSamples; 
+end
+if isempty(convTimePFS)
+    convTimePFS = nSamples; 
+end
+if isempty(convTimeUPFS)
+    convTimeUPFS = nSamples; 
+end
+
 meanTimePF            = mean(timesPF);
 meanTimeUPF           = mean(timesUPF);
 meanTimePFC           = mean(timesPFC);
@@ -573,6 +597,7 @@ fprintf(['UPFC:                      %2.2f m',   newline ],  meanRmsErrorUPFC);
 fprintf(['PFS:                       %2.2f m',   newline ],  meanRmsErrorPFS);
 fprintf(['UPFS:                      %2.2f m',   newline2],  meanRmsErrorUPFS);
 
+
 fprintf(['Mean initial error:               ',   newline ]);
 fprintf(['PF:                        %2.2f m',   newline ],  meanErrorsPF(1));
 fprintf(['UPF:                       %2.2f m',   newline ],  meanErrorsUPF(1));
@@ -580,6 +605,7 @@ fprintf(['PFC:                       %2.2f m',   newline ],  meanErrorsPFC(1));
 fprintf(['UPFC:                      %2.2f m',   newline ],  meanErrorsUPFC(1));
 fprintf(['PFS:                       %2.2f m',   newline ],  meanErrorsPFS(1));
 fprintf(['UPFS:                      %2.2f m',   newline2],  meanErrorsUPFS(1));
+
 
 fprintf(['Error < %1.1f m after:              ', newline ],  convThreshold);
 fprintf(['PF:                        %3.2f sec', newline ],  convTimePF);
@@ -631,7 +657,7 @@ if plotFirstNSeconds
         meanErrorsPFC(1:index); meanErrorsUPFC(1:index);
         meanErrorsPFS(1:index); meanErrorsUPFS(1:index)], ...
         [meanRmsErrorPF; meanRmsErrorUPF; meanRmsErrorPFC; meanRmsErrorUPFC;
-        meanRmsErrorPFS; meanRmsErrorUPFS], ...
+        meanRmsErrorPFS; meanRmsErrorUPFS;], ...
         [meanVarPF(1:index); meanVarUPF(1:index); meanVarPFC(1:index); meanVarUPFC(1:index);
         meanVarPFS(1:index); meanVarUPFS(1:index)], ...
         ["PF", "UPF", "PFC", "UPFC", "PFS", "UPFS"], ...
@@ -671,16 +697,16 @@ if kidnapRobot
         errorsUPFC(:, kidnapFirstSample), errorsPFS(:, kidnapFirstSample), errorsUPFS(:, kidnapFirstSample)], ...
         [fileName, ' -- box plot of kidnap errors after ', num2str(nRuns), ' runs']);
 end
-%%
+
 plotBoxPlots([meanErrorsPF; meanErrorsUPF; meanErrorsPFC; meanErrorsUPFC; meanErrorsPFS; meanErrorsUPFS]', ...
     [fileName, ' -- box plot of mean errors after ', num2str(nRuns), ' runs']);
-%%
+
 plotBoxPlots([reshape(errorsPF', 1, []); reshape(errorsUPF', 1, []); reshape(errorsPFC', 1, []); ...
     reshape(errorsUPFC', 1, []); reshape(errorsPFS', 1, []); reshape(errorsUPFS', 1, [])]', ...
     [fileName, ' -- box plot of errors after ', num2str(nRuns), ' runs']);
 
 savePlots2PDF(logFilePath, [logFileName, '-results'], true);
-%%
+
 diary off
 
 save([logFilePath, logFileName, '.mat']);

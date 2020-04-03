@@ -3,7 +3,7 @@ function [] = plotBoxPlots(errors, titleName)
 %   Detailed explanation goes here
 
 figure()
-boxplot(errors, 'Notch', 'on', 'Jitter',0.5, 'Labels', {'PF', 'UPF', 'PFC', 'UPFC', 'PFS', 'UPFS'});
+boxplot(errors, 'Notch', 'on', 'Jitter',0.5, 'Labels', {'PF', 'UPF', 'PFC', 'UPFC', 'PFS', 'UPFS', 'PFCP', 'PFSP'});
 
 set(gca, 'YGrid','on')
 set(gca, 'YScale', 'log');

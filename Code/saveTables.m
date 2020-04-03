@@ -47,19 +47,19 @@ latex{2} = latexTable(input);
 %% Results
 
 input.data                 = [ ...
-    meanRmsErrorPF, meanRmsErrorUPF, meanRmsErrorPFC, meanRmsErrorUPFC, meanRmsErrorPFS, meanRmsErrorUPFS;
-    meanErrorsPF(1), meanErrorsUPF(1), meanErrorsPFC(1), meanErrorsUPFC(1), meanErrorsPFS(1), meanErrorsUPFS(1);
-    convTimePF, convTimeUPF, convTimePFC, convTimeUPFC, convTimePFS, convTimeUPFS;
-    relTimePF, relTimeUPF, relTimePFC, relTimeUPFC, relTimePFS, relTimeUPFS;
-    NaN, NaN, totalNZeroWeightsPFC, totalNZeroWeightsUPFC, totalNZeroWeightsPFS, totalNZeroWeightsUPFS
-    NaN, NaN, relNZeroWeightsPFC, relNZeroWeightsUPFC, relNZeroWeightsPFS, relNZeroWeightsUPFS
+    meanRmsErrorPF, meanRmsErrorUPF, meanRmsErrorPFC, meanRmsErrorUPFC, meanRmsErrorPFS, meanRmsErrorUPFS, meanRmsErrorPFCP, meanRmsErrorPFSP;
+    meanErrorsPF(1), meanErrorsUPF(1), meanErrorsPFC(1), meanErrorsUPFC(1), meanErrorsPFS(1), meanErrorsUPFS(1), meanErrorsPFCP(1), meanErrorsPFSP(1);
+    convTimePF, convTimeUPF, convTimePFC, convTimeUPFC, convTimePFS, convTimeUPFS, convTimePFCP, convTimePFSP;
+    relTimePF, relTimeUPF, relTimePFC, relTimeUPFC, relTimePFS, relTimeUPFS, relTimePFCP, relTimePFSP;
+    NaN, NaN, totalNZeroWeightsPFC, totalNZeroWeightsUPFC, totalNZeroWeightsPFS, totalNZeroWeightsUPFS, NaN, NaN;
+    NaN, NaN, relNZeroWeightsPFC, relNZeroWeightsUPFC, relNZeroWeightsPFS, relNZeroWeightsUPFS, NaN, NaN
     ];
 input.tableCaption         = ['Results ', fileName];
 input.tableLabel           = ['landmark_positions_', fileName(12)];
-input.tableColLabels       = {'PF', 'UPF', 'PFC', 'UPFC', 'PFS', 'UPFS'};
+input.tableColLabels       = {'PF', 'UPF', 'PFC', 'UPFC', 'PFS', 'UPFS', 'PFCP', 'PFSP'};
 input.tableRowLabels       = { ...
     'Mean root-mean-square error in m', ...
-    'Mean initial error in m', ...
+    'Mean initial error in m', ... 
     'Mean convergence time in s', ...
     'Mean computation time relative to PF', ...
     'Number of weights set to zero', ...

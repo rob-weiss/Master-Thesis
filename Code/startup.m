@@ -5,12 +5,12 @@ set(groot, 'defaultTextInterpreter', 'latex');
 set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'defaultLegendInterpreter', 'latex');
 
-cd '/Users/rob/Documents/Master Thesis/Code/Toolboxes/Intlab Toolbox';
+cd '/Users/rob/Documents/Archive/Studies/Master Thesis/Code/Toolboxes/Intlab Toolbox';
 startintlab
 
 warning('off','all')
 
-cd '/Users/rob/Documents/Master Thesis/Code';
+cd '/Users/rob/Documents/Archive/Studies/Master Thesis/Code';
 
 matlabColors = [ ...
     0         0.4470    0.7410

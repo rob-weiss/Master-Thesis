@@ -3,9 +3,9 @@ function [] = plotBoxes3D(boxes, color, alpha, nolines, legendName, resizeLive)
 
 persistent handles;
 
-% for i = 1:length(handles)
-%     delete(handles(i));
-% end
+for i = 1:length(handles)
+    delete(handles(i));
+end
 
 % get fulldimensional boxes
 iSlog = false(1, size(boxes, 1));

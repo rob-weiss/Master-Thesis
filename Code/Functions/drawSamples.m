@@ -4,7 +4,7 @@ function [xkm1, wkm1] = drawSamples(nSamples, nx, initSearchSpace)
 
 xkm1 = zeros(nx, nSamples);
     for i = 1:nSamples
-        xkm1(:, i) = unifrnd(inf(initSearchSpace), sup(initSearchSpace));
+        xkm1(:, i) = unifrnd(inf_(initSearchSpace), sup(initSearchSpace));
     end
     
     wkm1 = 1/nSamples * ones(1, nSamples); % All particles get the same weight

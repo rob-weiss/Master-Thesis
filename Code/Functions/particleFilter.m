@@ -43,7 +43,7 @@ if k == 1
     pf.particles    = zeros(pf.nx, pf.nParticles); % Particles
     pf.w            = zeros(1, pf.nParticles);     % Weights
     
-    if pf.constraintFiltering
+    if isequal(pf.constraintFiltering, 'on-demand') || isequal(pf.constraintFiltering, 'always')
         initSearchSpace = narrowSearchSpace(ukm1, EulerAngles, zk, pf);
         
         pf.volume = [k; volume(initSearchSpace)];
@@ -135,7 +135,7 @@ while allWeightsZero
         
         %% Apply constraints and set weights to zero if particles lie outside of the constraint box
         
-        if pf.constraintFiltering && ~satisfiesConstraints(k, xk(:,i), zk, pf.landmarks, pf.uncertaintyInterval)
+        if isequal(pf.constraintFiltering, 'on-demand') && ~satisfiesConstraints(k, xk(:,i), zk, pf.landmarks, pf.uncertaintyInterval)
             wk(i) = 0;
             nZeroWeights = nZeroWeights + 1;
         end
