@@ -3,23 +3,27 @@
 clear, clc, close all
 cd '/Users/rob/Documents/Master Thesis/Code'
 
-paramScript = 'param9Landmarks';    % Specify parameterisation script
+addpath(genpath('Functions'));
+addpath(genpath('Toolboxes'));
+addpath(genpath('../Preprocessed Data'));
 
-PF                    = false;       % Particle filter estimation
-UPF                   = false;       % Unscented particle filter estimation
+paramScript = 'param2Landmarks';    % Specify parameterisation script
+
+PF                    = true;       % Particle filter estimation
+UPF                   = true;       % Unscented particle filter estimation
 PFC                   = true;       % Particle filter estimation with contractor
-UPFC                  = false;       % Unscented particle filter estimation with contractor
+UPFC                  = true;       % Unscented particle filter estimation with contractor
 PFS                   = true;       % Particle filter estimation with SIVIA
 UPFS                  = true;       % Unscented particle filter estimation with SIVIA
 
-kidnapRobot           = false;       % Kidnap robot
+kidnapRobot           = true;       % Kidnap robot
 nRuns                 = 100;        % Number of runs
 
-plotEstimatesLive     = true;      % Plot 3D trajectory, particles, boxes, and estimation results live
-plotResizeLive        = true;      % Resize the figure automatically, zooming into the latest object plotted
-plotFullscreen        = true;      % Make figure full-screen
+plotEstimatesLive     = false;      % Plot 3D trajectory, particles, boxes, and estimation results live
+plotResizeLive        = false;      % Resize the figure automatically, zooming into the latest object plotted
+plotFullscreen        = false;      % Make figure full-screen
 plotFirstNSeconds     = 40;         % Plot the first n seconds after start or kidnapping at higher time resolution
-pauseTime             = 5;          % Time between two consecutive updates of live plots in seconds
+pauseTime             = 0;          % Time between two consecutive updates of live plots in seconds
 
 %% Initialise state estimation and error vectors
 
@@ -598,12 +602,12 @@ fprintf(['PFS:                       %4.1f sec', newline ],  meanTimePFS);
 fprintf(['UPFS:                      %4.1f sec', newline2],  meanTimeUPFS);
 
 fprintf(['Computation time relative to PF:    ', newline ]);
-fprintf(['PF:                        %3.2f    ', newline ],  relTimePF);
-fprintf(['UPF:                       %3.2f    ', newline ],  relTimeUPF);
-fprintf(['PFC:                       %3.2f    ', newline ],  relTimePFC);
-fprintf(['UPFC:                      %3.2f    ', newline ],  relTimeUPFC);
-fprintf(['PFS:                       %3.2f    ', newline ],  relTimePFS);
-fprintf(['UPFS:                      %3.2f    ', newline2],  relTimeUPFS);
+fprintf(['PF:                        %3.4f    ', newline ],  relTimePF);
+fprintf(['UPF:                       %3.4f    ', newline ],  relTimeUPF);
+fprintf(['PFC:                       %3.4f    ', newline ],  relTimePFC);
+fprintf(['UPFC:                      %3.4f    ', newline ],  relTimeUPFC);
+fprintf(['PFS:                       %3.4f    ', newline ],  relTimePFS);
+fprintf(['UPFS:                      %3.4f    ', newline2],  relTimeUPFS);
 
 fprintf(['Mean no. of weights set to zero:    ', newline ]);
 fprintf(['PFC:                       %2i (%3.2f %%)', newline ], totalNZeroWeightsPFC,  relNZeroWeightsPFC);
