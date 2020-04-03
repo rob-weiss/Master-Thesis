@@ -1,0 +1,548 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DEMOUTILITY  Utility routines</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-07-22"><meta name="DC.source" content="dutility.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>DEMOUTILITY  Utility routines</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Gaussian elemination using naive interval arithmetic</a></li><li><a href="#2">Gaussian elemination using affine interval arithmetic</a></li><li><a href="#3">Gaussian elemination using gradients</a></li><li><a href="#6">Gaussian elemination using hessians</a></li><li><a href="#7">Gaussian elemination using k-bit arithmetic</a></li><li><a href="#8">Random integers</a></li><li><a href="#9">Even/odd</a></li><li><a href="#10">Ill-conditioned matrices</a></li><li><a href="#13">Prove of regularity of matrix with arbitrary condition number</a></li><li><a href="#15">Random orthogonal matrices</a></li><li><a href="#16">Relative errors</a></li><li><a href="#17">Distance in bits and the accuracy of inclusion functions</a></li><li><a href="#19">The bit pattern</a></li><li><a href="#22">Intelligent help</a></li><li><a href="#24">Checking exponential many possibilities</a></li><li><a href="#25">Traversing all vertices of an interval matrix</a></li><li><a href="#27">Enjoy INTLAB</a></li></ul></div><h2 id="1">Gaussian elemination using naive interval arithmetic</h2><p>The generic routine  solvewpp  (Solve linear system With Partial Pivoting) works for a number of data types. It is based on Gaussian elimination with subsequent forward and backward substitution using corresponding routines luwpp, forward and backward.</p><p>The first example is using ordinary interval arithmetic. The entries of the matrix are afflicted with a relative error of 1e-10.</p><pre class="codeinput">format <span class="string">long</span>
+n = 5;
+a = randn(n).*midrad(1,1e-10);
+b = a*ones(n,1);
+
+format <span class="string">long</span>
+xint = solvewpp(a,b)
+</pre><pre class="codeoutput">intval xint = 
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.00000000______
+</pre><h2 id="2">Gaussian elemination using affine interval arithmetic</h2><p>Next we check whether the result is more narrow using affine arithmetic.</p><pre class="codeinput">xaff = solvewpp(affari(a),b)
+[ rad(xint) rad(xaff) ]
+</pre><pre class="codeoutput">affari xaff = 
+   1.00000000______
+   1.000000000_____
+   1.00000000______
+   1.000000000_____
+   1.00000000______
+ans =
+   1.0e-08 *
+   0.585206094694257   0.145810186147344
+   0.439913949712434   0.084084428308984
+   0.716123293997839   0.213091633227691
+   0.295573088227030   0.049863879691969
+   0.377535780415883   0.216613049719427
+</pre><h2 id="3">Gaussian elemination using gradients</h2><p>We may solve the linear system with gradients as well:</p><pre class="codeinput">xgra = solvewpp(gradientinit(a),b);
+xgra.x
+</pre><pre class="codeoutput">intval ans = 
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.00000000______
+</pre><p>The data can be used to analyze the sensitivity of individual solution components with respect to individual matrix components. Suppose we want to know how the 3rd solution component depends on the upper left matrix entry a(1,1). The answer is</p><pre class="codeinput">sens = xgra(3).dx(1)
+</pre><pre class="codeoutput">intval sens = 
+  -0.9491665_______
+</pre><p>This can be verified by direct computation using the midoint equation:</p><pre class="codeinput">xs = a.mid\b.mid;
+e = 1e-10;
+aa = a.mid; aa(1,1) = aa(1,1)+e;
+xss = aa\b.mid;
+sens_ = ( xss(3)-xs(3) ) / e
+</pre><pre class="codeoutput">sens_ =
+  -0.949164080665810
+</pre><h2 id="6">Gaussian elemination using hessians</h2><p>The linear system can be solved with hessians as well, so that information on all partial second derivatives are available. We only display the second derivative of the 3rd solution components with respect to the upper left matrix element a(1,1).</p><pre class="codeinput">format <span class="string">short</span>
+xhes = solvewpp(hessianinit(a),b);
+struct(xhes)
+sens_hx = xhes(3).hx(1)
+</pre><pre class="codeoutput">ans = 
+  struct with fields:
+
+     x: [5&times;1 intval]
+    dx: [25&times;5 intval]
+    hx: [625&times;5 intval]
+intval sens_hx = 
+  (1,1)                 1.2196
+</pre><h2 id="7">Gaussian elemination using k-bit arithmetic</h2><p>INTLAB's fl-package uses k-bit IEEE 754 binary arithmetic. After initialization, in this example to 22 bits and exponent range -99 ... 100, Gaussian elimination is performed in this precision.</p><pre class="codeinput">flinit(22,100)
+flinit(<span class="string">'DisplayDouble'</span>)
+xflk = solvewpp(fl(a),b)
+</pre><pre class="codeoutput">ans =
+    'Initialization of fl-format to 22 mantissa bits incl. impl. 1 and exponent range -99 .. 100 for normalized fl-numbers'
+===&gt; Display fl-variables as doubles
+fl-type intval xflk =
+    1.0000
+    1.0000
+    1.0000
+    1.0000
+    1.0000
+</pre><h2 id="8">Random integers</h2><p>Sometimes random integers are needed. Here is how to generate an m x n matrix of integers in the range [1 ... k]  or  [ -k ... k] .</p><pre class="codeinput">m = 2;
+n = 7;
+k = 10;
+ipos = randint(k,m,n)
+igen = randint(-k,m,n)
+</pre><pre class="codeoutput">ipos =
+     5     2    10     6     3     5     9
+     8     6     5     1     5     3     5
+igen =
+     9    -5     3    -9    -1    -4     0
+     2    -2    -5    -2     8    -4   -10
+</pre><h2 id="9">Even/odd</h2><p>Sometimes it may be useful to check the parity of an integer. As the name suggests, odd(n) is 1 for odd n. It may be applied to a vector as well.</p><pre class="codeinput">N = randint(-10,1,5)
+Nodd = odd(N)
+Neven = even(N)
+Nodd | Neven
+</pre><pre class="codeoutput">N =
+   -10     4    -5     5     1
+Nodd =
+  1&times;5 logical array
+   0   0   1   1   1
+Neven =
+  1&times;5 logical array
+   1   1   0   0   0
+ans =
+  1&times;5 logical array
+   1   1   1   1   1
+</pre><h2 id="10">Ill-conditioned matrices</h2><p>The routine randmat generates extremely ill-conditioned matrices.</p><pre class="codeinput">n = 50;
+cnd = 1e25;
+A = randmat(n,cnd);
+c = cond(A)
+</pre><pre class="codeoutput">c =
+   8.9123e+17
+</pre><p>Of course, the Matlab routine cond cannot approximate the true condition number of about cnd=1e25. The true condition number can be computed by INTLAB's especially designed inclusion algorithm for extreme condition numbers (up to about 1e30).</p><pre class="codeinput">C = cond(intval(A),<span class="string">'illco'</span>)
+</pre><pre class="codeoutput">intval C = 
+  1.0e+023 *
+    1.0808
+</pre><p>Note that C is an inclusion of the true 2-norm condition number.</p><h2 id="13">Prove of regularity of matrix with arbitrary condition number</h2><p>Based on number theory and mod(p) calculations it is possible to verify the regularity of arbitrarily ill-conditioned matrices in short computing time. If, by chance, the test should not work, a second parameter specifying a kind of probability is possible.</p><p>An example with extreme condition number of about 1e100 is as follows.</p><pre class="codeinput">n = 200;
+cnd = 1e100;
+A = randmat(n,cnd);
+tic
+reg = isregular(A)
+T = toc
+</pre><pre class="codeoutput">reg =
+     1
+T =
+    0.2697
+</pre><p>Note that the proof of regularity is rigorous. As is well-known, a proof of singularity in the same manner is very difficult.</p><h2 id="15">Random orthogonal matrices</h2><p>One way to generate matrices with specified singular values uses random orthogonal matrices.</p><pre class="codeinput">n = 100;
+Q = randorth(n);
+norm(Q'*Q-eye(n),inf)
+</pre><pre class="codeoutput">ans =
+   1.9093e-14
+</pre><h2 id="16">Relative errors</h2><p>Displaying relative errors has well-known drawbacks. First, there is the problem of numbers near zero: For x=1e-20, is x+1e-25 nearby? Second, the relative error depends on how close a number is to the next power of 2, and whether it is slightly smaller or larger.</p><p>The predecessor and successor of 1 and the relative error to 1 is computed by</p><pre class="codeinput">succ1 = succ(1)
+pred1 = pred(1)
+relsucc = relerr(1,succ1)
+relpred = relerr(1,pred1)
+</pre><pre class="codeoutput">succ1 =
+    1.0000
+pred1 =
+    1.0000
+relsucc =
+   2.2204e-16
+relpred =
+   1.1102e-16
+</pre><h2 id="17">Distance in bits and the accuracy of inclusion functions</h2><p>For very narrow intervals it might sometimes be simpler to use the distance in bits:</p><pre class="codeinput">distsucc = distbits(1,succ1)
+distpred = distbits(1,pred1)
+</pre><pre class="codeoutput">distsucc =
+     1
+distpred =
+    -1
+</pre><p>For performance reasons the maximum distance in bits is restricted to 100. The function distbits can be used to track the accuracy of computed inclusions:</p><pre class="codeinput"> x = linspace(0,200,1e6);
+ Y = gamma(intval(x));
+ close, plot(x,distbits(Y))
+</pre><img vspace="5" hspace="5" src="dutility_01.png" alt=""> <h2 id="19">The bit pattern</h2><p>Also the bit pattern is sometimes useful:</p><pre class="codeinput">getbits([pred1 1 succ1])
+</pre><pre class="codeoutput">ans =
+  3&times;63 char array
+    ' +1.1111111111111111111111111111111111111111111111111111 * 2^-1'
+    ' +1.0000000000000000000000000000000000000000000000000000 * 2^0 '
+    ' +1.0000000000000000000000000000000000000000000000000001 * 2^0 '
+</pre><p>The function applies to intervals as well. It can be used to verify that the bounds are indeed as close as possible:</p><pre class="codeinput">Pi = intval(<span class="string">'pi'</span>)
+getbits(Pi)
+distbits(Pi)
+</pre><pre class="codeoutput">intval Pi = 
+    3.1415
+ans =
+  4&times;62 char array
+    'infimum                                                       '
+    ' +1.1001001000011111101101010100010001000010110100011000 * 2^1'
+    'supremum                                                      '
+    ' +1.1001001000011111101101010100010001000010110100011001 * 2^1'
+ans =
+     1
+</pre><p>Displaying bits applies to single precision numbers or the INTLAB fl-toolbox as well:</p><pre class="codeinput">getbits(single(pi))
+flinit(7,50);
+getbits(fl(5))
+getbits(fl(infsup(11,13)))
+</pre><pre class="codeoutput">ans =
+    ' +1.10010010000111111011011 * 2^1'
+ans =
+    ' +1.010000 * 2^2'
+ans =
+  4&times;16 char array
+    'infimum         '
+    ' +1.011000 * 2^3'
+    'supremum        '
+    ' +1.101000 * 2^3'
+</pre><h2 id="22">Intelligent help</h2><p>Sometimes it is not clear how to spell a name and/or we know only parts of a function name, and even that is uncertain. In that case sometimes helpp, an intelligent help function, may be useful. After initialization by just calling "helpp" the following may be obtained:</p><pre class="codeinput">helpp <span class="string">tschebischeff</span>
+</pre><pre class="codeoutput">ans =
+  4&times;76 char array
+    'level 6  C:\INTLAB VERSIONS\INTLAB\intval\checkrounding.m                   '
+    'level 6  C:\INTLAB VERSIONS\INTLAB\utility\Fletcher.m                       '
+    'level 9  C:\INTLAB VERSIONS\INTLAB\polynom\chebyshev.m                      '
+    'level 9  C:\INTLAB VERSIONS\INTLAB\polynom\chebyshev2.m                     '
+</pre><p>The answer comes with certain levels representing some kind of distance. Sometimes even gross misspelling still retrieves the correct name. Needless to say that it works the better the longer the string to look for.</p><h2 id="24">Checking exponential many possibilities</h2><p>Given an interval matrix A it is known to be an NP-hard problem to verify non-singularity. The best criterion known still needs 2^n steps for a given n x n matrix. The result is as follows:</p><p>Theorem (Rohn). A given interval matrix  mA +/- r*E  for E denoting the matrix of all 1's, is non-singular if and only if r &lt; 1/sum(abs(inv(A)*x)) for all vectors x with components +/-1 .</p><p>The maximum quantity r is the so-called radius of non-singularity. Compared to checking all vertices the theorem reduces the number of determinants from 2^(n^2) to 2^n.</p><p>The function  bin2vec  is useful to generate all signature matrices. The call v = bin2vec(i,n) generates the vector of the n least significant bits of i.</p><pre class="codeinput">n = 4;
+A = hadamard(n)
+Ainv = inv(A);
+R = 0;
+<span class="keyword">for</span> i=1:2^n
+  x = (2*bin2vec(i,n)-1)';
+  r = sum(abs( Ainv * x ));
+  <span class="keyword">if</span> r&gt;R, R=r; <span class="keyword">end</span>
+<span class="keyword">end</span>
+singRad = 1/R
+</pre><pre class="codeoutput">A =
+     1     1     1     1
+     1    -1     1    -1
+     1     1    -1    -1
+     1    -1    -1     1
+singRad =
+    0.5000
+</pre><h2 id="25">Traversing all vertices of an interval matrix</h2><p>The function bin2vec can also be used to visit all vertices of an interval matrix. These are, however, 2^(n^2) vertices. With the method before we checked that the radius of non-singularity of the 8x8 Hadamard matrix is 0.5. Thus A=midrad(hadamard,0.499) must be non-singular. This is checked as follows.</p><pre class="codeinput">tic
+n = 4;
+A = hadamard(n);
+s = sign(det(A));
+<span class="keyword">for</span> i=1:2^(n^2)
+  D = det( A + 0.499*reshape( 2*bin2vec(i,n^2)-1 , n,n ) );
+  <span class="keyword">if</span> D*s&lt;0
+    disp(<span class="string">'The interval matrix is singular'</span>)
+    <span class="keyword">break</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">if</span> D*s&gt;0
+  disp(<span class="string">'The interval matrix is non-singular'</span>)
+<span class="keyword">end</span>
+T = toc
+</pre><pre class="codeoutput">The interval matrix is non-singular
+T =
+    0.5929
+</pre><p>The function  v = base2vec(i,b,n)  does the same for base b.</p><h2 id="27">Enjoy INTLAB</h2><p>INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing, Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% DEMOUTILITY  Utility routines
+
+%% Gaussian elemination using naive interval arithmetic
+% The generic routine  solvewpp  (Solve linear system With Partial
+% Pivoting) works for a number of data types. It is based on Gaussian
+% elimination with subsequent forward and backward substitution using
+% corresponding routines luwpp, forward and backward.
+% 
+% The first example is using ordinary interval arithmetic. The entries of
+% the matrix are afflicted with a relative error of 1e-10.
+
+format long
+n = 5;
+a = randn(n).*midrad(1,1e-10);
+b = a*ones(n,1);
+
+format long
+xint = solvewpp(a,b)
+
+%% Gaussian elemination using affine interval arithmetic
+% Next we check whether the result is more narrow using affine arithmetic.
+
+xaff = solvewpp(affari(a),b)
+[ rad(xint) rad(xaff) ]
+
+%% Gaussian elemination using gradients
+% We may solve the linear system with gradients as well:
+
+xgra = solvewpp(gradientinit(a),b);
+xgra.x
+
+%%
+% The data can be used to analyze the sensitivity of individual solution
+% components with respect to individual matrix components. Suppose we want
+% to know how the 3rd solution component depends on the upper left matrix 
+% entry a(1,1). The answer is
+
+sens = xgra(3).dx(1)
+
+%%
+% This can be verified by direct computation using the midoint equation:
+
+xs = a.mid\b.mid;
+e = 1e-10;
+aa = a.mid; aa(1,1) = aa(1,1)+e;
+xss = aa\b.mid;
+sens_ = ( xss(3)-xs(3) ) / e
+
+%% Gaussian elemination using hessians
+% The linear system can be solved with hessians as well, so that
+% information on all partial second derivatives are available. We only
+% display the second derivative of the 3rd solution components with respect
+% to the upper left matrix element a(1,1).
+
+format short
+xhes = solvewpp(hessianinit(a),b);
+struct(xhes)
+sens_hx = xhes(3).hx(1)
+
+%% Gaussian elemination using k-bit arithmetic
+% INTLAB's fl-package uses k-bit IEEE 754 binary arithmetic. After
+% initialization, in this example to 22 bits and exponent range 
+% -99 ... 100,
+% Gaussian elimination is performed in this precision.
+
+flinit(22,100)
+flinit('DisplayDouble')
+xflk = solvewpp(fl(a),b)
+
+%% Random integers
+% Sometimes random integers are needed. Here is how to generate an m x n
+% matrix of integers in the range [1 ... k]  or  [ -k ... k] .
+
+m = 2;
+n = 7;
+k = 10;
+ipos = randint(k,m,n)
+igen = randint(-k,m,n)
+
+%% Even/odd
+% Sometimes it may be useful to check the parity of an integer. As the name
+% suggests, odd(n) is 1 for odd n. It may be applied to a vector as well.
+
+N = randint(-10,1,5)
+Nodd = odd(N)
+Neven = even(N)
+Nodd | Neven
+
+%% Ill-conditioned matrices
+% The routine randmat generates extremely ill-conditioned matrices. 
+
+n = 50;
+cnd = 1e25;
+A = randmat(n,cnd);
+c = cond(A)
+
+%%
+% Of course, the Matlab routine cond cannot approximate the true condition
+% number of about cnd=1e25. The true condition number can be computed by
+% INTLAB's especially designed inclusion algorithm for extreme condition
+% numbers (up to about 1e30).
+
+C = cond(intval(A),'illco')
+
+%%
+% Note that C is an inclusion of the true 2-norm condition number.
+
+%% Prove of regularity of matrix with arbitrary condition number
+% Based on number theory and mod(p) calculations it is possible to verify
+% the regularity of arbitrarily ill-conditioned matrices in short computing
+% time. If, by chance, the test should not work, a second parameter
+% specifying a kind of probability is possible. 
+%
+% An example with extreme condition number of about 1e100 is as follows.
+
+n = 200; 
+cnd = 1e100;
+A = randmat(n,cnd);
+tic
+reg = isregular(A)
+T = toc
+
+%%
+% Note that the proof of regularity is rigorous. As is well-known, a proof 
+% of singularity in the same manner is very difficult. 
+
+%% Random orthogonal matrices
+% One way to generate matrices with specified singular values uses random
+% orthogonal matrices.
+
+n = 100;
+Q = randorth(n);
+norm(Q'*Q-eye(n),inf)
+
+%% Relative errors
+% Displaying relative errors has well-known drawbacks. First, there is the
+% problem of numbers near zero: For x=1e-20, is x+1e-25 nearby? Second, the
+% relative error depends on how close a number is to the next power of 2,
+% and whether it is slightly smaller or larger. 
+%
+% The predecessor and successor of 1 and the relative error to 1 is
+% computed by
+
+succ1 = succ(1)
+pred1 = pred(1)
+relsucc = relerr(1,succ1)
+relpred = relerr(1,pred1)
+
+%% Distance in bits and the accuracy of inclusion functions
+% For very narrow intervals it might sometimes be simpler to use the
+% distance in bits:
+
+distsucc = distbits(1,succ1)
+distpred = distbits(1,pred1)
+
+%%
+% For performance reasons the maximum distance in bits is restricted to
+% 100. The function distbits can be used to track the accuracy of computed 
+% inclusions:
+
+ x = linspace(0,200,1e6); 
+ Y = gamma(intval(x)); 
+ close, plot(x,distbits(Y))
+
+%% The bit pattern
+% Also the bit pattern is sometimes useful:
+
+getbits([pred1 1 succ1])
+
+%%
+% The function applies to intervals as well. It can be used to verify that
+% the bounds are indeed as close as possible:
+
+Pi = intval('pi')
+getbits(Pi)
+distbits(Pi)
+
+%%
+% Displaying bits applies to single precision numbers or the INTLAB
+% fl-toolbox as well:
+
+getbits(single(pi))
+flinit(7,50);
+getbits(fl(5))
+getbits(fl(infsup(11,13)))
+
+%% Intelligent help
+% Sometimes it is not clear how to spell a name and/or we know only parts
+% of a function name, and even that is uncertain. In that case sometimes
+% helpp, an intelligent help function, may be useful. After initialization
+% by just calling "helpp" the following may be obtained:
+
+helpp tschebischeff
+
+%%
+% The answer comes with certain levels representing some kind of distance.
+% Sometimes even gross misspelling still retrieves the correct name.
+% Needless to say that it works the better the longer the string to look
+% for.
+
+%% Checking exponential many possibilities
+% Given an interval matrix A it is known to be an NP-hard problem to verify
+% non-singularity. The best criterion known still needs 2^n steps for a
+% given n x n matrix. The result is as follows:
+%
+% Theorem (Rohn). A given interval matrix  mA +/- r*E  for E denoting the 
+% matrix of all 1's, is non-singular if and only if  
+% r < 1/sum(abs(inv(A)*x)) for all vectors x with components +/-1 .
+%
+% The maximum quantity r is the so-called radius of non-singularity.
+% Compared to checking all vertices the theorem reduces the number of 
+% determinants from 2^(n^2) to 2^n.
+%
+% The function  bin2vec  is useful to generate all signature matrices. The
+% call v = bin2vec(i,n) generates the vector of the n least significant 
+% bits of i.
+
+n = 4;
+A = hadamard(n)
+Ainv = inv(A);
+R = 0;
+for i=1:2^n
+  x = (2*bin2vec(i,n)-1)';
+  r = sum(abs( Ainv * x ));
+  if r>R, R=r; end
+end
+singRad = 1/R
+  
+%% Traversing all vertices of an interval matrix
+% The function bin2vec can also be used to visit all vertices of an
+% interval matrix. These are, however, 2^(n^2) vertices. With the method
+% before we checked that the radius of non-singularity of the 8x8 Hadamard
+% matrix is 0.5. Thus A=midrad(hadamard,0.499) must be non-singular. This is
+% checked as follows.
+
+tic
+n = 4;
+A = hadamard(n);
+s = sign(det(A));
+for i=1:2^(n^2)
+  D = det( A + 0.499*reshape( 2*bin2vec(i,n^2)-1 , n,n ) );
+  if D*s<0
+    disp('The interval matrix is singular')
+    break
+  end
+end
+if D*s>0
+  disp('The interval matrix is non-singular')
+end
+T = toc
+  
+%%
+% The function  v = base2vec(i,b,n)  does the same for base b.
+
+%% Enjoy INTLAB
+% INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing,
+% Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de
+
+ 
+##### SOURCE END #####
+--></body></html>

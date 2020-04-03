@@ -1,0 +1,10 @@
+
+*.log
+*.csv
+*.log
+*.pdf
+*.mat
+*.mat
+*.m~
+
+!results.pdf

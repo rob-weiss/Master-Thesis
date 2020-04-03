@@ -1,0 +1,422 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DEMOACCSUMDOT  Accurate summation and dot products</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-07-22"><meta name="DC.source" content="daccsumdot.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>DEMOACCSUMDOT  Accurate summation and dot products</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Accurate summation</a></li><li><a href="#3">Residual iteration</a></li><li><a href="#4">Accurate residual iteration</a></li><li><a href="#6">Verified inclusion</a></li><li><a href="#8">Very ill-conditioned matrices</a></li><li><a href="#12">Extremely ill-conditioned sums and dot products</a></li><li><a href="#13">Computation "as if" in K-fold precision</a></li><li><a href="#16">Accurate approximation</a></li><li><a href="#18">Hidden line</a></li><li><a href="#19">Enjoy INTLAB</a></li></ul></div><h2 id="1">Accurate summation</h2><p>Recently I published various algorithms for the accurate computation of sums and dot products. A typical application is the accurate computation of a residual.</p><p>First, define an ill-conditioned matrix, the inverse Hilbert matrix as provided by Matlab (we display only the upper left corner of A):</p><pre class="codeinput">format <span class="string">short</span>
+n = 10;
+A = invhilb(n);
+v = 1:4;
+A(v,v)
+cond(A)
+</pre><pre class="codeoutput">ans =
+   1.0e+09 *
+    0.0000   -0.0000    0.0001   -0.0006
+   -0.0000    0.0003   -0.0059    0.0476
+    0.0001   -0.0059    0.1129   -0.9514
+   -0.0006    0.0476   -0.9514    8.2450
+ans =
+   1.6032e+13
+</pre><p>We calculate a right hand side such that the solution is the vector of 1's. Since the matrix entries are not too large integers, the true solution is indeed the vector of 1's.</p><p>The approximate solution by the built-in Matlab routine is moderately accurate, as expected by the condition number of the matrix.</p><pre class="codeinput">format <span class="string">long</span>
+b = A*ones(n,1);
+xs = A\b
+</pre><pre class="codeoutput">xs =
+   1.000036963700910
+   1.000032534907936
+   1.000029059745948
+   1.000026258595577
+   1.000023951991110
+   1.000022019195627
+   1.000020375916353
+   1.000018961486942
+   1.000017731116208
+   1.000016651005808
+</pre><h2 id="3">Residual iteration</h2><p>If one residual iteration is performed in working precision, Skeel proved that the result becomes backward stable; however, the forward error does not improve. We display the result after five iterations.</p><pre class="codeinput"><span class="keyword">for</span> i=1:5
+  xs = xs - A\(A*xs-b);
+<span class="keyword">end</span>
+xs
+</pre><pre class="codeoutput">xs =
+   0.999950171976173
+   0.999956771206060
+   0.999961782705104
+   0.999965728536605
+   0.999968921390461
+   0.999971561030115
+   0.999973781525369
+   0.999975676437791
+   0.999977313165910
+   0.999978741558746
+</pre><h2 id="4">Accurate residual iteration</h2><p>This changes when calculating the residual in double the working precision. After four iterations the approximation is fully accurate.</p><pre class="codeinput"><span class="keyword">for</span> i=1:4
+  xs = xs - A\Dot_(A,xs,-1,b);
+<span class="keyword">end</span>
+xs
+</pre><pre class="codeoutput">xs =
+     1
+     1
+     1
+     1
+     1
+     1
+     1
+     1
+     1
+     1
+</pre><p>Note that the residual is calculated "as if" in double the working precision, but the result of the dot product is stored in working precision.</p><h2 id="6">Verified inclusion</h2><p>The same principle is used in the verification routine verifylss. There is a choice how to calculate the residual:</p><pre class="codeinput">intvalinit(<span class="string">'ImprovedResidual'</span>)
+X1 = verifylss(A,b)
+</pre><pre class="codeoutput">===&gt; Improved residual calculation in verifylss
+intval X1 = 
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+   1.0000000_______
+</pre><p>A heuristic is used to improved the accuracy. It is fast, but not necessarily accurate ("poor men's residual"). Calculating the residual as above is slower but more accurate:</p><pre class="codeinput">intvalinit(<span class="string">'QuadrupleResidual'</span>)
+X2 = verifylss(A,b)
+</pre><pre class="codeoutput">===&gt; Quadruple precision residual calculation by Dot_ in verifylss
+intval X2 = 
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+   1.00000000000000
+</pre><h2 id="8">Very ill-conditioned matrices</h2><p>Next we use an extremely ill-conditioned matrix proposed by Boothroyd (we show some entries of the upper left corner). As before the right hand side is computed such that the exact solution is the vector of 1's.</p><pre class="codeinput">n = 15;
+[A,Ainv] = boothroyd(n);
+A(v,v)
+b = A*ones(n,1);
+</pre><pre class="codeoutput">ans =
+          15         105         455        1365
+         120        1120        5460       17472
+         680        7140       37128      123760
+        3060       34272      185640      636480
+</pre><p>Since the inverse is the original matrix with a checkerboard sign distribution and thus explicitly known, the condition number is just the norm of A squared.</p><pre class="codeinput">format <span class="string">short</span>
+cnd = norm(A)*norm(Ainv)
+</pre><pre class="codeoutput">cnd =
+   1.5132e+23
+</pre><p>As expected, the Matlab approximation has no correct digit, even the sign is not correct.</p><pre class="codeinput">xs = A\b
+</pre><pre class="codeoutput">Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  4.637215e-22. 
+xs =
+    1.0001
+    0.9993
+    1.0039
+    0.9841
+    1.0530
+    0.8424
+    1.4375
+   -0.1686
+    4.0466
+   -6.7654
+   20.2686
+  -45.3044
+  108.3757
+ -238.9082
+  517.5592
+</pre><p>Using accurate dot products based on error-free transformations, an inclusion of the solution can be calculated:</p><pre class="codeinput">format <span class="string">long</span> <span class="string">_</span>
+X = verifylss(A,b,<span class="string">'illco'</span>)
+</pre><pre class="codeoutput">intval X = 
+   1.00000000000000
+   1.0000000000000_
+   1.0000000000000_
+   1.00000000000___
+   1.00000000000___
+   1.0000000000____
+   1.0000000000____
+   1.000000000_____
+   1.000000000_____
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.00000000______
+   1.0000000_______
+   1.0000000_______
+</pre><h2 id="12">Extremely ill-conditioned sums and dot products</h2><p>There are routines to generate extremely ill-conditioned sums and dot products. Consider</p><pre class="codeinput">n = 50;
+cnd = 1e25;
+[x,y,c] = GenDot(n,cnd);
+</pre><h2 id="13">Computation "as if" in K-fold precision</h2><p>Vectors x and y of length n are generated such the condition number of the dot product is cnd=1e25 and the true value of x'*y is c. Therefore it can be expected that a floating-point approximation has no correct digit, in fact true result and approximation differ significantly in magnitude:</p><pre class="codeinput">c
+x'*y
+</pre><pre class="codeoutput">c =
+   1.269781847189775
+ans =
+    -2.835349504000000e+09
+</pre><p>The computation of x'*y in double the working precision  gives a more accurate approximation:</p><pre class="codeinput">c
+Dot_(x',y)
+</pre><pre class="codeoutput">c =
+   1.269781847189775
+ans =
+   1.269782304763794
+</pre><p>A result "as if" computed in triple the working precision and rounded into working precision is accurate to the last bit:</p><pre class="codeinput">c
+Dot_(x',y,3)
+</pre><pre class="codeoutput">c =
+   1.269781847189775
+ans =
+   1.269781847189775
+</pre><h2 id="16">Accurate approximation</h2><p>An alternative is to use error-free transformation to compute faithfully rounded result, independent of the condition number. For an extremely ill-conditioned dot product with condition number 1e100 the result is still accurate to the last bit.</p><pre class="codeinput">n = 50;
+cnd = 1e100;
+[x,y,c] = GenDot(n,cnd);
+c
+AccDot(x',y)
+</pre><pre class="codeoutput">c =
+  -1.054032714200034
+ans =
+  -1.054032714200034
+</pre><p>An inclusion of the result can be computed as well:</p><pre class="codeinput">c
+infsup(AccDot(x',y,[]))
+</pre><pre class="codeoutput">c =
+  -1.054032714200034
+intval  = 
+[  -1.05403271420004,  -1.05403271420003] 
+</pre><h2 id="18">Hidden line</h2><p>There is quite some effort in computer geometry to design properly working hidden line algorithms. Of course, the decision whether a point is visible or not is simply decided by the sign of some dot product. It seems hard to believe, but evaluating dot products in double precision is sometimes not enough to make the correct decision and pictures are blurred. In that case an accurate dot product may help.</p><p>The following graph shows the solution set of an interval linear system as on the cover of Arnold's book. When executing this in Matlab and rotating the graph, sometimes the display is not correct.</p><pre class="codeinput">format <span class="string">short</span>
+A = ones(3)*infsup(0,2); A(1:4:end) = 3.5
+b = ones(3,1)*infsup(-1,1)
+plotlinsol(A,b)
+view(-200,20)
+</pre><pre class="codeoutput">intval A = 
+[    3.5000,    3.5000] [    0.0000,    2.0000] [    0.0000,    2.0000] 
+[    0.0000,    2.0000] [    3.5000,    3.5000] [    0.0000,    2.0000] 
+[    0.0000,    2.0000] [    0.0000,    2.0000] [    3.5000,    3.5000] 
+intval b = 
+[   -1.0000,    1.0000] 
+[   -1.0000,    1.0000] 
+[   -1.0000,    1.0000] 
+intval ans = 
+[   -1.7648,    1.7648] 
+[   -1.7648,    1.7648] 
+[   -1.7648,    1.7648] 
+</pre><img vspace="5" hspace="5" src="daccsumdot_01.png" alt=""> <h2 id="19">Enjoy INTLAB</h2><p>INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing, Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% DEMOACCSUMDOT  Accurate summation and dot products
+
+%% Accurate summation
+% Recently I published various algorithms for the accurate computation of sums and dot products.
+% A typical application is the accurate computation of a residual.
+%
+% First, define an ill-conditioned matrix, the inverse Hilbert matrix as provided by Matlab
+% (we display only the upper left corner of A):
+
+format short
+n = 10;
+A = invhilb(n);
+v = 1:4;
+A(v,v)
+cond(A)
+
+%%
+% We calculate a right hand side such that the solution is the vector of 1's. Since the matrix
+% entries are not too large integers, the true solution is indeed the vector of 1's.
+%
+% The approximate solution by the built-in Matlab routine is moderately accurate, as expected by
+% the condition number of the matrix.
+
+format long
+b = A*ones(n,1);
+xs = A\b
+
+%% Residual iteration
+% If one residual iteration is performed in working precision, 
+% Skeel proved that the result becomes 
+% backward stable; however, the forward error does not improve. 
+% We display the result after five iterations.
+
+for i=1:5
+  xs = xs - A\(A*xs-b);
+end
+xs
+
+%% Accurate residual iteration
+% This changes when calculating the residual in double the working precision.
+% After four iterations the approximation is fully accurate.
+
+for i=1:4
+  xs = xs - A\Dot_(A,xs,-1,b);
+end
+xs
+
+%%
+% Note that the residual is calculated "as if" in double the working precision, 
+% but the result of the dot product is stored in working precision.
+
+%% Verified inclusion
+% The same principle is used in the verification routine verifylss. There is a choice how to
+% calculate the residual:
+
+intvalinit('ImprovedResidual')
+X1 = verifylss(A,b)
+
+%%
+% A heuristic is used to improved the accuracy. It is fast, but not necessarily accurate ("poor
+% men's residual"). Calculating the residual as above is slower but more accurate:
+
+intvalinit('QuadrupleResidual')
+X2 = verifylss(A,b)
+
+%% Very ill-conditioned matrices
+% Next we use an extremely ill-conditioned matrix proposed by Boothroyd (we show some entries
+% of the upper left corner). As before the right hand side is computed such that the exact 
+% solution is the vector of 1's.
+
+n = 15;
+[A,Ainv] = boothroyd(n);
+A(v,v)
+b = A*ones(n,1);
+
+%%
+% Since the inverse is the original matrix with a checkerboard sign distribution and thus explicitly
+% known, the condition number is just the norm of A squared.
+
+format short
+cnd = norm(A)*norm(Ainv)
+
+%%
+% As expected, the Matlab approximation has no correct digit, even the sign is not correct.
+
+xs = A\b
+
+%%
+% Using accurate dot products based on error-free transformations, an inclusion of the solution can
+% be calculated:
+
+format long _
+X = verifylss(A,b,'illco')
+
+%% Extremely ill-conditioned sums and dot products
+% There are routines to generate extremely ill-conditioned sums and dot products. Consider
+
+n = 50;
+cnd = 1e25;
+[x,y,c] = GenDot(n,cnd);
+
+%% Computation "as if" in K-fold precision
+% Vectors x and y of length n are generated such the condition number of the dot product is cnd=1e25 and the
+% true value of x'*y is c. Therefore it can be expected that a floating-point approximation has no
+% correct digit, in fact true result and approximation differ significantly in magnitude:
+
+c
+x'*y
+
+%%
+% The computation of x'*y in double the working precision  gives a more accurate approximation:
+
+c
+Dot_(x',y)
+
+%%
+% A result "as if" computed in triple the working precision and rounded into working precision is
+% accurate to the last bit:
+
+c
+Dot_(x',y,3)
+
+%% Accurate approximation
+% An alternative is to use error-free transformation to compute faithfully rounded
+% result, independent of the condition number. For an extremely ill-conditioned 
+% dot product with condition number 1e100 the result is still accurate to the last bit.
+
+n = 50;
+cnd = 1e100;
+[x,y,c] = GenDot(n,cnd);
+c
+AccDot(x',y)
+
+%%
+% An inclusion of the result can be computed as well:
+
+c
+infsup(AccDot(x',y,[]))
+
+%% Hidden line
+% There is quite some effort in computer geometry to design properly working hidden line algorithms.
+% Of course, the decision whether a point is visible or not is simply decided by the sign of some
+% dot product. It seems hard to believe, but evaluating dot products in double precision is
+% sometimes not enough to make the correct decision and pictures are blurred. 
+% In that case an accurate dot product may help.
+%
+% The following graph shows the solution set of an interval linear system as on the cover of
+% Arnold's book. When executing this in Matlab and rotating the graph, sometimes the display is not
+% correct.
+
+format short
+A = ones(3)*infsup(0,2); A(1:4:end) = 3.5
+b = ones(3,1)*infsup(-1,1)
+plotlinsol(A,b)
+view(-200,20)
+
+%% Enjoy INTLAB
+% INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing,
+% Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de
+
+ 
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,264 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Interval arithmetic in INTLAB</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-07-22"><meta name="DC.source" content="darithmetic.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Interval arithmetic in INTLAB</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Redefinition of the interval arithmetic</a></li><li><a href="#2">Definition of interval arithmetic</a></li><li><a href="#4">Input out of range for real standard functions</a></li><li><a href="#5">How to use the NaN-mode?</a></li><li><a href="#9">The empty set</a></li><li><a href="#12">Enjoy INTLAB</a></li></ul></div><h2 id="1">Redefinition of the interval arithmetic</h2><p>With Version 6 of INTLAB I redefined the interval arithmetic in INTLAB. Formerly, the empty set was represented by NaN. It turned out that a consistent definition of all interval operations avoiding NaN-results slows down EVERY interval operation in INTLAB. Therefore I choose to interpret a NaN-component as "no information".</p><p>Although infinity- or NaN-components are usually rare, taking care of them slows down simpe operations by up to a factor 3. I found this hardly acceptable.</p><p>Most users won't recognize any change. I recommend to visit the demo "dintval" before continuing with this demo.</p><h2 id="2">Definition of interval arithmetic</h2><p>If an interval component has value NaN, it does not mean that component empty but rather no information is available on that component. For example,</p><pre class="codeinput">     format <span class="string">compact</span> <span class="string">short</span> <span class="string">infsup</span>
+     X = [ infsup(3,inf) ; infsup(-1,2) ; inf]
+     Y = 0./X
+</pre><pre class="codeoutput">intval X = 
+[    3.0000,       Inf] 
+[   -1.0000,    2.0000] 
+[       Inf,       Inf] 
+intval Y = 
+[    0.0000,    0.0000] 
+[       NaN,       NaN] 
+[    0.0000,    0.0000] 
+</pre><p>has one component "NaN" due to the division 0/0. Any operation with this component will result in a "NaN" component, such as</p><pre class="codeinput">     contains_0 = in(0,Y)
+     intersect( infsup(-1,4) , Y )
+</pre><pre class="codeoutput">contains_0 =
+  3&times;1 logical array
+   1
+   0
+   1
+intval ans = 
+[    0.0000,    0.0000] 
+[       NaN,       NaN] 
+[    0.0000,    0.0000] 
+</pre><h2 id="4">Input out of range for real standard functions</h2><p>If for real standard functions part of the input is out of range, the result of the corresponding component will be NaN:</p><pre class="codeinput">     intvalinit(<span class="string">'RealStdFctsExcptnNaN'</span>)
+     X = [ infsup(-2,9) ; infsup(0,4) ]
+     Y = sqrt(X)
+</pre><pre class="codeoutput">===&gt; Result NaN for real interval input out of range 
+intval X = 
+[   -2.0000,    9.0000] 
+[    0.0000,    4.0000] 
+intval Y = 
+[       NaN,       NaN] 
+[    0.0000,    2.0000] 
+</pre><h2 id="5">How to use the NaN-mode?</h2><p>The default NaN-mode can be used without any precautions. If during the computation of a result all operations are well-defined, the computed result is a true inclusion of the correct result.</p><p>If during the computation the input of some operation was out-of-range, the computed result will be NaN. More precisely, the corresponding components will be NaN, as in</p><pre class="codeinput">     intvalinit(<span class="string">'RealStdFctsExcptnNaN'</span>)
+     X = intval(-1:1)
+     Y = log(X)
+</pre><pre class="codeoutput">===&gt; Result NaN for real interval input out of range 
+intval X = 
+[   -1.0000,   -1.0000] [    0.0000,    0.0000] [    1.0000,    1.0000] 
+intval Y = 
+[       NaN,       NaN] [     - Inf,     - Inf] [    0.0000,    0.0000] 
+</pre><p>The real standard functions can be switched automatically to their complex pendant as follows:</p><pre class="codeinput">     intvalinit(<span class="string">'RealStdFctsExcptnWarn'</span>)
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+</pre><pre class="codeoutput">===&gt; Complex interval stdfct used automatically for real interval input 
+         out of range, but with warningintval X = 
+[    2.0000,    3.0000] [   -1.0000,    4.0000] 
+Warning: SQRT: Real interval input out of range changed to be complex 
+Warning: Complex Sqrt: Input interval intersects with branch cut 
+intval  = 
+&lt;   1.5731 +  0.0000i,  0.1590&gt; &lt;   1.2247 +  0.0000i,  1.5812&gt; 
+</pre><p>The warning may be suppressed using "intvalinit('RealStdFctsExcptnAuto')".</p><pre class="codeinput">     intvalinit(<span class="string">'RealStdFctsExcptnAuto'</span>)
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+</pre><pre class="codeoutput">===&gt; Complex interval stdfct used automatically for real interval input 
+         out of range (without warning)intval X = 
+[    2.0000,    3.0000] [   -1.0000,    4.0000] 
+Warning: Complex Sqrt: Input interval intersects with branch cut 
+intval  = 
+&lt;   1.5731 +  0.0000i,  0.1590&gt; &lt;   1.2247 +  0.0000i,  1.5812&gt; 
+</pre><p>And finally the message when changing the mode may be suppressed using "intvalinit('RealStdFctsExcptnAuto',0)".</p><pre class="codeinput">     intvalinit(<span class="string">'RealStdFctsExcptnAuto'</span>,0)
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+</pre><pre class="codeoutput">intval X = 
+[    2.0000,    3.0000] [   -1.0000,    4.0000] 
+Warning: Complex Sqrt: Input interval intersects with branch cut 
+intval  = 
+&lt;   1.5731 +  0.0000i,  0.1590&gt; &lt;   1.2247 +  0.0000i,  1.5812&gt; 
+</pre><h2 id="9">The empty set</h2><p>There is no explicit representation of the empty set. This is a necessary compromise. Since NaN is interpreted as Not-an-Interval, another representation of the empty set would have been necessary, slowing down again EVERY operation.</p><p>However, the only operation in the NaN-mode, the result of which may be the empty set is intersection. However, numerous case distinctions in many programs would have been necessary to distinguish between NaN and the empty set - whatever the representation of the latter may be. All operations would be slowed down by that. Maybe that is not worth it.</p><p>Consider</p><pre class="codeinput">   A = infsup( [1 2;-2 3;0 2] , [2 3;1 4;3 5] )
+   res = intersect(A(:,1),A(:,2))
+</pre><pre class="codeoutput">intval A = 
+[    1.0000,    2.0000] [    2.0000,    3.0000] 
+[   -2.0000,    1.0000] [    3.0000,    4.0000] 
+[    0.0000,    3.0000] [    2.0000,    5.0000] 
+intval res = 
+[    2.0000,    2.0000] 
+[       NaN,       NaN] 
+[    2.0000,    3.0000] 
+</pre><p>How to decide that the intersection of A(2,1) and A(2,2) is truely empty and not the consequence of some NaN-component? This is solved as follows:</p><pre class="codeinput">   [e,res] = emptyintersect(A(:,1),A(:,2))
+</pre><pre class="codeoutput">e =
+     0
+     1
+     0
+intval res = 
+[    2.0000,    2.0000] 
+[       NaN,       NaN] 
+[    2.0000,    3.0000] 
+</pre><p>Now e(2)=1 indicates that indeed the intersection is empty; a zero component in e corresponds to non-empty intersection.</p><h2 id="12">Enjoy INTLAB</h2><p>INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing, Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de</p><pre class="codeinput">   intlablogo(35)
+</pre><img vspace="5" hspace="5" src="darithmetic_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Interval arithmetic in INTLAB
+%
+
+%% Redefinition of the interval arithmetic
+% With Version 6 of INTLAB I redefined the interval arithmetic in INTLAB. Formerly,
+% the empty set was represented by NaN. It turned out that a consistent definition
+% of all interval operations avoiding NaN-results slows down EVERY interval operation
+% in INTLAB. Therefore I choose to interpret a NaN-component as "no information".
+%
+% Although infinity- or NaN-components are usually rare, taking care of them slows
+% down simpe operations by up to a factor 3. I found this hardly acceptable.
+%
+% Most users won't recognize any change. I recommend to visit the demo "dintval" 
+% before continuing with this demo.                  
+
+%% Definition of interval arithmetic
+% If an interval component has value NaN, it does not mean that component empty 
+% but rather no information is available on that component. For example,
+
+     format compact short infsup
+     X = [ infsup(3,inf) ; infsup(-1,2) ; inf]
+     Y = 0./X
+     
+%% 
+% has one component "NaN" due to the division 0/0. Any operation with this
+% component will result in a "NaN" component, such as
+
+     contains_0 = in(0,Y)
+     intersect( infsup(-1,4) , Y )
+
+%% Input out of range for real standard functions
+% If for real standard functions part of the input is out of range, the result
+% of the corresponding component will be NaN:
+
+     intvalinit('RealStdFctsExcptnNaN')
+     X = [ infsup(-2,9) ; infsup(0,4) ]
+     Y = sqrt(X)
+
+%% How to use the NaN-mode?
+% The default NaN-mode can be used without any precautions. If during the computation of
+% a result all operations are well-defined, the computed result is a true inclusion of the
+% correct result.
+%
+% If during the computation the input of some operation was out-of-range, the computed
+% result will be NaN. More precisely, the corresponding components will be NaN, as in
+
+     intvalinit('RealStdFctsExcptnNaN')
+     X = intval(-1:1)
+     Y = log(X)
+     
+%%
+% The real standard functions can be switched automatically to their complex
+% pendant as follows:
+
+     intvalinit('RealStdFctsExcptnWarn')
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+     
+%%
+% The warning may be suppressed using "intvalinit('RealStdFctsExcptnAuto')".
+
+     intvalinit('RealStdFctsExcptnAuto')
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+
+%%
+% And finally the message when changing the mode may be suppressed using 
+% "intvalinit('RealStdFctsExcptnAuto',0)".
+
+     intvalinit('RealStdFctsExcptnAuto',0)
+     X = [ infsup(2,3) infsup(-1,4) ]
+     midrad(sqrt(X))
+
+%% The empty set
+% There is no explicit representation of the empty set. This is a necessary compromise. 
+% Since NaN is interpreted as Not-an-Interval, another representation of the 
+% empty set would have been necessary, slowing down again EVERY operation.
+%
+% However, the only operation in the NaN-mode, the result of which may be the empty
+% set is intersection. However, numerous case distinctions in many programs would have
+% been necessary to distinguish between NaN and the empty set - whatever the representation
+% of the latter may be. All operations would be slowed down by that. Maybe that is not 
+% worth it. 
+%
+% Consider 
+ 
+   A = infsup( [1 2;-2 3;0 2] , [2 3;1 4;3 5] )
+   res = intersect(A(:,1),A(:,2))
+   
+%%
+% How to decide that the intersection of A(2,1) and A(2,2) is truely empty
+% and not the consequence of some NaN-component? This is solved as follows:
+ 
+   [e,res] = emptyintersect(A(:,1),A(:,2))
+   
+%%
+% Now e(2)=1 indicates that indeed the intersection is empty; a zero
+% component in e corresponds to non-empty intersection. 
+
+%% Enjoy INTLAB
+% INTLAB was designed and written by S.M. Rump, head of the Institute for Reliable Computing,
+% Hamburg University of Technology. Suggestions are always welcome to rump (at) tuhh.de
+
+   intlablogo(35)
+ 
+##### SOURCE END #####
+--></body></html>
