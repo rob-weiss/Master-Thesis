@@ -3,18 +3,18 @@
 load('Trajectory_4_with_2_landmarks.mat');  % Load data
 
 nParticlesPF          = 10000;       % Number of particles generic   particle filter
-nParticlesUPF         = 100;       % Number of particles unscented particle filter
+nParticlesUPF         = 1000;       % Number of particles unscented particle filter
 nParticlesPFC         = 10000;       % Number of particles generic   particle filter with contractor
-nParticlesUPFC        = 100;       % Number of particles unscented particle filter with contractor
+nParticlesUPFC        = 1000;       % Number of particles unscented particle filter with contractor
 nParticlesPFS         = 10000;       % Number of particles generic   particle filter with SIVIA
-nParticlesUPFS        = 100;       % Number of particles generic   particle filter with SIVIA
+nParticlesUPFS        = 1000;       % Number of particles generic   particle filter with SIVIA
 
 scaleInitSearchSpace  = 1;          % Controls the size of the initial search space
 convThreshold         = 1;          % If error in m is less than convThreshold the filter has converged
 
-uncertaintyIntConstr  = 20 * sigmaDistances; % Uncertainty interval used for constraint filtering
+uncertaintyIntConstr  = 50 * sigmaDistances; % Uncertainty interval used for constraint filtering
 
-contr.maxNContr       = 2;                 % Maximum number of contractions
+contr.maxNContr       = 3;                  % Maximum number of contractions
 contr.threshold       = 10000;              % Stop contracting when the reduction in volume is less than thresholdContr
 contr.epsilon         = 1;                  % Epsilon for iterative contractors: 'newt', 'comb', 'mohc'
 contr.contrType       = 'fbprop';           % Contractor type: 'fbprop', 'boxnar', 'boxnarnewt', 'newt', 'comb', 'mohc'

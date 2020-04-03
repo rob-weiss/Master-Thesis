@@ -12,15 +12,15 @@ nParticlesUPFS        = 100;       % Number of particles generic   particle filt
 scaleInitSearchSpace  = 1;          % Controls the size of the initial search space
 convThreshold         = 1;          % If error in m is less than convThreshold the filter has converged
 
-uncertaintyIntConstr  = 20 * sigmaDistances; % Uncertainty interval used for constraint filtering
+uncertaintyIntConstr  = 50 * sigmaDistances; % Uncertainty interval used for constraint filtering
 
-contr.maxNContr       = 2;                  % Maximum number of contractions
+contr.maxNContr       = 3;                  % Maximum number of contractions
 contr.threshold       = 10000;              % Stop contracting when the reduction in volume is less than thresholdContr
 contr.epsilon         = 1;                  % Epsilon for iterative contractors: 'newt', 'comb', 'mohc'
 contr.contrType       = 'fbprop';           % Contractor type: 'fbprop', 'boxnar', 'boxnarnewt', 'newt', 'comb', 'mohc'
 contr.uncertaintyInt  = 5 * sigmaDistances; % Uncertainty interval used for contractor
 
-siv.epsilon         = 2;
+siv.epsilon         = 1;
 siv.contrType       = 'fbprop';           % Contractor type: 'fbprop', 'boxnar', 'boxnarnewt', 'newt', 'comb', 'mohc'
 siv.uncertaintyInt  = 5 * sigmaDistances; % Uncertainty interval used for SIVIA
 
